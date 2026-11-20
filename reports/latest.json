@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-20T14:31:06.656992Z",
+  "scan_utc": "2026-11-20T14:42:10.939494Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -362,11 +362,11 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3581.199951171875,
-          "ema20": 3574.455330045348,
-          "ema50": 3580.7658537957923,
-          "rsi14": 54.14877338711149,
-          "atr14": 12.148542944508117,
+          "close": 3570.0,
+          "ema20": 3573.388668028979,
+          "ema50": 3580.326640024346,
+          "rsi14": 48.096478731522055,
+          "atr14": 12.684257230222403,
           "support20": 3553.5,
           "resistance20": 3596.699951171875,
           "bars": 407
@@ -419,11 +419,11 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 42.060001373291016,
-          "ema20": 42.088807405378645,
-          "ema50": 42.27892982816674,
-          "rsi14": 48.66271446198833,
-          "atr14": 0.2785537257787391,
+          "close": 41.95000076293945,
+          "ema20": 42.078331156773736,
+          "ema50": 42.27461607874119,
+          "rsi14": 46.233874889254466,
+          "atr14": 0.2803395490558038,
           "support20": 41.369998931884766,
           "resistance20": 42.810001373291016,
           "bars": 406
@@ -459,8 +459,27 @@
           "bars": 326
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：46.2",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T14:30:00Z",
+        "reference_price": 41.95000076293945,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 41.95000076293945,
+        "reference_stop": 42.85205230564939,
+        "reference_tp1": 40.145897677519585,
+        "reference_tp2": 39.24384613480965,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 2.1503016121679015
+      },
+      "screen_reason": null
     },
     {
       "name": "Crude Oil West Texas - Cash",
@@ -476,10 +495,10 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 81.95999908447266,
-          "ema20": 82.1527911414005,
-          "ema50": 82.30545900780416,
-          "rsi14": 45.28034272683463,
+          "close": 82.19000244140625,
+          "ema20": 82.17469622301323,
+          "ema50": 82.31447874729176,
+          "rsi14": 50.04809633625751,
           "atr14": 0.3731312000806786,
           "support20": 80.77999877929688,
           "resistance20": 82.62999725341797,
@@ -516,73 +535,32 @@
           "bars": 325
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：45.3",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-20T14:30:00Z",
-        "reference_price": 81.95999908447266,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 81.95999908447266,
-        "reference_stop": 82.68596693343007,
-        "reference_tp1": 80.50806338655784,
-        "reference_tp2": 79.78209553760043,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 0.8857587323899138
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     }
   ],
   "watch_candidates": [
     {
-      "name": "Crude Oil West Texas - Cash",
-      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
+      "name": "Silver - Cash",
+      "proxy_source": "Yahoo Finance COMEX silver futures proxy",
       "mode": "短线",
       "timeframe": "15m",
       "direction": "Sell",
       "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：45.3",
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：46.2",
       "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
       "reference_candle_close_utc": "2026-11-20T14:30:00Z",
-      "reference_price": 81.95999908447266,
+      "reference_price": 41.95000076293945,
       "proxy_only": true,
       "setup_ready": false,
       "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 81.95999908447266,
-      "reference_stop": 82.68596693343007,
-      "reference_tp1": 80.50806338655784,
-      "reference_tp2": 79.78209553760043,
+      "reference_entry": 41.95000076293945,
+      "reference_stop": 42.85205230564939,
+      "reference_tp1": 40.145897677519585,
+      "reference_tp2": 39.24384613480965,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 0.8857587323899138
-    },
-    {
-      "name": "Crude Oil West Texas - Cash",
-      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
-      "mode": "日内",
-      "timeframe": "1h",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；1h突破：否；RSI：47.9",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T14:00:00Z",
-      "reference_price": 82.38999938964844,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 82.38999938964844,
-      "reference_stop": 83.94155487941237,
-      "reference_tp1": 79.28688841012058,
-      "reference_tp2": 77.73533292035665,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.8831842471877316
+      "stop_pct": 2.1503016121679015
     }
   ],
   "research_setups": []
