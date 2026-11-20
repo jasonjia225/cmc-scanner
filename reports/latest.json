@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-20T05:45:44.742612Z",
+  "scan_utc": "2026-11-20T06:01:16.064139Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -64,25 +64,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 61637.26,
-          "ema20": 61771.00234944605,
-          "ema50": 62094.454244639026,
-          "rsi14": 44.480296257833935,
-          "atr14": 329.92117490513687,
+          "close": 61853.08,
+          "ema20": 61778.819268546424,
+          "ema50": 62084.988587987216,
+          "rsi14": 50.25175214363027,
+          "atr14": 330.00609098334144,
           "support20": 61220.0,
           "resistance20": 62562.15,
           "bars": 600
         },
         "1h": {
-          "close": 61450.2,
-          "ema20": 62401.563819134826,
-          "ema50": 63057.69607853457,
-          "rsi14": 37.041548239123266,
-          "atr14": 680.2601625562155,
+          "close": 61853.08,
+          "ema20": 62349.32726493151,
+          "ema50": 63010.45623231209,
+          "rsi14": 42.3208001113642,
+          "atr14": 674.7901509450572,
           "support20": 61220.0,
           "resistance20": 64023.69,
           "bars": 600
@@ -108,27 +108,8 @@
           "bars": 149
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：44.5",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-20T05:45:00Z",
-        "reference_price": 61637.26,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 61637.26,
-        "reference_stop": 62611.63817623577,
-        "reference_tp1": 59688.503647528465,
-        "reference_tp2": 58714.1254712927,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 1.5808265588635324
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     },
     {
       "name": "Ethereum (USD)",
@@ -140,26 +121,26 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1728.96,
-          "ema20": 1737.0837342458876,
-          "ema50": 1750.8194964524007,
-          "rsi14": 40.69212582765748,
-          "atr14": 11.834598622813969,
+          "close": 1739.53,
+          "ema20": 1737.3167119367554,
+          "ema50": 1750.3767711014475,
+          "rsi14": 49.19100955720877,
+          "atr14": 11.916413006898686,
           "support20": 1715.85,
           "resistance20": 1768.36,
           "bars": 600
         },
         "1h": {
-          "close": 1725.5,
-          "ema20": 1761.3793665385497,
-          "ema50": 1777.9375664029114,
-          "rsi14": 33.96387423062255,
-          "atr14": 22.472779102267598,
-          "support20": 1721.0,
+          "close": 1739.53,
+          "ema20": 1759.2984744872592,
+          "ema50": 1776.4313873280337,
+          "rsi14": 40.47751994339888,
+          "atr14": 22.540437737819918,
+          "support20": 1715.85,
           "resistance20": 1815.7,
           "bars": 600
         },
@@ -184,27 +165,8 @@
           "bars": 149
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：40.7",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-20T05:45:00Z",
-        "reference_price": 1728.96,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 1728.96,
-        "reference_stop": 1770.135189793422,
-        "reference_tp1": 1646.6096204131563,
-        "reference_tp2": 1605.4344306197345,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 2.3815004276224925
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -216,20 +178,20 @@
         "1d": true,
         "4h": false
       },
-      "last_complete_candle_utc": "2026-11-20T05:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {
         "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
       },
       "metrics": {
         "15m": {
-          "close": 22342.380859375,
-          "ema20": 22539.29676857919,
-          "ema50": 22801.717309658077,
-          "rsi14": 21.37996405009821,
-          "atr14": 61.52294318798379,
-          "support20": 22333.41015625,
+          "close": 22322.580078125,
+          "ema20": 22499.553085716187,
+          "ema50": 22764.68674861411,
+          "rsi14": 21.162355415961258,
+          "atr14": 56.504376875098274,
+          "support20": 22307.419921875,
           "resistance20": 22864.55078125,
-          "bars": 109
+          "bars": 111
         },
         "1h": {
           "close": 22342.380859375,
@@ -282,25 +244,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 159.10000610351562,
-          "ema20": 159.25027090797192,
-          "ema50": 159.4347826738735,
-          "rsi14": 32.102482106558085,
-          "atr14": 0.10491893993035452,
+          "close": 159.16799926757812,
+          "ema20": 159.2424355136487,
+          "ema50": 159.424320579509,
+          "rsi14": 39.248309053839435,
+          "atr14": 0.10535385068030688,
           "support20": 159.0399932861328,
-          "resistance20": 159.64199829101562,
-          "bars": 407
+          "resistance20": 159.54299926757812,
+          "bars": 408
         },
         "1h": {
-          "close": 159.13800048828125,
-          "ema20": 159.52729365875385,
-          "ema50": 159.5286375624471,
-          "rsi14": 29.1503659459093,
-          "atr14": 0.17148104991975902,
+          "close": 159.16799926757812,
+          "ema20": 159.49307514530852,
+          "ema50": 159.51449488421696,
+          "rsi14": 31.277900611981778,
+          "atr14": 0.17073317079602623,
           "support20": 159.10299682617188,
           "resistance20": 159.97000122070312,
           "bars": 1562
@@ -318,12 +280,12 @@
         "4h": {
           "close": 159.2259979248047,
           "ema20": 159.52232260911103,
-          "ema50": 159.2693634469172,
-          "rsi14": 42.590204247068826,
-          "atr14": 0.33153919270039545,
+          "ema50": 159.26936349813823,
+          "rsi14": 42.59020424706142,
+          "atr14": 0.33153919270044824,
           "support20": 158.86000061035156,
           "resistance20": 159.97000122070312,
-          "bars": 383
+          "bars": 382
         }
       },
       "watch": null,
@@ -339,25 +301,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 0.5496921539306641,
-          "ema20": 0.5492983373095445,
-          "ema50": 0.549385372464349,
-          "rsi14": 59.116214365616536,
-          "atr14": 0.00029207527618274083,
+          "close": 0.5500247478485107,
+          "ema20": 0.5493675192656364,
+          "ema50": 0.549410446008826,
+          "rsi14": 64.00827440497544,
+          "atr14": 0.00029712800450881673,
           "support20": 0.5480954051017761,
           "resistance20": 0.5500247478485107,
-          "bars": 407
+          "bars": 408
         },
         "1h": {
-          "close": 0.5499037504196167,
-          "ema20": 0.5496089143594923,
-          "ema50": 0.5499714164399258,
-          "rsi14": 51.3591861994849,
-          "atr14": 0.000816425358306601,
+          "close": 0.5500247478485107,
+          "ema20": 0.5496485175489226,
+          "ema50": 0.5499735078677135,
+          "rsi14": 52.294088885295984,
+          "atr14": 0.0007883373311350776,
           "support20": 0.5477651357650757,
           "resistance20": 0.5534340739250183,
           "bars": 1572
@@ -375,12 +337,12 @@
         "4h": {
           "close": 0.5493298172950745,
           "ema20": 0.5503779860154482,
-          "ema50": 0.5531960741531106,
-          "rsi14": 42.231324243461295,
-          "atr14": 0.0015711456408961054,
+          "ema50": 0.5531960739405549,
+          "rsi14": 42.231324243492246,
+          "atr14": 0.0015711456408966278,
           "support20": 0.5477651357650757,
           "resistance20": 0.5534340739250183,
-          "bars": 383
+          "bars": 382
         }
       },
       "watch": null,
@@ -396,25 +358,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3522.10009765625,
-          "ema20": 3569.7257304774894,
-          "ema50": 3620.183366559492,
-          "rsi14": 21.73884350254916,
-          "atr14": 17.870515948936056,
+          "close": 3548.60009765625,
+          "ema20": 3567.8257667578364,
+          "ema50": 3617.425153345822,
+          "rsi14": 36.56768148864807,
+          "atr14": 18.91497586680542,
           "support20": 3514.89990234375,
           "resistance20": 3638.10009765625,
-          "bars": 365
+          "bars": 366
         },
         "1h": {
-          "close": 3530.39990234375,
-          "ema20": 3642.849184122796,
-          "ema50": 3709.766437836762,
-          "rsi14": 12.34236559265338,
-          "atr14": 25.024059446061287,
+          "close": 3548.60009765625,
+          "ema20": 3633.8730806497915,
+          "ema50": 3703.4461892022323,
+          "rsi14": 20.55871304165504,
+          "atr14": 25.88663360393191,
           "support20": 3526.800048828125,
           "resistance20": 3743.800048828125,
           "bars": 1494
@@ -431,13 +393,13 @@
         },
         "4h": {
           "close": 3530.39990234375,
-          "ema20": 3749.320663725834,
-          "ema50": 3862.319386244336,
-          "rsi14": 11.547810380197845,
-          "atr14": 45.25406807238355,
+          "ema20": 3749.3206637258336,
+          "ema50": 3862.319339137007,
+          "rsi14": 11.547810385730614,
+          "atr14": 45.254068072716045,
           "support20": 3591.60009765625,
           "resistance20": 3894.0,
-          "bars": 330
+          "bars": 329
         }
       },
       "watch": null,
@@ -453,27 +415,27 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 41.220001220703125,
-          "ema20": 42.064320940525654,
-          "ema50": 43.05492341019921,
-          "rsi14": 29.83999901179145,
-          "atr14": 0.399456725650044,
-          "support20": 41.095001220703125,
+          "close": 41.83000183105469,
+          "ema20": 42.04717469251836,
+          "ema50": 43.00914784682722,
+          "rsi14": 42.01676585962957,
+          "atr14": 0.4151587285365384,
+          "support20": 41.02000045776367,
           "resistance20": 43.18000030517578,
-          "bars": 364
+          "bars": 365
         },
         "1h": {
-          "close": 41.255001068115234,
-          "ema20": 43.52203390917301,
-          "ema50": 44.762753359318225,
-          "rsi14": 13.951020750511816,
-          "atr14": 0.5965791054384505,
-          "support20": 41.349998474121094,
-          "resistance20": 45.494998931884766,
+          "close": 41.83000183105469,
+          "ema20": 43.360887996971265,
+          "ema50": 44.64774349546475,
+          "rsi14": 25.617610295774767,
+          "atr14": 0.6143235422430701,
+          "support20": 41.17499923706055,
+          "resistance20": 45.48500061035156,
           "bars": 1491
         },
         "1d": {
@@ -488,17 +450,36 @@
         },
         "4h": {
           "close": 41.255001068115234,
-          "ema20": 45.8167135569128,
-          "ema50": 48.250954166433964,
-          "rsi14": 15.033167814016508,
+          "ema20": 45.816713556912795,
+          "ema50": 48.250953201707084,
+          "rsi14": 15.033167825114106,
           "atr14": 0.9802658723219803,
           "support20": 43.95500183105469,
           "resistance20": 48.95500183105469,
-          "bars": 327
+          "bars": 326
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：42.0",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T06:00:00Z",
+        "reference_price": 41.83000183105469,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 41.83000183105469,
+        "reference_stop": 43.242274114456265,
+        "reference_tp1": 39.00545726425153,
+        "reference_tp2": 37.593184980849955,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 3.3762185550589754
+      },
+      "screen_reason": null
     },
     {
       "name": "Crude Oil West Texas - Cash",
@@ -510,25 +491,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T05:45:00Z",
+      "last_complete_candle_utc": "2026-11-20T06:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 82.91999816894531,
-          "ema20": 82.89601234285747,
-          "ema50": 82.91851636981397,
-          "rsi14": 50.32885409221885,
-          "atr14": 0.26061714457327406,
+          "close": 82.58999633789062,
+          "ema20": 82.84963466430462,
+          "ema50": 82.89809778304584,
+          "rsi14": 41.15070073747863,
+          "atr14": 0.2620017027554605,
           "support20": 82.37000274658203,
-          "resistance20": 83.19999694824219,
-          "bars": 365
+          "resistance20": 83.18000030517578,
+          "bars": 366
         },
         "1h": {
-          "close": 82.77999877929688,
-          "ema20": 82.90075401388518,
-          "ema50": 83.35121130044675,
-          "rsi14": 47.61026442719641,
-          "atr14": 0.610962147786527,
+          "close": 82.58999633789062,
+          "ema20": 82.87115804474283,
+          "ema50": 83.3213597332877,
+          "rsi14": 45.06007708928946,
+          "atr14": 0.6058934883394425,
           "support20": 81.66000366210938,
           "resistance20": 83.91000366210938,
           "bars": 1492
@@ -546,128 +527,103 @@
         "4h": {
           "close": 82.77999877929688,
           "ema20": 84.05418152401877,
-          "ema50": 86.72254225768607,
-          "rsi14": 35.71167804446323,
-          "atr14": 1.3831269134804238,
+          "ema50": 86.7225458679622,
+          "rsi14": 35.71167803519744,
+          "atr14": 1.3831269134967197,
           "support20": 81.19999694824219,
           "resistance20": 89.48999786376953,
-          "bars": 326
+          "bars": 325
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：41.2",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T06:00:00Z",
+        "reference_price": 82.58999633789062,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 82.58999633789062,
+        "reference_stop": 83.2193005605891,
+        "reference_tp1": 81.33138789249367,
+        "reference_tp2": 80.70208366979519,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 0.7619617999786342
+      },
+      "screen_reason": null
     }
   ],
   "watch_candidates": [
     {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
+      "name": "Silver - Cash",
+      "proxy_source": "Yahoo Finance COMEX silver futures proxy",
       "mode": "短线",
       "timeframe": "15m",
       "direction": "Sell",
       "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：44.5",
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：42.0",
       "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T05:45:00Z",
-      "reference_price": 61637.26,
+      "reference_candle_close_utc": "2026-11-20T06:00:00Z",
+      "reference_price": 41.83000183105469,
       "proxy_only": true,
       "setup_ready": false,
       "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 61637.26,
-      "reference_stop": 62611.63817623577,
-      "reference_tp1": 59688.503647528465,
-      "reference_tp2": 58714.1254712927,
+      "reference_entry": 41.83000183105469,
+      "reference_stop": 43.242274114456265,
+      "reference_tp1": 39.00545726425153,
+      "reference_tp2": 37.593184980849955,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 1.5808265588635324
+      "stop_pct": 3.3762185550589754
     },
     {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
+      "name": "Crude Oil West Texas - Cash",
+      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
+      "mode": "短线",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：41.2",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T06:00:00Z",
+      "reference_price": 82.58999633789062,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 82.58999633789062,
+      "reference_stop": 83.2193005605891,
+      "reference_tp1": 81.33138789249367,
+      "reference_tp2": 80.70208366979519,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 0.7619617999786342
+    },
+    {
+      "name": "Crude Oil West Texas - Cash",
+      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
       "mode": "日内",
       "timeframe": "1h",
       "direction": "Sell",
       "score": 8.5,
-      "reason": "趋势同向4/4周期；1h突破：否；RSI：37.0",
+      "reason": "趋势同向4/4周期；1h突破：否；RSI：45.1",
       "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T05:00:00Z",
-      "reference_price": 61450.2,
+      "reference_candle_close_utc": "2026-11-20T06:00:00Z",
+      "reference_price": 82.58999633789062,
       "proxy_only": true,
       "setup_ready": false,
       "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 61450.2,
-      "reference_stop": 64125.729024383436,
-      "reference_tp1": 56099.14195123312,
-      "reference_tp2": 53423.61292684968,
+      "reference_entry": 82.58999633789062,
+      "reference_stop": 84.0008876853603,
+      "reference_tp1": 79.76821364295128,
+      "reference_tp2": 78.35732229548161,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 4.353979359519479
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "波段",
-      "timeframe": "4h",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；4h突破：否；RSI：33.9",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T04:00:00Z",
-      "reference_price": 62082.32,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 62082.32,
-      "reference_stop": 65646.35335285563,
-      "reference_tp1": 54954.25329428874,
-      "reference_tp2": 51390.21994143311,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 5.740818566148348
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "短线",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：40.7",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T05:45:00Z",
-      "reference_price": 1728.96,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 1728.96,
-      "reference_stop": 1770.135189793422,
-      "reference_tp1": 1646.6096204131563,
-      "reference_tp2": 1605.4344306197345,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 2.3815004276224925
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "波段",
-      "timeframe": "4h",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；4h突破：否；RSI：35.2",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T04:00:00Z",
-      "reference_price": 1744.06,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 1744.06,
-      "reference_stop": 1847.9611176418675,
-      "reference_tp1": 1536.2577647162648,
-      "reference_tp2": 1432.3566470743972,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 5.957427934925839
+      "stop_pct": 1.7083077975902312
     }
   ],
   "research_setups": []
