@@ -113,37 +113,31 @@ def metrics(df):
 def iso(dt):return dt.isoformat().replace('+00:00','Z')
 
 def evaluate(name, bars):
-    m = {tf: metrics(bars.get(tf)) for tf in ('15m','1h','4h','1d')}
-    for tf, hours in [('15m', .75), ('1h', 3), ('4h', 12), ('1d', 96)]:
+    m={tf:metrics(bars.get(tf)) for tf in ('15m','1h','4h','1d')}
+    for tf,hours in [('15m',.75),('1h',3),('4h',12),('1d',96)]:
         if m[tf] is not None:
-            end = bars[tf].index[-1].to_pydatetime() + timedelta(seconds=14400 if tf=='4h' else TF[tf])
-            if not 0 <= (NOW-end).total_seconds() <= hours*3600:
-                m[tf] = None
-    if any(m[t] is None for t in ('15m','1h','1d')):
-        return None, '15分钟、1小时或日线样本不足/过期（至少60根）'
-    a,b = m['1h'],m['15m']
-    if a['atr14'] <= 0 or a['close'] <= 0:
-        return None, 'ATR或价格无效'
-    available = [v for v in m.values() if v is not None]
+            end=bars[tf].index[-1].to_pydatetime()+timedelta(seconds=14400 if tf=='4h' else TF[tf])
+            if not 0 <= (NOW-end).total_seconds() <= hours*3600:m[tf]=None
     candidates=[]
-    for direction,sign in [('Buy',1),('Sell',-1)]:
-        aligned=sum(sign*(v['ema20']-v['ema50'])>0 and sign*(v['close']-v['ema20'])>0 for v in available)
-        breakout=sign*(a['close']-(a['resistance20'] if sign==1 else a['support20']))>0
-        momentum=a['rsi14'] is not None and (52<=a['rsi14']<=72 if sign==1 else 28<=a['rsi14']<=48)
-        if aligned<2: continue
-        score=round(2+aligned*1.25+1.5*breakout+1.0*momentum+0.5*(sign*(b['close']-b['ema20'])>0),1)
-        entry=a['close']; atr=a['atr14']
-        stop=min(a['support20'],entry-1.2*atr)-.15*atr if sign==1 else max(a['resistance20'],entry+1.2*atr)+.15*atr
-        risk=abs(entry-stop)
-        valid=0<risk<=4*atr and min(stop,entry+sign*3*risk)>0
-        end=bars['1h'].index[-1].to_pydatetime()+timedelta(hours=1)
-        w=dict(direction=direction,score=score,reason=f'趋势同向{aligned}/{len(available)}周期；1h突破：'+('是' if breakout else '否')+'；1h RSI：'+(f"{a['rsi14']:.1f}" if a['rsi14'] is not None else '缺失'),confirmation='等待1小时突破及回踩确认；核对CMC价格、点差及事件风险',reference_candle_close_utc=iso(end),reference_price=entry,proxy_only=True,setup_ready=bool(valid and len(available)==4 and aligned==4 and breakout and momentum and score>=8),risk_note='结构止损过远或目标无效' if not valid else '未核实目标路径、点差及事件')
-        if valid: w.update(reference_entry=entry,reference_stop=stop,reference_tp1=entry+sign*2*risk,reference_tp2=entry+sign*3*risk,rr_tp1=2.0,rr_tp2=3.0)
-        candidates.append(w)
-    if not candidates:return None,'多周期趋势未形成至少两个同向周期'
-    candidates.sort(key=lambda w:w['score'],reverse=True)
-    if len(candidates)>1 and candidates[0]['score']==candidates[1]['score']:return None,'多空评分相同'
-    return candidates[0],None
+    for mode,tf,minimum,required in [('短线','15m',1.2,('15m','1h')),('日内','1h',1.5,('15m','1h','1d')),('波段','4h',2.0,('1h','4h','1d'))]:
+        if any(m[t] is None for t in required):continue
+        a=m[tf]; entry=a['close']; atr=a['atr14']
+        if not np.isfinite(atr) or atr<=0 or entry<=0:continue
+        available=[v for v in m.values() if v is not None]
+        for direction,sign in [('Buy',1),('Sell',-1)]:
+            aligned=sum(sign*(v['ema20']-v['ema50'])>0 and sign*(v['close']-v['ema20'])>0 for v in available)
+            if aligned<2 or sign*(a['ema20']-a['ema50'])<=0:continue
+            breakout=sign*(entry-(a['resistance20'] if sign==1 else a['support20']))>0
+            momentum=a['rsi14'] is not None and (52<=a['rsi14']<=72 if sign==1 else 28<=a['rsi14']<=48)
+            score=min(10,round(2+aligned*1.25+1.5*breakout+1.0*momentum+0.5*(sign*(entry-a['ema20'])>0),1))
+            if score<8:continue
+            stop=min(a['support20']-.15*atr,entry-minimum*atr) if sign==1 else max(a['resistance20']+.15*atr,entry+minimum*atr)
+            risk=abs(entry-stop)
+            if not (0<risk<=4*atr and min(stop,entry+sign*3*risk)>0):continue
+            end=bars[tf].index[-1].to_pydatetime()+timedelta(seconds=14400 if tf=='4h' else TF[tf])
+            candidates.append(dict(mode=mode,timeframe=tf,direction=direction,score=score,reason=f'趋势同向{aligned}/{len(available)}周期；{tf}突破：'+('是' if breakout else '否')+'；RSI：'+(f"{a['rsi14']:.1f}" if a['rsi14'] is not None else '缺失'),confirmation='等待突破及回踩确认；核对CMC报价、点差、交易时段及事件',reference_candle_close_utc=iso(end),reference_price=entry,proxy_only=True,setup_ready=bool(len(available)==4 and aligned==4 and breakout and momentum),risk_note='目标路径、点差及事件未核实',reference_entry=entry,reference_stop=stop,reference_tp1=entry+sign*2*risk,reference_tp2=entry+sign*3*risk,rr_tp1=2.0,rr_tp2=3.0,stop_pct=100*risk/entry))
+    candidates.sort(key=lambda w:(w['score'],w['setup_ready'],-w['stop_pct']),reverse=True)
+    return candidates, None if candidates else '无达到8分且结构止损有效的模式，或数据不足/过期'
 
 def scan():
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
@@ -178,12 +172,12 @@ def scan():
                 if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
-            item['watch'],item['screen_reason']=evaluate(name,bars)
-            if item['watch']:
-                candidate={'name':name,'proxy_source':source,**item['watch']}
+            watches,item['screen_reason']=evaluate(name,bars)
+            item['watch']=watches[0] if watches else None
+            for w in watches:
+                candidate={'name':name,'proxy_source':source,**w}
                 output['watch_candidates'].append(candidate)
-                if candidate['setup_ready']:
-                    output['research_setups'].append(candidate)
+                if candidate['setup_ready']:output['research_setups'].append(candidate)
         output['assets'].append(item)
     output['watch_candidates'].sort(key=lambda x:x['score'], reverse=True)
     output['research_setups'].sort(key=lambda x:x['score'], reverse=True)
@@ -199,24 +193,19 @@ SHORT=dict(zip([x[0] for x in ASSETS],NAMES))
 SOURCES=['Yahoo指数','Coinbase现货','Coinbase现货','Yahoo指数','合约未核实','Yahoo外汇','Yahoo外汇','Yahoo黄金期货','Yahoo白银期货','Yahoo原油期货']
 
 def report(data):
-    lines=['CMC V3 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 最接近的观察候选']
-    if data['watch_candidates']:
-        w=data['watch_candidates'][0]
-        lines += [SHORT[w['name']]+' | '+w['direction']+' | 规则评分 '+str(w['score'])+'/10',w['reason'],f"1h参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])]]
-        if 'reference_entry' in w:
-            lines += [f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g}",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",'理论盈亏比 2:1 / 3:1，未计成本']
-        lines += [w['risk_note'],w['confirmation'],'仅观察，暂不进场。']
-    else:lines+=['未能选出可靠候选。详见各标的筛选原因。']
-    lines+=['','📈 数据覆盖（15m / 1h / 4h / 日线）']
+    lines=['CMC V4 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
+    # One best mode per asset in Telegram; all qualifying modes remain in JSON.
+    seen=set(); shown=0
+    for w in data['watch_candidates']:
+        if w['score']<8 or w['name'] in seen:continue
+        seen.add(w['name']);shown+=1
+        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",'理论盈亏比 2:1 / 3:1，未计成本','仅观察，待回踩及风险核实。','']
+    if not shown:lines+=['无达到8分且风险参数有效的候选。']
+    lines+=['📈 数据覆盖（15m / 1h / 4h / 日线）']
     for a,source in zip(data['assets'],SOURCES):
         marks=' '.join('✓' if a['timeframes'].get(t) else '—' for t in ('15m','1h','4h','1d'))
         lines.append(f"{SHORT[a['name']]} {marks} | {nz(a['last_complete_candle_utc'])} | {source}")
-        notes=[]
-        if a.get('screen_reason'):notes.append(a['screen_reason'])
-        if not a['timeframes'].get('4h') and not a['name'].startswith('China'):notes.append('4h连续K线不足')
-        if a['errors'] and not notes and not a['name'].startswith('China'):notes.append('部分数据异常，详见JSON')
-        if notes:lines.append('  '+ '；'.join(notes))
-    lines+=['','评分不是盈利概率；代理价格不等于CMC报价。','下单前核对CMC实时价格及点差。']
+    lines+=['评分不是盈利概率；代理价格不等于CMC报价。','下单前核对CMC实时价格及点差。']
     return '\n'.join(lines)
 
 if __name__=='__main__':
