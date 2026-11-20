@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-20T22:31:01.371702Z",
+  "scan_utc": "2026-11-20T22:45:46.414785Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -64,17 +64,17 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T22:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T22:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 59008.03,
-          "ema20": 58912.891798560995,
-          "ema50": 59739.13887511638,
-          "rsi14": 48.515153207638086,
-          "atr14": 467.1781193509629,
+          "close": 59103.67,
+          "ema20": 58931.061151079,
+          "ema50": 59714.21852707238,
+          "rsi14": 49.95775266301631,
+          "atr14": 449.7389679687517,
           "support20": 57655.17,
-          "resistance20": 59513.0,
+          "resistance20": 59281.9,
           "bars": 600
         },
         "1h": {
@@ -121,15 +121,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T22:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T22:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1620.66,
-          "ema20": 1621.6939207695084,
-          "ema50": 1658.3022549801608,
-          "rsi14": 45.25476199409306,
-          "atr14": 16.028215639986563,
+          "close": 1623.29,
+          "ema20": 1621.8459283152697,
+          "ema50": 1656.9292253730766,
+          "rsi14": 46.57906904787898,
+          "atr14": 15.514057379987518,
           "support20": 1578.78,
           "resistance20": 1641.44,
           "bars": 600
@@ -165,27 +165,8 @@
           "bars": 149
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：45.3",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-20T22:30:00Z",
-        "reference_price": 1620.66,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 1620.66,
-        "reference_stop": 1643.844232345998,
-        "reference_tp1": 1574.291535308004,
-        "reference_tp2": 1551.107302962006,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 1.4305426397886045
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -320,18 +301,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T22:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T22:44:46Z",
       "errors": {},
       "metrics": {
         "15m": {
           "close": 0.5470459461212158,
-          "ema20": 0.547514181846285,
-          "ema50": 0.5483529871747378,
+          "ema20": 0.547469587967707,
+          "ema50": 0.548301730662835,
           "rsi14": 37.25657195122324,
-          "atr14": 0.00030921152940236184,
+          "atr14": 0.0002871249915879074,
           "support20": 0.5465675592422485,
           "resistance20": 0.5483357906341553,
-          "bars": 474
+          "bars": 475
         },
         "1h": {
           "close": 0.5472555160522461,
@@ -580,28 +561,6 @@
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
       "stop_pct": 1.0851389812983345
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "短线",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：45.3",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T22:30:00Z",
-      "reference_price": 1620.66,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 1620.66,
-      "reference_stop": 1643.844232345998,
-      "reference_tp1": 1574.291535308004,
-      "reference_tp2": 1551.107302962006,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.4305426397886045
     }
   ],
   "research_setups": [
