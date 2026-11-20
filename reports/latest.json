@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-20T11:01:20.761510Z",
+  "scan_utc": "2026-11-20T11:15:49.119167Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -64,15 +64,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 61985.83,
-          "ema20": 61814.60263700152,
-          "ema50": 61929.98907029578,
-          "rsi14": 54.86942516295078,
-          "atr14": 265.2940954200047,
+          "close": 61756.04,
+          "ema20": 61809.02524300138,
+          "ema50": 61923.16753812414,
+          "rsi14": 48.36827597799326,
+          "atr14": 268.6938028900043,
           "support20": 61402.04,
           "resistance20": 62280.63,
           "bars": 600
@@ -108,8 +108,27 @@
           "bars": 149
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "日内",
+        "timeframe": "1h",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；1h突破：否；RSI：45.8",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T11:00:00Z",
+        "reference_price": 61985.83,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 61985.83,
+        "reference_stop": 64084.10129840845,
+        "reference_tp1": 57789.2874031831,
+        "reference_tp2": 55691.01610477465,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 3.3850822008972856
+      },
+      "screen_reason": null
     },
     {
       "name": "Ethereum (USD)",
@@ -121,16 +140,16 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1755.1,
-          "ema20": 1748.0840831441635,
-          "ema50": 1749.4614169965728,
-          "rsi14": 58.081463901354674,
-          "atr14": 8.619276921601436,
-          "support20": 1728.54,
+          "close": 1748.99,
+          "ema20": 1748.1703609399576,
+          "ema50": 1749.4429300555478,
+          "rsi14": 51.51243591112876,
+          "atr14": 8.667899998629903,
+          "support20": 1736.19,
           "resistance20": 1761.47,
           "bars": 600
         },
@@ -244,18 +263,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 158.86000061035156,
-          "ema20": 159.00391345557392,
-          "ema50": 159.19301493708613,
-          "rsi14": 40.573116302565296,
-          "atr14": 0.1290281779411063,
+          "close": 158.80599975585938,
+          "ema20": 158.9850645317916,
+          "ema50": 159.17783787115567,
+          "rsi14": 38.54717226121974,
+          "atr14": 0.1260974106969871,
           "support20": 158.70599365234375,
           "resistance20": 159.2570037841797,
-          "bars": 428
+          "bars": 429
         },
         "1h": {
           "close": 158.86000061035156,
@@ -301,24 +320,24 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 0.5494203567504883,
-          "ema20": 0.5500043297936811,
-          "ema50": 0.5498727033127557,
-          "rsi14": 41.33976181649097,
-          "atr14": 0.00033834640535280726,
-          "support20": 0.5495109558105469,
+          "close": 0.5494505167007446,
+          "ema20": 0.5499645951804722,
+          "ema50": 0.5498618355176639,
+          "rsi14": 41.59429504306152,
+          "atr14": 0.0003292800674717718,
+          "support20": 0.5494203567504883,
           "resistance20": 0.5512983202934265,
-          "bars": 428
+          "bars": 429
         },
         "1h": {
-          "close": 0.5494203567504883,
-          "ema20": 0.5498827370773348,
-          "ema50": 0.5500309710614839,
-          "rsi14": 46.03368262959722,
+          "close": 0.5495713353157043,
+          "ema20": 0.5498971159883077,
+          "ema50": 0.5500368917895316,
+          "rsi14": 47.0955856902414,
           "atr14": 0.0007929707961878536,
           "support20": 0.5477651357650757,
           "resistance20": 0.5528832674026489,
@@ -358,24 +377,24 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3588.5,
-          "ema20": 3574.142778155356,
-          "ema50": 3584.871124562985,
-          "rsi14": 57.82673619550947,
-          "atr14": 13.306359157661324,
-          "support20": 3520.89990234375,
+          "close": 3590.5,
+          "ema20": 3575.6919836123575,
+          "ema50": 3585.088093315105,
+          "rsi14": 58.67103201023788,
+          "atr14": 12.826837250353883,
+          "support20": 3542.199951171875,
           "resistance20": 3596.699951171875,
-          "bars": 393
+          "bars": 394
         },
         "1h": {
-          "close": 3588.5,
-          "ema20": 3605.9354610821165,
-          "ema50": 3675.1918420952334,
-          "rsi14": 39.518312633283955,
+          "close": 3588.39990234375,
+          "ema20": 3605.9259279719977,
+          "ema50": 3675.1879166969493,
+          "rsi14": 39.48592398730135,
           "atr14": 27.199140108084443,
           "support20": 3514.89990234375,
           "resistance20": 3719.199951171875,
@@ -415,24 +434,24 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 42.56999969482422,
-          "ema20": 42.25394267618755,
-          "ema50": 42.434403673043455,
-          "rsi14": 57.59669899193713,
-          "atr14": 0.2877666225963027,
-          "support20": 41.255001068115234,
-          "resistance20": 42.80500030517578,
-          "bars": 392
+          "close": 42.525001525878906,
+          "ema20": 42.27588041148714,
+          "ema50": 42.43626109727743,
+          "rsi14": 56.53794704836793,
+          "atr14": 0.27764564474314285,
+          "support20": 41.56999969482422,
+          "resistance20": 42.810001373291016,
+          "bars": 393
         },
         "1h": {
-          "close": 42.56999969482422,
-          "ema20": 42.85768770331018,
-          "ema50": 44.131965642530766,
-          "rsi14": 41.15806265488448,
+          "close": 42.525001525878906,
+          "ema20": 42.85340216341063,
+          "ema50": 44.13020100845448,
+          "rsi14": 40.46860720256682,
           "atr14": 0.612815989510471,
           "support20": 41.02000045776367,
           "resistance20": 45.45000076293945,
@@ -472,25 +491,25 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T11:00:00Z",
+      "last_complete_candle_utc": "2026-11-20T11:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 81.38999938964844,
-          "ema20": 81.84015259215175,
-          "ema50": 82.34060707453995,
-          "rsi14": 37.22610093974761,
-          "atr14": 0.35525107194969113,
+          "close": 81.62999725341797,
+          "ema20": 81.84340347225765,
+          "ema50": 82.32291319408887,
+          "rsi14": 41.85684360951075,
+          "atr14": 0.3578352740335023,
           "support20": 80.77999877929688,
           "resistance20": 83.19999694824219,
-          "bars": 393
+          "bars": 394
         },
         "1h": {
-          "close": 81.38999938964844,
-          "ema20": 82.49080521411776,
-          "ema50": 83.06431505779416,
-          "rsi14": 36.28649845222415,
-          "atr14": 0.7249714161932147,
+          "close": 81.66000366210938,
+          "ema20": 82.51651990673308,
+          "ema50": 83.07490346063577,
+          "rsi14": 39.684543093001196,
+          "atr14": 0.730685832697121,
           "support20": 80.77999877929688,
           "resistance20": 83.91000366210938,
           "bars": 1493
@@ -521,25 +540,69 @@
         "timeframe": "1h",
         "direction": "Sell",
         "score": 8.5,
-        "reason": "趋势同向4/4周期；1h突破：否；RSI：36.3",
+        "reason": "趋势同向4/4周期；1h突破：否；RSI：39.7",
         "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
         "reference_candle_close_utc": "2026-11-20T11:00:00Z",
-        "reference_price": 81.38999938964844,
+        "reference_price": 81.66000366210938,
         "proxy_only": true,
         "setup_ready": false,
         "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 81.38999938964844,
-        "reference_stop": 84.01874937453836,
-        "reference_tp1": 76.1324994198686,
-        "reference_tp2": 73.50374943497867,
+        "reference_entry": 81.66000366210938,
+        "reference_stop": 84.01960653701394,
+        "reference_tp1": 76.94079791230024,
+        "reference_tp2": 74.58119503739567,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 3.229819393786921
+        "stop_pct": 2.88954539442353
       },
       "screen_reason": null
     }
   ],
   "watch_candidates": [
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "日内",
+      "timeframe": "1h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；1h突破：否；RSI：45.8",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T11:00:00Z",
+      "reference_price": 61985.83,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 61985.83,
+      "reference_stop": 64084.10129840845,
+      "reference_tp1": 57789.2874031831,
+      "reference_tp2": 55691.01610477465,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 3.3850822008972856
+    },
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "波段",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；4h突破：否；RSI：32.4",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T08:00:00Z",
+      "reference_price": 61783.06,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 61783.06,
+      "reference_stop": 65642.54060793249,
+      "reference_tp1": 54064.098784135014,
+      "reference_tp2": 50204.61817620252,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 6.246826570151255
+    },
     {
       "name": "Crude Oil West Texas - Cash",
       "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
@@ -547,20 +610,20 @@
       "timeframe": "1h",
       "direction": "Sell",
       "score": 8.5,
-      "reason": "趋势同向4/4周期；1h突破：否；RSI：36.3",
+      "reason": "趋势同向4/4周期；1h突破：否；RSI：39.7",
       "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
       "reference_candle_close_utc": "2026-11-20T11:00:00Z",
-      "reference_price": 81.38999938964844,
+      "reference_price": 81.66000366210938,
       "proxy_only": true,
       "setup_ready": false,
       "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 81.38999938964844,
-      "reference_stop": 84.01874937453836,
-      "reference_tp1": 76.1324994198686,
-      "reference_tp2": 73.50374943497867,
+      "reference_entry": 81.66000366210938,
+      "reference_stop": 84.01960653701394,
+      "reference_tp1": 76.94079791230024,
+      "reference_tp2": 74.58119503739567,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 3.229819393786921
+      "stop_pct": 2.88954539442353
     }
   ],
   "research_setups": []
