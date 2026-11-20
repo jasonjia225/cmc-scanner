@@ -111,24 +111,54 @@ def metrics(df):
 
 def iso(dt):return dt.isoformat().replace('+00:00','Z')
 
-def evaluate(name,bars):
-    # Strict preliminary *watchlist* only. No automatic executable entries without
-    # verified spread, trading hours, major events, and the actual CMC quote.
-    a=metrics(bars.get('1h'));b=metrics(bars.get('1d'))
-    if not a or not b:return None
-    up=a['close']>a['ema20']>a['ema50'] and b['close']>b['ema20']>b['ema50']
-    down=a['close']<a['ema20']<a['ema50'] and b['close']<b['ema20']<b['ema50']
-    if up and a['close']>a['resistance20'] and a['rsi14'] is not None and 50<a['rsi14']<75:
-        return {'direction':'Buy','reason':'1h/日线EMA多头排列，1h收盘突破此前20根高点',
-                'confirmation':'等待突破位回踩站稳并核对CMC点差及事件风险'}
-    if down and a['close']<a['support20'] and a['rsi14'] is not None and 25<a['rsi14']<50:
-        return {'direction':'Sell','reason':'1h/日线EMA空头排列，1h收盘跌破此前20根低点',
-                'confirmation':'等待跌破位反抽受阻并核对CMC点差及事件风险'}
-    return None
+def evaluate(name, bars):
+    """Rank independently in both directions; all levels are PROXY research only."""
+    needed = ('15m', '1h', '4h', '1d')
+    m = {tf: metrics(bars.get(tf)) for tf in needed}
+    if any(m[tf] is None for tf in needed):
+        return None
+    # Avoid stale intraday candles: market closures are not assumed to be live.
+    last_hour = bars['1h'].index[-1].to_pydatetime() + timedelta(hours=1)
+    if (NOW - last_hour).total_seconds() > 3 * 3600:
+        return None
+    a, b, c, d = (m[tf] for tf in needed)
+    if not (a['atr14'] > 0 and a['close'] > 0):
+        return None
+    candidates = []
+    for direction, sign in (('Buy', 1), ('Sell', -1)):
+        aligned = sum(1 for x in (a, b, c, d)
+                      if sign * (x['ema20'] - x['ema50']) > 0
+                      and sign * (x['close'] - x['ema20']) > 0)
+        hourly_break = a['close'] > a['resistance20'] if sign == 1 else a['close'] < a['support20']
+        momentum = a['rsi14'] is not None and (52 <= a['rsi14'] <= 72 if sign == 1 else 28 <= a['rsi14'] <= 48)
+        # A reproducible heuristic score, not a calibrated win probability.
+        score = min(10, 2 + aligned * 1.25 + (1.5 if hourly_break else 0)
+                    + (1 if momentum else 0) + (0.5 if sign * (a['close'] - b['ema20']) > 0 else 0))
+        atr = a['atr14']
+        entry = a['close']
+        # Stop behind recent structure with an ATR buffer; reject unreasonable distance.
+        stop = (min(a['support20'], entry - 1.2 * atr) - 0.15 * atr if sign == 1
+                else max(a['resistance20'], entry + 1.2 * atr) + 0.15 * atr)
+        risk = abs(entry - stop)
+        if risk <= 0 or risk > 4 * atr:
+            continue
+        tp1, tp2 = entry + sign * 2 * risk, entry + sign * 3 * risk
+        reason = f'四周期同向{aligned}/4；1h突破={"是" if hourly_break else "否"}；RSI14={a["rsi14"]:.1f}' if a['rsi14'] is not None else f'四周期同向{aligned}/4；1h突破={"是" if hourly_break else "否"}；RSI缺失'
+        candidates.append({
+            'direction': direction, 'score': round(score, 1), 'reason': reason,
+            'confirmation': '等待1h突破后回踩确认；核对CMC价格、点差、交易时段及事件风险',
+            'reference_entry': round(entry, 6), 'reference_stop': round(stop, 6),
+            'reference_tp1': round(tp1, 6), 'reference_tp2': round(tp2, 6),
+            'rr_tp1': 2.0, 'rr_tp2': 3.0,
+            'reference_candle_close_utc': iso(last_hour),
+            'proxy_only': True,
+            'setup_ready': bool(aligned == 4 and hourly_break and momentum and score >= 8),
+        })
+    return max(candidates, key=lambda x: x['score']) if candidates else None
 
 def scan():
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[]}
+            'cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[]}
     for name,symbol,source in ASSETS:
         item={'name':name,'proxy_source':source,'currency':'USD' if 'Bitcoin' in name or 'Ethereum' in name else None,
               'timeframes':{},'last_complete_candle_utc':None,'errors':{},'metrics':{},'watch':None}
@@ -139,7 +169,7 @@ def scan():
         else:
             for tf in ['15m','1h','1d']:
                 if symbol:
-                    df,err=yahoo(symbol,tf,{'15m':'5d','1h':'1mo','1d':'3mo'}[tf])
+                    df,err=yahoo(symbol,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
                 else:
                     df,err=coinbase('BTC-USD' if 'Bitcoin' in name else 'ETH-USD',TF[tf])
                 if df is not None and len(df)>0:
@@ -159,28 +189,55 @@ def scan():
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
             item['watch']=evaluate(name,bars)
-            if item['watch']:output['watch_candidates'].append({'name':name,**item['watch']})
+            if item['watch']:
+                candidate={'name':name,'proxy_source':source,**item['watch']}
+                output['watch_candidates'].append(candidate)
+                if candidate['setup_ready']:
+                    output['research_setups'].append(candidate)
         output['assets'].append(item)
-    # Intentionally no executable signals until CMC spread, events, and R:R are verified.
+    output['watch_candidates'].sort(key=lambda x:x['score'], reverse=True)
+    output['research_setups'].sort(key=lambda x:x['score'], reverse=True)
+    # Never mark executable high-quality signals without verified CMC spread/events.
     return output
 
 def report(data):
-    lines=[f"# CMC 10标的扫描 — {data['scan_utc']}",'',
-           '**本轮没有符合条件的出手机会。**','',
-           '公开参考行情不等于CMC实时CFD买卖价；没有核实点差、重大事件及至少2:1盈亏比，不发可执行信号。','',
-           '| 标的 | 15m | 1h | 4h | 1d | 最新完整K线收盘(UTC) | 来源/失败原因 |',
-           '|---|:---:|:---:|:---:|:---:|---|---|']
-    for a in data['assets']:
-        marks=['✓' if a['timeframes'].get(tf) else '—' for tf in ['15m','1h','4h','1d']]
-        errs='; '.join(f'{k}: {v}' for k,v in a['errors'].items())[:160]
-        lines.append('| '+' | '.join([a['name'],*marks,a['last_complete_candle_utc'] or '未取得',
-                                   (a['proxy_source']+'; '+errs).replace('|','/')])+' |')
-    lines+=['','## 观察候选']
+    lines = [f"# CMC 10标的扫描 — {data['scan_utc']}", '',
+             '**本轮没有符合条件的出手机会。**',
+             '（CMC实时点差、交易时段与重大事件未核实；以下仅为公开代理行情的研究参考。）', '']
+    setups = data.get('research_setups', [])
+    if setups:
+        lines.append('## 条件性研究方案（不是可直接下单信号）')
+        for w in setups[:3]:
+            lines.extend([
+                f"**{w['name']} — {w['direction']}，规则评分 {w['score']}/10**",
+                f"参考价/入场观察 {w['reference_entry']:g}；参考止损 {w['reference_stop']:g}；"
+                f"参考TP1 {w['reference_tp1']:g}；参考TP2 {w['reference_tp2']:g}；"
+                f"理论盈亏比 2:1 / 3:1（未计点差、滑点和费用）",
+                f"依据：{w['reason']}；最后1h完整K线：{w['reference_candle_close_utc']}",
+                f"来源：{w['proxy_source']}。{w['confirmation']}。**仅观察，暂不进场。**", ''
+            ])
+    lines.append('## 最接近的观察候选')
     if data['watch_candidates']:
-        w=data['watch_candidates'][0]
-        lines.append(f"{w['name']} — {w['direction']}；{w['reason']}；待确认：{w['confirmation']}。**仅观察，暂不进场。**")
-    else:lines.append('未能选出有足够证据的观察候选。**仅观察，暂不进场。**')
-    lines+=['','下单前核对CMC实时价格及点差。','']
+        w = data['watch_candidates'][0]
+        lines.extend([
+            f"{w['name']} — {w['direction']}，规则评分 {w['score']}/10；{w['reason']}。",
+            f"参考入场 {w['reference_entry']:g}，止损 {w['reference_stop']:g}，"
+            f"TP1 {w['reference_tp1']:g}，TP2 {w['reference_tp2']:g}；"
+            '理论盈亏比 2:1 / 3:1（未计交易成本）。',
+            f"待确认：{w['confirmation']}。**仅观察，暂不进场。**", ''
+        ])
+    else:
+        lines.extend(['缺少足够新鲜且完整的多周期K线，未能可靠选出候选。', ''])
+    lines.extend(['## K线数据覆盖',
+                  '| 标的 | 15m | 1h | 4h | 1d | 最新完整K线收盘(UTC) | 来源/失败原因 |',
+                  '|---|:---:|:---:|:---:|:---:|---|---|'])
+    for a in data['assets']:
+        marks = ['✓' if a['timeframes'].get(tf) else '—' for tf in ['15m','1h','4h','1d']]
+        errs = '; '.join(f'{k}: {v}' for k,v in a['errors'].items())[:120]
+        lines.append('| ' + ' | '.join([a['name'], *marks, a['last_complete_candle_utc'] or '未取得',
+                                       (a['proxy_source'] + '; ' + errs).replace('|','/')]) + ' |')
+    lines.extend(['', '评分是规则匹配程度，不是盈利概率；代理报价可能与CMC CFD不同。',
+                  '下单前核对CMC实时价格及点差。', ''])
     return '\n'.join(lines)
 
 if __name__=='__main__':
