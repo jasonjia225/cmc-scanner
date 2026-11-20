@@ -188,3 +188,34 @@ if __name__=='__main__':
     (folder/'latest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')
     (folder/'latest.md').write_text(report(result),encoding='utf-8')
     print(report(result))
+  - name: Send report to Telegram
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          import pathlib
+          import urllib.parse
+          import urllib.request
+
+          token = os.environ["TELEGRAM_BOT_TOKEN"]
+          chat_id = os.environ["TELEGRAM_CHAT_ID"]
+          report = pathlib.Path("reports/latest.md").read_text(
+              encoding="utf-8"
+          )
+
+          message = "📊 CMC 每小时扫描报告\n\n" + report
+          message = message[:3900]
+
+          data = urllib.parse.urlencode({
+              "chat_id": chat_id,
+              "text": message
+          }).encode("utf-8")
+
+          url = f"https://api.telegram.org/bot{token}/sendMessage"
+          request = urllib.request.Request(url, data=data)
+          with urllib.request.urlopen(request, timeout=30) as response:
+              print("Telegram notification sent:", response.status)
+          PY
