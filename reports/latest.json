@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-20T14:42:10.939494Z",
+  "scan_utc": "2026-11-20T14:45:44.949777Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -15,20 +15,20 @@
         "1d": true,
         "4h": false
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {
         "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
       },
       "metrics": {
         "15m": {
-          "close": 26523.439453125,
-          "ema20": 26757.009716838205,
-          "ema50": 26922.267729426952,
-          "rsi14": 36.62129186834854,
-          "atr14": 148.30181814137364,
+          "close": 26095.275390625,
+          "ema20": 26693.987400055998,
+          "ema50": 26889.83665731707,
+          "rsi14": 26.30956615888654,
+          "atr14": 171.6519114884184,
           "support20": 26484.154296875,
           "resistance20": 27336.0390625,
-          "bars": 104
+          "bars": 105
         },
         "1h": {
           "close": 26523.439453125,
@@ -64,15 +64,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 62034.6,
-          "ema20": 61703.22393295465,
-          "ema50": 61810.54817766573,
-          "rsi14": 59.40264654821664,
-          "atr14": 275.2825817414957,
+          "close": 61400.44,
+          "ema20": 61674.38736791135,
+          "ema50": 61794.46550402683,
+          "rsi14": 43.22349212633447,
+          "atr14": 307.9159687599604,
           "support20": 61160.64,
           "resistance20": 62280.63,
           "bars": 600
@@ -108,8 +108,27 @@
           "bars": 149
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：43.2",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+        "reference_price": 61400.44,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 61400.44,
+        "reference_stop": 62326.81739531399,
+        "reference_tp1": 59547.68520937202,
+        "reference_tp2": 58621.30781405803,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 1.5087471609551817
+      },
+      "screen_reason": null
     },
     {
       "name": "Ethereum (USD)",
@@ -121,15 +140,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1755.84,
-          "ema20": 1744.786318709094,
-          "ema50": 1746.7991546040246,
-          "rsi14": 58.78690123343313,
-          "atr14": 10.033709680981703,
+          "close": 1732.21,
+          "ema20": 1743.5885740701328,
+          "ema50": 1746.2270308938378,
+          "rsi14": 42.66690042801597,
+          "atr14": 11.185587560911587,
           "support20": 1725.09,
           "resistance20": 1761.47,
           "bars": 600
@@ -165,8 +184,27 @@
           "bars": 149
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：42.7",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+        "reference_price": 1732.21,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 1732.21,
+        "reference_stop": 1763.1478381341367,
+        "reference_tp1": 1670.3343237317267,
+        "reference_tp2": 1639.39648559759,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 1.7860327635873627
+      },
+      "screen_reason": null
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -244,18 +282,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 158.83799743652344,
-          "ema20": 158.81083487539993,
-          "ema50": 159.00439493358277,
-          "rsi14": 48.83715436113476,
-          "atr14": 0.13053579191254994,
+          "close": 158.7550048828125,
+          "ema20": 158.80551773324876,
+          "ema50": 158.9946149315918,
+          "rsi14": 44.439291774708494,
+          "atr14": 0.12906899322962226,
           "support20": 158.54400634765625,
-          "resistance20": 159.11300659179688,
-          "bars": 442
+          "resistance20": 159.06900024414062,
+          "bars": 443
         },
         "1h": {
           "close": 158.67300415039062,
@@ -301,18 +339,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 0.5497828125953674,
-          "ema20": 0.5499742775513868,
-          "ema50": 0.549891965053948,
-          "rsi14": 47.33170888055026,
-          "atr14": 0.00035393299727787904,
+          "close": 0.5495411157608032,
+          "ema20": 0.5499330240475218,
+          "ema50": 0.5498782062581383,
+          "rsi14": 44.01433847411167,
+          "atr14": 0.0003588716238020107,
           "support20": 0.5489981174468994,
           "resistance20": 0.5507517457008362,
-          "bars": 442
+          "bars": 443
         },
         "1h": {
           "close": 0.5501760244369507,
@@ -358,18 +396,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3570.0,
-          "ema20": 3573.388668028979,
-          "ema50": 3580.326640024346,
-          "rsi14": 48.096478731522055,
-          "atr14": 12.684257230222403,
+          "close": 3571.10009765625,
+          "ema20": 3573.1707089458614,
+          "ema50": 3579.9648148334404,
+          "rsi14": 48.70461271849677,
+          "atr14": 12.606799822036876,
           "support20": 3553.5,
           "resistance20": 3596.699951171875,
-          "bars": 407
+          "bars": 408
         },
         "1h": {
           "close": 3572.89990234375,
@@ -415,18 +453,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 41.95000076293945,
-          "ema20": 42.078331156773736,
-          "ema50": 42.27461607874119,
-          "rsi14": 46.233874889254466,
-          "atr14": 0.2803395490558038,
+          "close": 41.94499969482422,
+          "ema20": 42.06563292230235,
+          "ema50": 42.261689946038565,
+          "rsi14": 46.12255400711307,
+          "atr14": 0.27995826168602544,
           "support20": 41.369998931884766,
           "resistance20": 42.810001373291016,
-          "bars": 406
+          "bars": 407
         },
         "1h": {
           "close": 42.029998779296875,
@@ -464,20 +502,20 @@
         "timeframe": "15m",
         "direction": "Sell",
         "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：46.2",
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：46.1",
         "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-20T14:30:00Z",
-        "reference_price": 41.95000076293945,
+        "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+        "reference_price": 41.94499969482422,
         "proxy_only": true,
         "setup_ready": false,
         "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 41.95000076293945,
-        "reference_stop": 42.85205230564939,
-        "reference_tp1": 40.145897677519585,
-        "reference_tp2": 39.24384613480965,
+        "reference_entry": 41.94499969482422,
+        "reference_stop": 42.85199511254392,
+        "reference_tp1": 40.13100885938482,
+        "reference_tp2": 39.22401344166512,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 2.1503016121679015
+        "stop_pct": 2.1623445567258335
       },
       "screen_reason": null
     },
@@ -491,18 +529,18 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-20T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-20T14:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 82.19000244140625,
-          "ema20": 82.17469622301323,
-          "ema50": 82.31447874729176,
-          "rsi14": 50.04809633625751,
-          "atr14": 0.3731312000806786,
+          "close": 81.79000091552734,
+          "ema20": 82.13805857468124,
+          "ema50": 82.29391098918336,
+          "rsi14": 41.80414213120116,
+          "atr14": 0.38719323541950296,
           "support20": 80.77999877929688,
           "resistance20": 82.62999725341797,
-          "bars": 407
+          "bars": 408
         },
         "1h": {
           "close": 82.38999938964844,
@@ -535,11 +573,140 @@
           "bars": 325
         }
       },
-      "watch": null,
-      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
+      "watch": {
+        "mode": "短线",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "score": 8.5,
+        "reason": "趋势同向4/4周期；15m突破：否；RSI：41.8",
+        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+        "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+        "reference_price": 81.79000091552734,
+        "proxy_only": true,
+        "setup_ready": false,
+        "risk_note": "目标路径、点差及事件未核实",
+        "reference_entry": 81.79000091552734,
+        "reference_stop": 82.6880762387309,
+        "reference_tp1": 79.99385026912023,
+        "reference_tp2": 79.09577494591667,
+        "rr_tp1": 2.0,
+        "rr_tp2": 3.0,
+        "stop_pct": 1.0980258138535643
+      },
+      "screen_reason": null
     }
   ],
   "watch_candidates": [
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "短线",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：43.2",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+      "reference_price": 61400.44,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 61400.44,
+      "reference_stop": 62326.81739531399,
+      "reference_tp1": 59547.68520937202,
+      "reference_tp2": 58621.30781405803,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 1.5087471609551817
+    },
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "日内",
+      "timeframe": "1h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；1h突破：否；RSI：45.0",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T14:00:00Z",
+      "reference_price": 61812.18,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 61812.18,
+      "reference_stop": 63431.03886538024,
+      "reference_tp1": 58574.46226923953,
+      "reference_tp2": 56955.60340385929,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 2.6189965559865973
+    },
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "波段",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；4h突破：否；RSI：32.2",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T12:00:00Z",
+      "reference_price": 61740.85,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 61740.85,
+      "reference_stop": 65546.10072540246,
+      "reference_tp1": 54130.34854919508,
+      "reference_tp2": 50325.09782379262,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 6.163262613654429
+    },
+    {
+      "name": "Ethereum (USD)",
+      "proxy_source": "Coinbase ETH-USD spot",
+      "mode": "短线",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：42.7",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+      "reference_price": 1732.21,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 1732.21,
+      "reference_stop": 1763.1478381341367,
+      "reference_tp1": 1670.3343237317267,
+      "reference_tp2": 1639.39648559759,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 1.7860327635873627
+    },
+    {
+      "name": "Ethereum (USD)",
+      "proxy_source": "Coinbase ETH-USD spot",
+      "mode": "波段",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；4h突破：否；RSI：36.5",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T12:00:00Z",
+      "reference_price": 1747.22,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 1747.22,
+      "reference_stop": 1847.7298633798885,
+      "reference_tp1": 1546.2002732402232,
+      "reference_tp2": 1445.6904098603347,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 5.752559115617291
+    },
     {
       "name": "Silver - Cash",
       "proxy_source": "Yahoo Finance COMEX silver futures proxy",
@@ -547,20 +714,64 @@
       "timeframe": "15m",
       "direction": "Sell",
       "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：46.2",
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：46.1",
       "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-20T14:30:00Z",
-      "reference_price": 41.95000076293945,
+      "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+      "reference_price": 41.94499969482422,
       "proxy_only": true,
       "setup_ready": false,
       "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 41.95000076293945,
-      "reference_stop": 42.85205230564939,
-      "reference_tp1": 40.145897677519585,
-      "reference_tp2": 39.24384613480965,
+      "reference_entry": 41.94499969482422,
+      "reference_stop": 42.85199511254392,
+      "reference_tp1": 40.13100885938482,
+      "reference_tp2": 39.22401344166512,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 2.1503016121679015
+      "stop_pct": 2.1623445567258335
+    },
+    {
+      "name": "Crude Oil West Texas - Cash",
+      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
+      "mode": "短线",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；15m突破：否；RSI：41.8",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T14:45:00Z",
+      "reference_price": 81.79000091552734,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 81.79000091552734,
+      "reference_stop": 82.6880762387309,
+      "reference_tp1": 79.99385026912023,
+      "reference_tp2": 79.09577494591667,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 1.0980258138535643
+    },
+    {
+      "name": "Crude Oil West Texas - Cash",
+      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy",
+      "mode": "日内",
+      "timeframe": "1h",
+      "direction": "Sell",
+      "score": 8.5,
+      "reason": "趋势同向4/4周期；1h突破：否；RSI：47.9",
+      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
+      "reference_candle_close_utc": "2026-11-20T14:00:00Z",
+      "reference_price": 82.38999938964844,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "目标路径、点差及事件未核实",
+      "reference_entry": 82.38999938964844,
+      "reference_stop": 83.94155487941237,
+      "reference_tp1": 79.28688841012058,
+      "reference_tp2": 77.73533292035665,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 1.8831842471877316
     }
   ],
   "research_setups": []
