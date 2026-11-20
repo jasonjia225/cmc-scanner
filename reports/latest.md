@@ -1,24 +1,32 @@
-# CMC 10标的扫描 — 2026-11-20T02:29:47.470108Z
+CMC V3 | 11-20 15:37 新西兰时间
+本轮没有符合条件的出手机会。
+CMC点差、交易时段及重大事件未核实。
 
-**本轮没有符合条件的出手机会。**
-（CMC实时点差、交易时段与重大事件未核实；以下仅为公开代理行情的研究参考。）
+🎯 最接近的观察候选
+以太坊 | Sell | 规则评分 10.0/10
+趋势同向4/4周期；1h突破：是；1h RSI：33.6
+1h参考价 1733.99（11-20 15:00）
+来源：Coinbase现货
+假设入场 1733.99 | 止损 1818.9841
+TP1 1564.0018 | TP2 1479.0077
+理论盈亏比 2:1 / 3:1，未计成本
+未核实目标路径、点差及事件
+等待1小时突破及回踩确认；核对CMC价格、点差及事件风险
+仅观察，暂不进场。
 
-## 最接近的观察候选
-缺少足够新鲜且完整的多周期K线，未能可靠选出候选。
+📈 数据覆盖（15m / 1h / 4h / 日线）
+纳指100 ✓ ✓ — ✓ | 11-20 11:00 | Yahoo指数
+  15分钟、1小时或日线样本不足/过期（至少60根）；4h连续K线不足
+比特币 ✓ ✓ ✓ ✓ | 11-20 15:30 | Coinbase现货
+以太坊 ✓ ✓ ✓ ✓ | 11-20 15:30 | Coinbase现货
+恒生指数 ✓ ✓ — ✓ | 11-20 15:30 | Yahoo指数
+  4h连续K线不足
+中国A50 — — — — | 无 | 合约未核实
+美元/日元 ✓ ✓ ✓ ✓ | 11-20 15:30 | Yahoo外汇
+纽元/美元 ✓ ✓ ✓ ✓ | 11-20 15:30 | Yahoo外汇
+黄金 ✓ ✓ ✓ ✓ | 11-20 15:30 | Yahoo黄金期货
+白银 ✓ ✓ ✓ ✓ | 11-20 15:30 | Yahoo白银期货
+WTI原油 ✓ ✓ ✓ ✓ | 11-20 15:30 | Yahoo原油期货
 
-## K线数据覆盖
-| 标的 | 15m | 1h | 4h | 1d | 最新完整K线收盘(UTC) | 来源/失败原因 |
-|---|:---:|:---:|:---:|:---:|---|---|
-| US NDAQ 100 - Cash | ✓ | ✓ | — | ✓ | 2026-11-19T22:00:00Z | Yahoo Finance NDX cash index proxy; 4h: insufficient contiguous 1h candles for complete UTC-aligned 4h bar |
-| Bitcoin (USD) | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Coinbase BTC-USD spot;  |
-| Ethereum (USD) | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Coinbase ETH-USD spot;  |
-| Hong Kong 50 - Cash | ✓ | ✓ | — | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance Hang Seng cash index proxy; 4h: insufficient contiguous 1h candles for complete UTC-aligned 4h bar |
-| China A50 - current verified CMC contract | — | — | — | — | 未取得 | CMC contract not verified; contract: CMC specific active month and expiry not independently verified; signal disabled |
-| USD/JPY | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance FX indicative;  |
-| NZD/USD | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance FX indicative;  |
-| Gold - Cash | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance COMEX gold futures proxy;  |
-| Silver - Cash | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance COMEX silver futures proxy;  |
-| Crude Oil West Texas - Cash | ✓ | ✓ | ✓ | ✓ | 2026-11-20T02:15:00Z | Yahoo Finance NYMEX WTI futures proxy;  |
-
-评分是规则匹配程度，不是盈利概率；代理报价可能与CMC CFD不同。
+评分不是盈利概率；代理价格不等于CMC报价。
 下单前核对CMC实时价格及点差。
