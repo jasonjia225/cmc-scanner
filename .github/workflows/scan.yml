@@ -55,7 +55,23 @@ jobs:
           }).encode("utf-8")
 
           url = f"https://api.telegram.org/bot{token}/sendMessage"
-          request = urllib.request.Request(url, data=data)
-          with urllib.request.urlopen(request, timeout=30) as response:
-              print("Telegram notification sent:", response.status)
+          
+          import time
+          import urllib.error
+
+          for attempt in range(4):
+              try:
+                  request = urllib.request.Request(url, data=data)
+                  with urllib.request.urlopen(request, timeout=60) as response:
+                      print("Telegram notification sent:", response.status)
+                  break
+              except urllib.error.HTTPError as e:
+                  print("Telegram HTTP error:", e.code)
+                  raise
+              except (TimeoutError, OSError, urllib.error.URLError) as e:
+                  print("Telegram attempt failed:", attempt + 1, type(e).__name__)
+                  if attempt == 3:
+                      raise
+                  time.sleep(5 * (2 ** attempt))
           PY
+
