@@ -1,7 +1,6 @@
 name: CMC 10-asset hourly scan
 on:
-  schedule:
-    - cron: '4,19,34,49 * * * *'
+  
   workflow_dispatch:
 permissions:
   contents: write
