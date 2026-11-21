@@ -90,11 +90,20 @@ def coinbase(symbol,seconds):
         return clean(df,seconds),('; '.join(errors) if errors else None)
     except (ValueError,KeyError) as e:return None,f'Coinbase parse: {e}'
 
-def aggregate_4h(hourly):
+def aggregate_4h(hourly, name=None):
     if hourly is None or hourly.empty:return None
     # UTC 4h buckets; accept only four strictly consecutive hourly candles.
     groups=[]
-    for t,g in hourly.groupby(hourly.index.floor('4h')):
+    if name in {'NVDA','MU','MSTR','TSLA','SNDK','US NDAQ 100 - Cash'}:
+        local=hourly.index.tz_convert('America/New_York')
+        # Only full 09:30–13:30 regular-session blocks; discard partial session tail.
+        mask=(local.hour*60+local.minute>=570)&(local.hour*60+local.minute<810)
+        hourly=hourly.loc[mask]
+        buckets=hourly.index.tz_convert('America/New_York').normalize()+pd.Timedelta(hours=9,minutes=30)
+        buckets=buckets.tz_convert('UTC')
+    else:
+        buckets=hourly.index.floor('4h')
+    for t,g in hourly.groupby(buckets):
         expected=pd.date_range(t,periods=4,freq='h',tz='UTC')
         if len(g)==4 and g.index.equals(expected):
             groups.append((t,g.open.iloc[0],g.high.max(),g.low.min(),g.close.iloc[-1],g.volume.sum(min_count=4) if 'volume' in g else np.nan))
@@ -230,7 +239,7 @@ def evaluate(name,bars):
 
 def scan():
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[]}
+            'version':'V5.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -255,7 +264,7 @@ def scan():
                         item['last_complete_candle_utc']=closed
                 else:item['timeframes'][tf]=False
                 if err:item['errors'][tf]=err
-            four=aggregate_4h(bars.get('1h'))
+            four=aggregate_4h(bars.get('1h'),name)
             item['timeframes']['4h']=four is not None and not four.empty
             if four is not None and not four.empty:
                 bars['4h']=four
@@ -285,37 +294,58 @@ def nz(s):
 SHORT={x[0]:x[0] for x in ASSETS}
 SOURCES=[x[2] for x in ASSETS]
 
-def report(data):
-    lines=['CMC V5.2 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
-    # One best mode per asset in Telegram; all qualifying modes remain in JSON.
+def report(data, previous=None):
+    previous=previous or {}
+    lines=['CMC V5.3 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
     seen=set(); shown=0
-    for w in data['watch_candidates']:
-        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode']=='BOLL Reversal' else (w['name'],'other')
+    watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
+    for w in watches:
+        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode']=='BOLL Reversal' else (w['name'],'other',w['direction'])
         if w['score']<8 or key in seen:continue
         seen.add(key);shown+=1
-        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"参考盈亏比 {w['rr_tp1']:.2f}:1 / {w['rr_tp2']:.2f}:1，未计成本",w['risk_note'], '仅观察，待入场及风险核实。','']
-    if not shown:lines+=['无达到8分且风险参数有效的候选。']
+        lines.append(f"{w['name']} | {w['direction']} | {w['mode']} | {w['timeframe']} | {w['score']:.1f}/10")
+        if w['setup_ready']:
+            lines += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
+        else:
+            note=w.get('risk_note','')
+            import re
+            match=re.search(r'([0-9.]+) ATR',note)
+            reasons=[]
+            if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
+            if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
+            if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
+            lines.append('仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
+    if not shown:lines.append('暂无8分以上技术候选。')
+    oldkeys=set(previous.get('alert_keys',[]))
+    current=[]
     for w in data.get('boll_alerts',[]):
-        lines.append(f"⚠️ BOLL极端预警 | {w['name']} | {w['direction']} | {w['timeframe']} | {nz(w['reference_candle_close_utc'])} | {w['reason']}")
+        k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
+        current.append(k)
+        if k not in oldkeys:lines.append(f"⚠️ BOLL预警 | {w['name']} | {w['direction']} | {w['timeframe']} | 等待第二根收盘反转")
     ctx=data.get('risk_context',{}).get('VIX')
-    lines.append('VIX风险参考：'+(f"{ctx['close']:.2f}" if ctx else '未取得'))
-    # Keep full coverage in JSON; show only affected instruments in messages.
-    issues=[]
+    lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))
+    groups={}
     for a in data['assets']:
-        missing=[t for t in ('15m','1h','4h','1d') if not a['timeframes'].get(t)]
-        errors=a.get('errors',{})
+        missing=tuple(t for t in ('15m','1h','4h','1d') if not a['timeframes'].get(t))
+        errors=tuple(sorted(a.get('errors',{})))
         if missing or errors:
-            detail='、'.join(missing) if missing else '接口异常'
-            reasons='; '.join(f'{k}: {v}' for k,v in errors.items())
-            issues.append(f"{a['name']}：{detail} | {reasons}".rstrip(' |'))
-    if issues:
-        lines+=['','⚠️ 数据异常（仅列受影响标的）',*issues]
-    lines+=['评分不是盈利概率；代理价格不等于CMC报价。','下单前核对CMC实时价格及点差。']
+            key='缺少'+ '/'.join(missing) if missing else '接口部分异常'
+            groups.setdefault(key,[]).append(a['name'])
+    issue_keys=sorted(k+':'+','.join(sorted(v)) for k,v in groups.items())
+    if issue_keys!=previous.get('issue_keys',[]):
+        if groups:
+            for k,names in groups.items():lines.append(f"⚠️ 数据：{len(names)}个标的{k}（{'、'.join(names)}）；其他可用周期继续分析。")
+        else:lines.append('数据异常已恢复。')
+    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys}
+    lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
 
 if __name__=='__main__':
-    result=scan();folder=Path('reports');folder.mkdir(exist_ok=True)
+    folder=Path('reports');folder.mkdir(exist_ok=True)
+    previous={}
+    try:previous=json.loads((folder/'latest.json').read_text(encoding='utf-8')).get('notification_state',{})
+    except (OSError,ValueError,AttributeError):pass
+    result=scan(); message=report(result,previous)
     (folder/'latest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')
-    (folder/'latest.md').write_text(report(result),encoding='utf-8')
-    print(report(result))
- 
+    (folder/'latest.md').write_text(message,encoding='utf-8')
+    print(message)
