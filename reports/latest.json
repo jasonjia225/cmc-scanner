@@ -1,8 +1,8 @@
 {
-  "scan_utc": "2026-11-21T20:45:42.862909Z",
+  "scan_utc": "2026-11-21T20:53:44.105671Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
-  "version": "V5.0",
+  "version": "V5.2",
   "cmc_quotes_verified": false,
   "high_quality_signals": [],
   "assets": [
@@ -454,24 +454,24 @@
         }
       },
       "watch": {
-        "mode": "BOLL Reversal",
+        "mode": "Trend",
         "timeframe": "4h",
-        "direction": "Buy",
-        "score": 9.0,
-        "reason": "BOLL(26,2)整根轨外后回归",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势、突破及动量独立评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
         "reference_candle_close_utc": "2026-11-21T20:00:00Z",
         "reference_price": 60231.47,
         "proxy_only": true,
         "setup_ready": false,
-        "risk_note": "距离参考触发点 2.00 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+        "risk_note": "距离参考触发点 3.33 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
         "reference_entry": 60231.47,
-        "reference_stop": 54643.97728724742,
-        "reference_tp1": 71406.45542550516,
-        "reference_tp2": 76993.94813825775,
+        "reference_stop": 65271.792712752576,
+        "reference_tp1": 50150.82457449485,
+        "reference_tp2": 45110.501861742276,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 9.276699892518945
+        "stop_pct": 8.368254523345644
       },
       "screen_reason": null
     },
@@ -536,24 +536,24 @@
         }
       },
       "watch": {
-        "mode": "BOLL Reversal",
+        "mode": "Trend",
         "timeframe": "4h",
-        "direction": "Buy",
-        "score": 9.0,
-        "reason": "BOLL(26,2)整根轨外后回归",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势、突破及动量独立评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
         "reference_candle_close_utc": "2026-11-21T20:00:00Z",
         "reference_price": 1683.69,
         "proxy_only": true,
         "setup_ready": false,
-        "risk_note": "距离参考触发点 1.80 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+        "risk_note": "距离参考触发点 2.89 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
         "reference_entry": 1683.69,
-        "reference_stop": 1519.977882949727,
-        "reference_tp1": 2011.1142341005461,
-        "reference_tp2": 2174.8263511508194,
+        "reference_stop": 1831.092117050273,
+        "reference_tp1": 1388.8857658994543,
+        "reference_tp2": 1241.4836488491815,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 9.723412091909617
+        "stop_pct": 8.754706451322562
       },
       "screen_reason": null
     },
@@ -931,50 +931,6 @@
     {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "BOLL Reversal",
-      "timeframe": "4h",
-      "direction": "Buy",
-      "score": 9.0,
-      "reason": "BOLL(26,2)整根轨外后回归",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:00:00Z",
-      "reference_price": 60231.47,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "距离参考触发点 2.00 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 60231.47,
-      "reference_stop": 54643.97728724742,
-      "reference_tp1": 71406.45542550516,
-      "reference_tp2": 76993.94813825775,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 9.276699892518945
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "BOLL Reversal",
-      "timeframe": "4h",
-      "direction": "Buy",
-      "score": 9.0,
-      "reason": "BOLL(26,2)整根轨外后回归",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:00:00Z",
-      "reference_price": 1683.69,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "距离参考触发点 1.80 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 1683.69,
-      "reference_stop": 1519.977882949727,
-      "reference_tp1": 2011.1142341005461,
-      "reference_tp2": 2174.8263511508194,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 9.723412091909617
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
       "mode": "Trend",
       "timeframe": "4h",
       "direction": "Sell",
@@ -1018,6 +974,26 @@
     }
   ],
   "research_setups": [],
+  "boll_alerts": [
+    {
+      "name": "Gold - Cash",
+      "timeframe": "1d",
+      "direction": "Buy",
+      "reference_price": 3515.39990234375,
+      "reference_candle_close_utc": "2026-11-21T05:00:00Z",
+      "score": 5,
+      "reason": "第一根整根出轨；等待下一根收盘反转"
+    },
+    {
+      "name": "Silver - Cash",
+      "timeframe": "1d",
+      "direction": "Buy",
+      "reference_price": 41.03499984741211,
+      "reference_candle_close_utc": "2026-11-21T05:00:00Z",
+      "score": 5,
+      "reason": "第一根整根出轨；等待下一根收盘反转"
+    }
+  ],
   "risk_context": {
     "VIX": {
       "close": 35.88999938964844,
