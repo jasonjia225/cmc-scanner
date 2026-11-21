@@ -1,9 +1,9 @@
-CMC V5.4 | 11-22 12:01 新西兰时间
+CMC V5.4 | 11-22 12:15 新西兰时间
 本轮暂无已核实的出手机会。
-Ethereum (USD) | Sell | Double Bottom/Top Reversal | 15m | 9.0/10
-仅观察：距离触发点过远，勿追单；支撑/阻力限制目标
 Bitcoin (USD) | Sell | Trend | 4h | 8.0/10
 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标
+Ethereum (USD) | Sell | Double Bottom/Top Reversal | 15m | 8.0/10
+仅观察：支撑/阻力限制目标
 BOLL持续 | Gold - Cash | Buy | 1d | 等待第二根收盘反转；暂无触发后完整K线，待核实 | 失效线 3502.8999
 BOLL持续 | Silver - Cash | Buy | 1d | 等待第二根收盘反转；暂无触发后完整K线，待核实 | 失效线 40.93
 VIX风险参考：35.89 | 高风险
