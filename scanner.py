@@ -146,7 +146,7 @@ def boll_events(name,bars,now=NOW):
             band=mid-sign*2*sd; outside=d.high<band if sign==1 else d.low>band
             direction='Buy' if sign==1 else 'Sell'; entry=float(c.iloc[-1]); stamp=iso(end)
             if bool(outside.iloc[-1]) and not bool(outside.iloc[-2]):
-                alerts.append(dict(name=name,timeframe=t,direction=direction,reference_price=entry,reference_candle_close_utc=stamp,score=5,reason='第一根整根出轨；等待下一根收盘反转'))
+                alerts.append(dict(name=name,timeframe=t,direction=direction,reference_price=entry,reference_candle_close_utc=stamp,trigger_low=float(d.low.iloc[-1]),trigger_high=float(d.high.iloc[-1]),score=5,reason='第一根整根出轨；等待下一根收盘反转'))
             if not bool(outside.iloc[-2]) or bool(outside.iloc[-3]):continue
             # Do not bridge missing/inactive sessions as if adjacent intraday bars.
             if t!='1d' and (d.index[-1]-d.index[-2]).total_seconds()!=seconds[t]:continue
@@ -237,9 +237,45 @@ def evaluate(name,bars):
     candidates.sort(key=lambda w:(w['score'],w['setup_ready'],-w['stop_pct']),reverse=True)
     return candidates,None if candidates else '无8分候选或数据不足/过期',alerts
 
-def scan():
+def track_boll(name,bars,alerts,watches,previous):
+    active={k:dict(v) for k,v in previous.items() if v['name']==name}
+    ended=[]
+    for w in alerts:
+        if w['timeframe'] not in ('4h','1d'):continue
+        k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
+        active.setdefault(k,{**w,'status':'等待第二根收盘反转'})
+    # Recover the immediately preceding trigger when upgrading after confirmation.
+    for w in watches:
+        t=w['timeframe']
+        if w['mode']!='BOLL Reversal' or t not in ('4h','1d'):continue
+        d=bars.get(t)
+        if d is None or len(d)<2:continue
+        stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=14400 if t=='4h' else 86400))
+        k='|'.join((name,w['direction'],t,stamp))
+        a=active.setdefault(k,dict(name=name,direction=w['direction'],timeframe=t,reference_candle_close_utc=stamp,trigger_low=float(d.low.iloc[-2]),trigger_high=float(d.high.iloc[-2])))
+        a.update(status='反转已确认',score=w['score'],tp1=w['reference_tp1'],tp2=w['reference_tp2'],confirmed_utc=w['reference_candle_close_utc'])
+    for k,a in list(active.items()):
+        start=pd.Timestamp(a['reference_candle_close_utc'])
+        sign=1 if a['direction']=='Buy' else -1
+        edge=a['trigger_low'] if sign==1 else a['trigger_high']
+        # Inspect all available closed bars after the trigger, not just latest close.
+        chunks=[d.loc[d.index>=start] for d in bars.values() if d is not None]
+        broken=any((d.low<edge).any() if sign==1 else (d.high>edge).any() for d in chunks)
+        if broken:
+            ended.append({**a,'status':'失效：突破触发K线极值'});del active[k];continue
+        a['data_unverified']=not any(not d.empty for d in chunks)
+        if a.get('confirmed_utc'):
+            after=pd.Timestamp(a['confirmed_utc'])
+            for target in ('tp1','tp2'):
+                if target in a and any(((d.loc[d.index>=after].high>=a[target]).any() if sign==1 else (d.loc[d.index>=after].low<=a[target]).any()) for d in chunks):
+                    a[target+'_hit']=True
+    return active,ended
+
+def scan(previous=None):
+    previous=previous or {}
+
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[]}
+            'version':'V5.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -276,6 +312,8 @@ def scan():
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
             watches,item['screen_reason'],alerts=evaluate(name,bars)
             output['boll_alerts'].extend(alerts)
+            active,ended=track_boll(name,bars,alerts,watches,previous.get('active_boll',{}))
+            output['active_boll'].update(active);output['ended_boll'].extend(ended)
             item['watch']=watches[0] if watches else None
             for w in watches:
                 candidate={'name':name,'proxy_source':source,**w}
@@ -296,7 +334,7 @@ SOURCES=[x[2] for x in ASSETS]
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['CMC V5.3 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
+    lines=['CMC V5.4 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
     seen=set(); shown=0
     watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
     for w in watches:
@@ -321,8 +359,18 @@ def report(data, previous=None):
     for w in data.get('boll_alerts',[]):
         k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
         current.append(k)
-        if k not in oldkeys:lines.append(f"⚠️ BOLL预警 | {w['name']} | {w['direction']} | {w['timeframe']} | 等待第二根收盘反转")
-    ctx=data.get('risk_context',{}).get('VIX')
+        if w['timeframe'] not in ('4h','1d') and k not in oldkeys:lines.append(f"⚠️ BOLL预警 | {w['name']} | {w['direction']} | {w['timeframe']} | 等待第二根收盘反转")
+    for k,a in data.get('active_boll',{}).items():
+        edge=a['trigger_low'] if a['direction']=='Buy' else a['trigger_high']
+        label='新增' if k not in previous.get('active_boll',{}) else '持续'
+        status=a['status']
+        if a.get('tp2_hit'):status+='；TP2已触及'
+        elif a.get('tp1_hit'):status+='；TP1已触及'
+        if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
+        lines.append(f"BOLL{label} | {a['name']} | {a['direction']} | {a['timeframe']} | {status} | 失效线 {edge:.8g}")
+    for a in data.get('ended_boll',[]):
+        lines.append(f"BOLL失效 | {a['name']} | {a['direction']} | {a['timeframe']} | 已突破触发K线极值")
+    ctx=data.get('risk_context' ,{}).get('VIX')
     lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))
     groups={}
     for a in data['assets']:
@@ -336,7 +384,7 @@ def report(data, previous=None):
         if groups:
             for k,names in groups.items():lines.append(f"⚠️ 数据：{len(names)}个标的{k}（{'、'.join(names)}）；其他可用周期继续分析。")
         else:lines.append('数据异常已恢复。')
-    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys}
+    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{})}
     lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
 
@@ -345,7 +393,7 @@ if __name__=='__main__':
     previous={}
     try:previous=json.loads((folder/'latest.json').read_text(encoding='utf-8')).get('notification_state',{})
     except (OSError,ValueError,AttributeError):pass
-    result=scan(); message=report(result,previous)
+    result=scan(previous); message=report(result,previous)
     (folder/'latest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')
     (folder/'latest.md').write_text(message,encoding='utf-8')
     print(message)
