@@ -14,13 +14,18 @@ S = requests.Session()
 S.headers.update({'User-Agent':'Mozilla/5.0 CMC-research-scanner/1.0','Accept':'application/json'})
 UTC=timezone.utc
 NOW=datetime.now(UTC)
-# Only these ten may appear as candidates.
+# V5: fifteen instruments; VIX is context only.
 ASSETS = [
+ ('NVDA','NVDA','Yahoo Finance US equity'),
+ ('MU','MU','Yahoo Finance US equity'),
+ ('MSTR','MSTR','Yahoo Finance US equity'),
+ ('TSLA','TSLA','Yahoo Finance US equity'),
+ ('SNDK','SNDK','Yahoo Finance US equity'),
+ ('Germany 40 - Cash','^GDAXI','Yahoo Finance DAX cash index proxy'),
  ('US NDAQ 100 - Cash','^NDX','Yahoo Finance NDX cash index proxy'),
  ('Bitcoin (USD)',None,'Coinbase BTC-USD spot'),
  ('Ethereum (USD)',None,'Coinbase ETH-USD spot'),
  ('Hong Kong 50 - Cash','^HSI','Yahoo Finance Hang Seng cash index proxy'),
- ('China A50 - current verified CMC contract',None,'CMC contract not verified'),
  ('USD/JPY','JPY=X','Yahoo Finance FX indicative'),
  ('NZD/USD','NZDUSD=X','Yahoo Finance FX indicative'),
  ('Gold - Cash','GC=F','Yahoo Finance COMEX gold futures proxy'),
@@ -59,7 +64,7 @@ def yahoo(symbol,interval,range_):
         try:
             result=obj['chart']['result'][0]
             ts=result['timestamp']; q=result['indicators']['quote'][0]
-            df=pd.DataFrame({k:q[k] for k in ['open','high','low','close']},index=pd.to_datetime(ts,unit='s',utc=True))
+            df=pd.DataFrame({**{k:q[k] for k in ['open','high','low','close']},'volume':q.get('volume',[None]*len(ts))},index=pd.to_datetime(ts,unit='s',utc=True))
             return clean(df,TF[interval]),None
         except (TypeError,KeyError,IndexError) as e: errors.append(f'{host}: malformed response {e}')
     return None,'; '.join(errors)
@@ -92,9 +97,9 @@ def aggregate_4h(hourly):
     for t,g in hourly.groupby(hourly.index.floor('4h')):
         expected=pd.date_range(t,periods=4,freq='h',tz='UTC')
         if len(g)==4 and g.index.equals(expected):
-            groups.append((t,g.open.iloc[0],g.high.max(),g.low.min(),g.close.iloc[-1]))
+            groups.append((t,g.open.iloc[0],g.high.max(),g.low.min(),g.close.iloc[-1],g.volume.sum(min_count=4) if 'volume' in g else np.nan))
     if not groups:return None
-    return pd.DataFrame(groups,columns=['time','open','high','low','close']).set_index('time')
+    return pd.DataFrame(groups,columns=['time','open','high','low','close','volume']).set_index('time')
 
 def metrics(df):
     if df is None or len(df)<60:return None
@@ -102,7 +107,7 @@ def metrics(df):
     ema20=c.ewm(span=20,adjust=False).mean();ema50=c.ewm(span=50,adjust=False).mean()
     d=c.diff(); gain=d.clip(lower=0).ewm(alpha=1/14,adjust=False,min_periods=14).mean()
     loss=(-d.clip(upper=0)).ewm(alpha=1/14,adjust=False,min_periods=14).mean()
-    rs=gain/loss.replace(0,np.nan);rsi=100-100/(1+rs)
+    rs=gain/loss.replace(0,np.nan);rsi=100-100/(1+rs);rsi=rsi.mask((loss==0)&(gain>0),100).mask((loss==0)&(gain==0),50)
     tr=pd.concat([h-l,(h-c.shift()).abs(),(l-c.shift()).abs()],axis=1).max(axis=1)
     atr=tr.ewm(alpha=1/14,adjust=False,min_periods=14).mean()
     return {'close':float(c.iloc[-1]),'ema20':float(ema20.iloc[-1]),
@@ -112,39 +117,89 @@ def metrics(df):
 
 def iso(dt):return dt.isoformat().replace('+00:00','Z')
 
-def evaluate(name, bars):
-    m={tf:metrics(bars.get(tf)) for tf in ('15m','1h','4h','1d')}
-    for tf,hours in [('15m',.75),('1h',3),('4h',12),('1d',96)]:
-        if m[tf] is not None:
-            end=bars[tf].index[-1].to_pydatetime()+timedelta(seconds=14400 if tf=='4h' else TF[tf])
-            if not 0 <= (NOW-end).total_seconds() <= hours*3600:m[tf]=None
+def evaluate(name,bars):
     candidates=[]
-    for mode,tf,minimum,required in [('短线','15m',1.2,('15m','1h')),('日内','1h',1.5,('15m','1h','1d')),('波段','4h',2.0,('1h','4h','1d'))]:
-        if any(m[t] is None for t in required):continue
-        a=m[tf]; entry=a['close']; atr=a['atr14']
-        if not np.isfinite(atr) or atr<=0 or entry<=0:continue
-        available=[v for v in m.values() if v is not None]
-        for direction,sign in [('Buy',1),('Sell',-1)]:
-            aligned=sum(sign*(v['ema20']-v['ema50'])>0 and sign*(v['close']-v['ema20'])>0 for v in available)
-            if aligned<2 or sign*(a['ema20']-a['ema50'])<=0:continue
-            breakout=sign*(entry-(a['resistance20'] if sign==1 else a['support20']))>0
+    seconds={**TF,'4h':14400}
+    fresh={t:d for t,d in bars.items() if len(d)>=60 and 0 <= (NOW-d.index[-1].to_pydatetime()-timedelta(seconds=seconds[t])).total_seconds() <= {'15m':2700,'1h':10800,'4h':43200,'1d':345600}[t]}
+    m={t:metrics(d) for t,d in fresh.items()}
+    # Volume is not reliable on cash indices or indicative FX.
+    volume_ok=name not in ('US NDAQ 100 - Cash','Hong Kong 50 - Cash','Germany 40 - Cash','USD/JPY','NZD/USD')
+    def add(mode,t,sign,score,stop,reason,ready,anchor):
+        if score<8:return
+        a=m[t]; entry=a['close']; atr=a['atr14']; risk=sign*(entry-stop)
+        if not np.isfinite(risk) or risk<=0 or entry<=0:return
+        # Prefer actual known resistance/support before theoretical R targets.
+        chase=abs(entry-anchor)/atr
+        target=entry+sign*2*risk
+        obstacle=a['resistance20'] if sign==1 else a['support20']
+        blocked=0<sign*(obstacle-entry)<2*risk
+        ready=bool(ready and chase<=1 and risk<=4*atr and not blocked and min(stop,entry+sign*3*risk)>0)
+        if min(stop,entry+sign*3*risk)<=0:return
+        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；目标为理论值',reference_entry=entry,reference_stop=float(stop),reference_tp1=float(target),reference_tp2=float(entry+sign*3*risk),rr_tp1=2.,rr_tp2=3.,stop_pct=100*risk/entry))
+    for t,d in fresh.items():
+        if t=='1d':continue
+        a=m[t]; atr=a['atr14']; entry=a['close']
+        if not np.isfinite(atr) or atr<=0:continue
+        c=d.close; mid=c.rolling(26).mean(); sd=c.rolling(26).std(ddof=0)
+        v=d.get('volume',pd.Series(np.nan,index=d.index)); ratio=v/v.shift().rolling(20,min_periods=20).mean().replace(0,np.nan) if volume_ok else v*np.nan
+        for sign in (1,-1):
+            aligned=lambda x: sign*(x['ema20']-x['ema50'])>0 and sign*(x['close']-x['ema20'])>0
+            other=m.get('1h' if t=='15m' else '4h' if t=='1h' else '1d')
             momentum=a['rsi14'] is not None and (52<=a['rsi14']<=72 if sign==1 else 28<=a['rsi14']<=48)
-            score=min(10,round(2+aligned*1.25+1.5*breakout+1.0*momentum+0.5*(sign*(entry-a['ema20'])>0),1))
-            if score<8:continue
-            stop=min(a['support20']-.15*atr,entry-minimum*atr) if sign==1 else max(a['resistance20']+.15*atr,entry+minimum*atr)
-            risk=abs(entry-stop)
-            if not (0<risk<=4*atr and min(stop,entry+sign*3*risk)>0):continue
-            end=bars[tf].index[-1].to_pydatetime()+timedelta(seconds=14400 if tf=='4h' else TF[tf])
-            candidates.append(dict(mode=mode,timeframe=tf,direction=direction,score=score,reason=f'趋势同向{aligned}/{len(available)}周期；{tf}突破：'+('是' if breakout else '否')+'；RSI：'+(f"{a['rsi14']:.1f}" if a['rsi14'] is not None else '缺失'),confirmation='等待突破及回踩确认；核对CMC报价、点差、交易时段及事件',reference_candle_close_utc=iso(end),reference_price=entry,proxy_only=True,setup_ready=bool(len(available)==4 and aligned==4 and breakout and momentum),risk_note='目标路径、点差及事件未核实',reference_entry=entry,reference_stop=stop,reference_tp1=entry+sign*2*risk,reference_tp2=entry+sign*3*risk,rr_tp1=2.0,rr_tp2=3.0,stop_pct=100*risk/entry))
+            level=a['resistance20'] if sign==1 else a['support20']; breakout=sign*(entry-level)>0
+            stop=a['support20']-.3*atr if sign==1 else a['resistance20']+.3*atr
+            score=4*aligned(a)+2*bool(other and aligned(other))+2*breakout+2*momentum
+            if aligned(a):add('Trend',t,sign,score,stop,'趋势、突破及动量独立评分',breakout,level)
+            width=a['resistance20']-a['support20']; vol=bool(ratio.iloc[-1]>=2)
+            score=4*breakout+2*(width<=5*atr)+2*vol+2*momentum
+            if breakout:add('Range Breakout',t,sign,score,level-sign*atr,'横盘突破、量能及动量',True,level)
+            # Confirmed local pivots: two bars on both sides, no future bars.
+            x=(d.low if sign==1 else -d.high).iloc[-60:].to_numpy(); n=len(x)
+            piv=[i for i in range(2,n-2) if x[i]<=min(x[i-2:i]) and x[i]<=min(x[i+1:i+3])]
+            for j in reversed(piv):
+                if n-1-j>8:break
+                found=False
+                for i in reversed([k for k in piv if 4<=j-k<=40]):
+                    if abs(x[i]-x[j])>abs(x[i])*.01 or x[j]<x[i]-.5*atr:continue
+                    neck=(d.high.iloc[-60+i:-60+j].max() if sign==1 else d.low.iloc[-60+i:-60+j].min())
+                    if sign*neck-max(x[i],x[j])<atr:continue
+                    if min(x[j+1:])<min(x[i],x[j]):continue
+                    vr=ratio.iloc[-60:].iloc[max(0,j-2):min(n,j+3)]
+                    spike=bool((vr>=2).any())
+                    if not spike:continue
+                    # A volume spike alone is not reversal: require recovery from second pivot.
+                    if sign*entry-x[j]<.3*atr:continue
+                    div=False
+                    delta=c.diff();g=delta.clip(lower=0).ewm(alpha=1/14,adjust=False).mean();loss=(-delta.clip(upper=0)).ewm(alpha=1/14,adjust=False).mean();r=100-100/(1+g/loss.replace(0,np.nan));r=r.iloc[-60:]
+                    div=bool(sign*(r.iloc[j]-r.iloc[i])>0 and x[j]<=x[i])
+                    crossed=sign*(entry-neck)>0
+                    hourly=m.get('1h'); turn=bool(hourly and sign*(hourly['close']-hourly['ema20'])>0)
+                    score=8+int(crossed)+.5*div+.5*turn
+                    add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f'双底/顶4分＋放量4分（{vr.max():.2f}倍）；颈线 {neck:.6g}；背离={div}',True,sign*x[j]+sign*.3*atr)
+                    found=True;break
+                if found:break
+            band=mid-sign*2*sd
+            outside=(d.high<band) if sign==1 else (d.low>band)
+            recent=outside.iloc[-6:-1]
+            if recent.any():
+                back=sign*(entry-band.iloc[-1])>0
+                spike=bool((ratio.iloc[-6:]>=2).any())
+                extreme=a['rsi14'] is not None and (a['rsi14']<30 if sign==1 else a['rsi14']>70)
+                candle=sign*(entry-d.open.iloc[-1])>0
+                score=3+3*spike+2*back+int(extreme)+int(candle)
+                stop=d.low.iloc[-6:].min()-.3*atr if sign==1 else d.high.iloc[-6:].max()+.3*atr
+                add('BOLL Reversal',t,sign,score,stop,'BOLL(26,2)整根轨外后回归',back,float(band.iloc[-1]))
     candidates.sort(key=lambda w:(w['score'],w['setup_ready'],-w['stop_pct']),reverse=True)
-    return candidates, None if candidates else '无达到8分且结构止损有效的模式，或数据不足/过期'
+    return candidates,None if candidates else '无8分候选或数据不足/过期'
 
 def scan():
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[]}
+            'version':'V5.0','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[]}
+    vix,err=yahoo('^VIX','15m','5d')
+    output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
         item={'name':name,'proxy_source':source,'currency':'USD' if 'Bitcoin' in name or 'Ethereum' in name else None,
-              'timeframes':{},'last_complete_candle_utc':None,'errors':{},'metrics':{},'watch':None}
+              'timeframes':{},'candle_close_utc':{},'last_complete_candle_utc':None,'errors':{},'metrics':{},'watch':None}
         bars={}
         if name.startswith('China A50'):
             for tf in ['15m','1h','4h','1d']:item['timeframes'][tf]=False
@@ -159,6 +214,7 @@ def scan():
                     bars[tf]=df;item['timeframes'][tf]=True
                     item['metrics'][tf]=metrics(df)
                     closed=iso(df.index[-1].to_pydatetime()+timedelta(seconds=TF[tf]))
+                    item['candle_close_utc'][tf]=closed
                     if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                         item['last_complete_candle_utc']=closed
                 else:item['timeframes'][tf]=False
@@ -169,6 +225,7 @@ def scan():
                 bars['4h']=four
                 item['metrics']['4h']=metrics(four)
                 closed=iso(four.index[-1].to_pydatetime()+timedelta(hours=4))
+                item['candle_close_utc']['4h']=closed
                 if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
@@ -188,19 +245,20 @@ def nz(s):
     if not s:return '无'
     return datetime.fromisoformat(s.replace('Z','+00:00')).astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M')
 
-NAMES=['纳指100','比特币','以太坊','恒生指数','中国A50','美元/日元','纽元/美元','黄金','白银','WTI原油']
-SHORT=dict(zip([x[0] for x in ASSETS],NAMES))
-SOURCES=['Yahoo指数','Coinbase现货','Coinbase现货','Yahoo指数','合约未核实','Yahoo外汇','Yahoo外汇','Yahoo黄金期货','Yahoo白银期货','Yahoo原油期货']
+SHORT={x[0]:x[0] for x in ASSETS}
+SOURCES=[x[2] for x in ASSETS]
 
 def report(data):
-    lines=['CMC V4 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
+    lines=['CMC V5.0 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
     # One best mode per asset in Telegram; all qualifying modes remain in JSON.
     seen=set(); shown=0
     for w in data['watch_candidates']:
         if w['score']<8 or w['name'] in seen:continue
         seen.add(w['name']);shown+=1
-        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",'理论盈亏比 2:1 / 3:1，未计成本','仅观察，待回踩及风险核实。','']
+        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",'理论盈亏比 2:1 / 3:1，未计成本',w['risk_note'], '仅观察，待入场及风险核实。','']
     if not shown:lines+=['无达到8分且风险参数有效的候选。']
+    ctx=data.get('risk_context',{}).get('VIX')
+    lines.append('VIX风险参考：'+(str(ctx['close']) if ctx else '未取得'))
     lines+=['📈 数据覆盖（15m / 1h / 4h / 日线）']
     for a,source in zip(data['assets'],SOURCES):
         marks=' '.join('✓' if a['timeframes'].get(t) else '—' for t in ('15m','1h','4h','1d'))
