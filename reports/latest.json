@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-21T01:01:08.728546Z",
+  "scan_utc": "2026-11-21T01:15:42.310412Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "cmc_quotes_verified": false,
@@ -64,15 +64,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-21T01:00:00Z",
+      "last_complete_candle_utc": "2026-11-21T01:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 58900.0,
-          "ema20": 58917.970388645925,
-          "ema50": 59471.50030616477,
-          "rsi14": 47.18448351946181,
-          "atr14": 315.64910689451386,
+          "close": 59053.28,
+          "ema20": 58930.85701829869,
+          "ema50": 59455.099509844804,
+          "rsi14": 51.00298194147084,
+          "atr14": 312.39774211633465,
           "support20": 58054.46,
           "resistance20": 59281.9,
           "bars": 600
@@ -108,27 +108,8 @@
           "bars": 149
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：47.2",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-21T01:00:00Z",
-        "reference_price": 58900.0,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 58900.0,
-        "reference_stop": 59329.24736603418,
-        "reference_tp1": 58041.50526793164,
-        "reference_tp2": 57612.257901897465,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 0.7287731172057359
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     },
     {
       "name": "Ethereum (USD)",
@@ -140,15 +121,15 @@
         "1d": true,
         "4h": true
       },
-      "last_complete_candle_utc": "2026-11-21T01:00:00Z",
+      "last_complete_candle_utc": "2026-11-21T01:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1619.78,
-          "ema20": 1620.809558007153,
-          "ema50": 1645.7684502815423,
-          "rsi14": 45.77285084316983,
-          "atr14": 10.978205107436045,
+          "close": 1622.6,
+          "ema20": 1620.9800762921861,
+          "ema50": 1644.859883603844,
+          "rsi14": 48.03164049212572,
+          "atr14": 10.80761902833348,
           "support20": 1582.92,
           "resistance20": 1629.23,
           "bars": 600
@@ -184,27 +165,8 @@
           "bars": 149
         }
       },
-      "watch": {
-        "mode": "短线",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "score": 8.5,
-        "reason": "趋势同向4/4周期；15m突破：否；RSI：45.8",
-        "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-        "reference_candle_close_utc": "2026-11-21T01:00:00Z",
-        "reference_price": 1619.78,
-        "proxy_only": true,
-        "setup_ready": false,
-        "risk_note": "目标路径、点差及事件未核实",
-        "reference_entry": 1619.78,
-        "reference_stop": 1632.9538461289233,
-        "reference_tp1": 1593.4323077421534,
-        "reference_tp2": 1580.25846161323,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 0.8133108279472081
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无达到8分且结构止损有效的模式，或数据不足/过期"
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -599,50 +561,6 @@
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
       "stop_pct": 1.0851389812983345
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "短线",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：47.2",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-21T01:00:00Z",
-      "reference_price": 58900.0,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 58900.0,
-      "reference_stop": 59329.24736603418,
-      "reference_tp1": 58041.50526793164,
-      "reference_tp2": 57612.257901897465,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.7287731172057359
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "短线",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.5,
-      "reason": "趋势同向4/4周期；15m突破：否；RSI：45.8",
-      "confirmation": "等待突破及回踩确认；核对CMC报价、点差、交易时段及事件",
-      "reference_candle_close_utc": "2026-11-21T01:00:00Z",
-      "reference_price": 1619.78,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "目标路径、点差及事件未核实",
-      "reference_entry": 1619.78,
-      "reference_stop": 1632.9538461289233,
-      "reference_tp1": 1593.4323077421534,
-      "reference_tp2": 1580.25846161323,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.8133108279472081
     }
   ],
   "research_setups": []
