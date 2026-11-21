@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-21T20:31:05.993193Z",
+  "scan_utc": "2026-11-21T20:45:42.862909Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.0",
@@ -404,22 +404,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-21T20:30:00Z",
+        "15m": "2026-11-21T20:45:00Z",
         "1h": "2026-11-21T20:00:00Z",
         "1d": "2026-11-21T00:00:00Z",
         "4h": "2026-11-21T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-21T20:30:00Z",
+      "last_complete_candle_utc": "2026-11-21T20:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 60336.98,
-          "ema20": 60025.97558094296,
-          "ema50": 59462.204592577145,
-          "rsi14": 66.76222984860823,
-          "atr14": 254.62246782976956,
-          "support20": 59581.53,
-          "resistance20": 60332.01,
+          "close": 60300.35,
+          "ema20": 60052.106477996014,
+          "ema50": 59495.0730399319,
+          "rsi14": 65.02202283996903,
+          "atr14": 241.75800584192865,
+          "support20": 59656.73,
+          "resistance20": 60344.01,
           "bars": 600
         },
         "1h": {
@@ -486,22 +486,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-21T20:30:00Z",
+        "15m": "2026-11-21T20:45:00Z",
         "1h": "2026-11-21T20:00:00Z",
         "1d": "2026-11-21T00:00:00Z",
         "4h": "2026-11-21T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-21T20:30:00Z",
+      "last_complete_candle_utc": "2026-11-21T20:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1683.83,
-          "ema20": 1680.2224453273002,
-          "ema50": 1666.3722709936362,
-          "rsi14": 58.998165007801504,
-          "atr14": 7.211598569346201,
-          "support20": 1670.8,
-          "resistance20": 1690.84,
+          "close": 1683.23,
+          "ema20": 1680.5088791056526,
+          "ema50": 1667.0333584059053,
+          "rsi14": 58.047490073835526,
+          "atr14": 6.854341528678618,
+          "support20": 1673.18,
+          "resistance20": 1687.39,
           "bars": 600
         },
         "1h": {
@@ -975,50 +975,6 @@
     {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:30:00Z",
-      "reference_price": 60336.98,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.02 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 60336.98,
-      "reference_stop": 60077.38753217023,
-      "reference_tp1": 60856.16493565955,
-      "reference_tp2": 61115.757403489326,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.430237754408282
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Trend",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "趋势、突破及动量独立评分",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:30:00Z",
-      "reference_price": 60336.98,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.02 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 60336.98,
-      "reference_stop": 59505.14325965107,
-      "reference_tp1": 62000.65348069787,
-      "reference_tp2": 62832.4902210468,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.3786516003103435
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
       "mode": "Trend",
       "timeframe": "4h",
       "direction": "Sell",
@@ -1061,52 +1017,7 @@
       "stop_pct": 8.754706451322562
     }
   ],
-  "research_setups": [
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:30:00Z",
-      "reference_price": 60336.98,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.02 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 60336.98,
-      "reference_stop": 60077.38753217023,
-      "reference_tp1": 60856.16493565955,
-      "reference_tp2": 61115.757403489326,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.430237754408282
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Trend",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "趋势、突破及动量独立评分",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-21T20:30:00Z",
-      "reference_price": 60336.98,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.02 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 60336.98,
-      "reference_stop": 59505.14325965107,
-      "reference_tp1": 62000.65348069787,
-      "reference_tp2": 62832.4902210468,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.3786516003103435
-    }
-  ],
+  "research_setups": [],
   "risk_context": {
     "VIX": {
       "close": 35.88999938964844,

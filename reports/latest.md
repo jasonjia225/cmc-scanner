@@ -1,4 +1,4 @@
-CMC V5.0 | 11-22 09:31 新西兰时间
+CMC V5.0 | 11-22 09:45 新西兰时间
 本轮没有符合条件的出手机会。
 CMC点差、交易时段及重大事件未核实。
 
@@ -32,8 +32,8 @@ TSLA ✓ ✓ — ✓ | 11-22 03:30 | Yahoo Finance US equity
 SNDK ✓ ✓ — ✓ | 11-21 11:00 | Yahoo Finance US equity
 Germany 40 - Cash ✓ ✓ ✓ ✓ | 11-21 21:00 | Yahoo Finance DAX cash index proxy
 US NDAQ 100 - Cash ✓ ✓ — ✓ | 11-22 03:30 | Yahoo Finance NDX cash index proxy
-Bitcoin (USD) ✓ ✓ ✓ ✓ | 11-22 09:30 | Coinbase BTC-USD spot
-Ethereum (USD) ✓ ✓ ✓ ✓ | 11-22 09:30 | Coinbase ETH-USD spot
+Bitcoin (USD) ✓ ✓ ✓ ✓ | 11-22 09:45 | Coinbase BTC-USD spot
+Ethereum (USD) ✓ ✓ ✓ ✓ | 11-22 09:45 | Coinbase ETH-USD spot
 Hong Kong 50 - Cash ✓ ✓ — ✓ | 11-21 14:30 | Yahoo Finance Hang Seng cash index proxy
 USD/JPY ✓ ✓ ✓ ✓ | 11-21 13:00 | Yahoo Finance FX indicative
 NZD/USD ✓ ✓ ✓ ✓ | 11-21 13:00 | Yahoo Finance FX indicative
