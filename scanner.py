@@ -117,6 +117,51 @@ def metrics(df):
 
 def iso(dt):return dt.isoformat().replace('+00:00','Z')
 
+def boll_events(name,bars,now=NOW):
+    candidates=[]; alerts=[]
+    seconds={**TF,'4h':14400}
+    for t,d in bars.items():
+        if len(d)<28:continue
+        end=d.index[-1].to_pydatetime()+timedelta(seconds=seconds[t])
+        # Only report recent closed bars, not historical weekend repeats.
+        if not 0 <= (now-end).total_seconds() < seconds[t]+900:continue
+        c=d.close; mid=c.rolling(26).mean(); sd=c.rolling(26).std(ddof=0)
+        tr=pd.concat([d.high-d.low,(d.high-c.shift()).abs(),(d.low-c.shift()).abs()],axis=1).max(axis=1)
+        atr=float(tr.ewm(alpha=1/14,adjust=False,min_periods=14).mean().iloc[-1])
+        if not np.isfinite(atr) or atr<=0:continue
+        delta=c.diff(); g=delta.clip(lower=0).ewm(alpha=1/14,adjust=False,min_periods=14).mean(); loss=(-delta.clip(upper=0)).ewm(alpha=1/14,adjust=False,min_periods=14).mean()
+        rsi=(100-100/(1+g/loss.replace(0,np.nan))).mask((loss==0)&(g>0),100).mask((g==0)&(loss>0),0)
+        v=d.get('volume',pd.Series(np.nan,index=d.index)); ratio=v/v.shift().rolling(20,min_periods=20).mean().replace(0,np.nan)
+        if name in ('US NDAQ 100 - Cash','Hong Kong 50 - Cash','Germany 40 - Cash','USD/JPY','NZD/USD'):ratio=ratio*np.nan
+        for sign in (1,-1):
+            band=mid-sign*2*sd; outside=d.high<band if sign==1 else d.low>band
+            direction='Buy' if sign==1 else 'Sell'; entry=float(c.iloc[-1]); stamp=iso(end)
+            if bool(outside.iloc[-1]) and not bool(outside.iloc[-2]):
+                alerts.append(dict(name=name,timeframe=t,direction=direction,reference_price=entry,reference_candle_close_utc=stamp,score=5,reason='第一根整根出轨；等待下一根收盘反转'))
+            if not bool(outside.iloc[-2]) or bool(outside.iloc[-3]):continue
+            # Do not bridge missing/inactive sessions as if adjacent intraday bars.
+            if t!='1d' and (d.index[-1]-d.index[-2]).total_seconds()!=seconds[t]:continue
+            o=float(d.open.iloc[-1]); h=float(d.high.iloc[-1]); l=float(d.low.iloc[-1]); body=abs(entry-o)
+            wick=min(o,entry)-l if sign==1 else h-max(o,entry)
+            spike=bool(ratio.iloc[-1]>=2 or ratio.iloc[-2]>=2)
+            back=sign*(entry-float(band.iloc[-1]))>=0
+            reversal=sign*(entry-o)>0 and (wick>=max(body,.1*atr) or spike or back or sign*(entry-float(c.iloc[-2]))>0)
+            # Reject substantial new adverse extremes even on a positive candle.
+            adverse=float(d.low.iloc[-2])-l if sign==1 else h-float(d.high.iloc[-2])
+            if not reversal or adverse>.5*atr:continue
+            extreme=bool((rsi.iloc[-2:]<30).any() if sign==1 else (rsi.iloc[-2:]>70).any())
+            score=8+int(spike)+int(extreme)
+            stop=float(d.low.iloc[-2:].min()-.3*atr if sign==1 else d.high.iloc[-2:].max()+.3*atr)
+            risk=sign*(entry-stop); tp1=float(mid.iloc[-1]); tp2=float((mid+sign*2*sd).iloc[-1]);
+            if risk<=0 or min(entry,stop,tp1,tp2)<=0:continue
+            rr1=sign*(tp1-entry)/risk; rr2=sign*(tp2-entry)/risk
+            chase=abs(entry-float(c.iloc[-2]))/atr
+            obstacle=float(d.high.iloc[-21:-2].max() if sign==1 else d.low.iloc[-21:-2].min())
+            blocked=0<sign*(obstacle-entry)<2*risk
+            ready=rr1>=2 and rr2>=rr1 and chase<=1 and risk<=4*atr and not blocked
+            candidates.append(dict(mode='BOLL Reversal',timeframe=t,direction=direction,score=float(score),reason=f'整根出轨5＋第二根反转3＋放量{int(spike)}＋RSI极端{int(extreme)}',confirmation='第二根已收盘；核对CMC及成本',reference_candle_close_utc=stamp,reference_price=entry,proxy_only=True,setup_ready=bool(ready),risk_note=f'距离首根收盘 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；中轨2R达标={rr1>=2}；轨道为当前快照，会移动',reference_entry=entry,reference_stop=stop,reference_tp1=tp1,reference_tp2=tp2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
+    return candidates,alerts
+
 def evaluate(name,bars):
     candidates=[]
     seconds={**TF,'4h':14400}
@@ -178,23 +223,14 @@ def evaluate(name,bars):
                     add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f'双底/顶4分＋放量4分（{vr.max():.2f}倍）；颈线 {neck:.6g}；背离={div}',True,sign*x[j]+sign*.3*atr)
                     found=True;break
                 if found:break
-            band=mid-sign*2*sd
-            outside=(d.high<band) if sign==1 else (d.low>band)
-            recent=outside.iloc[-6:-1]
-            if recent.any():
-                back=sign*(entry-band.iloc[-1])>0
-                spike=bool((ratio.iloc[-6:]>=2).any())
-                extreme=a['rsi14'] is not None and (a['rsi14']<30 if sign==1 else a['rsi14']>70)
-                candle=sign*(entry-d.open.iloc[-1])>0
-                score=3+3*spike+2*back+int(extreme)+int(candle)
-                stop=d.low.iloc[-6:].min()-.3*atr if sign==1 else d.high.iloc[-6:].max()+.3*atr
-                add('BOLL Reversal',t,sign,score,stop,'BOLL(26,2)整根轨外后回归',back,float(band.iloc[-1]))
+    boll,alerts=boll_events(name,bars)
+    candidates.extend(boll)
     candidates.sort(key=lambda w:(w['score'],w['setup_ready'],-w['stop_pct']),reverse=True)
-    return candidates,None if candidates else '无8分候选或数据不足/过期'
+    return candidates,None if candidates else '无8分候选或数据不足/过期',alerts
 
 def scan():
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.0','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[]}
+            'version':'V5.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -229,7 +265,8 @@ def scan():
                 if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
-            watches,item['screen_reason']=evaluate(name,bars)
+            watches,item['screen_reason'],alerts=evaluate(name,bars)
+            output['boll_alerts'].extend(alerts)
             item['watch']=watches[0] if watches else None
             for w in watches:
                 candidate={'name':name,'proxy_source':source,**w}
@@ -249,20 +286,30 @@ SHORT={x[0]:x[0] for x in ASSETS}
 SOURCES=[x[2] for x in ASSETS]
 
 def report(data):
-    lines=['CMC V5.0 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
+    lines=['CMC V5.2 | '+nz(data['scan_utc'])+' 新西兰时间','本轮没有符合条件的出手机会。','CMC点差、交易时段及重大事件未核实。','', '🎯 8分以上技术候选（含8分）']
     # One best mode per asset in Telegram; all qualifying modes remain in JSON.
     seen=set(); shown=0
     for w in data['watch_candidates']:
-        if w['score']<8 or w['name'] in seen:continue
-        seen.add(w['name']);shown+=1
-        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",'理论盈亏比 2:1 / 3:1，未计成本',w['risk_note'], '仅观察，待入场及风险核实。','']
+        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode']=='BOLL Reversal' else (w['name'],'other')
+        if w['score']<8 or key in seen:continue
+        seen.add(key);shown+=1
+        lines += [f"{SHORT[w['name']]} | {w['direction']} | {w['mode']} | {w['score']:.1f}/10",w['reason'],f"{w['timeframe']}参考价 {w['reference_price']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+SOURCES[list(SHORT).index(w['name'])],f"假设入场 {w['reference_entry']:.8g} | 止损 {w['reference_stop']:.8g} ({w['stop_pct']:.2f}%)",f"TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"参考盈亏比 {w['rr_tp1']:.2f}:1 / {w['rr_tp2']:.2f}:1，未计成本",w['risk_note'], '仅观察，待入场及风险核实。','']
     if not shown:lines+=['无达到8分且风险参数有效的候选。']
+    for w in data.get('boll_alerts',[]):
+        lines.append(f"⚠️ BOLL极端预警 | {w['name']} | {w['direction']} | {w['timeframe']} | {nz(w['reference_candle_close_utc'])} | {w['reason']}")
     ctx=data.get('risk_context',{}).get('VIX')
-    lines.append('VIX风险参考：'+(str(ctx['close']) if ctx else '未取得'))
-    lines+=['📈 数据覆盖（15m / 1h / 4h / 日线）']
-    for a,source in zip(data['assets'],SOURCES):
-        marks=' '.join('✓' if a['timeframes'].get(t) else '—' for t in ('15m','1h','4h','1d'))
-        lines.append(f"{SHORT[a['name']]} {marks} | {nz(a['last_complete_candle_utc'])} | {source}")
+    lines.append('VIX风险参考：'+(f"{ctx['close']:.2f}" if ctx else '未取得'))
+    # Keep full coverage in JSON; show only affected instruments in messages.
+    issues=[]
+    for a in data['assets']:
+        missing=[t for t in ('15m','1h','4h','1d') if not a['timeframes'].get(t)]
+        errors=a.get('errors',{})
+        if missing or errors:
+            detail='、'.join(missing) if missing else '接口异常'
+            reasons='; '.join(f'{k}: {v}' for k,v in errors.items())
+            issues.append(f"{a['name']}：{detail} | {reasons}".rstrip(' |'))
+    if issues:
+        lines+=['','⚠️ 数据异常（仅列受影响标的）',*issues]
     lines+=['评分不是盈利概率；代理价格不等于CMC报价。','下单前核对CMC实时价格及点差。']
     return '\n'.join(lines)
 
