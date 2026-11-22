@@ -287,7 +287,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.5','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[]}
+            'version':'V5.7','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -346,16 +346,26 @@ SOURCES=[x[2] for x in ASSETS]
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['CMC V5.5 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
+    lines=['📊 CMC V5.7 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
+    sections={}
+    def heading(title):
+        sections.setdefault(title, [])
+        return sections[title]
+    def direction(d):return '🟢 BUY 做多' if d=='Buy' else '🔴 SELL 做空'
+    def block(title, items):
+        if items:lines.extend(['','━━━━━━━━━━━━',title,'']+items)
     seen=set(); shown=0
     watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
     for w in watches:
         key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],'other',w['direction'])
         if w['score']<8 or key in seen:continue
         seen.add(key);shown+=1
-        lines.append(f"{w['name']} | {w['direction']} | {w['mode']} | {w['timeframe']} | {w['score']:.1f}/10")
+        label={'Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
+        out=heading(label)
+        if out:out.append('')
+        out.extend([f"{direction(w['direction'])}｜{w['name']}",f"周期：{w['timeframe']}｜评分：{w['score']:.1f}/10"])
         if w['setup_ready']:
-            lines += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
+            out += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
         else:
             note=w.get('risk_note','')
             import re
@@ -365,19 +375,26 @@ def report(data, previous=None):
             if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
-            lines.append('仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
+            out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
     if not shown:lines.append('暂无8分以上技术候选。')
     for a in data.get('double_alerts',[]):
-        lines.append(f"双顶底 | {a['name']} | {a['direction']} | {a['timeframe']} | {a['stage']}")
-        lines.append(f"第一点 {a['first_price']:.8g} ({nz(a['first_utc'])})；第二点 {a['second_price']:.8g} ({nz(a['second_utc'])})；差 {a['difference_pct']:.3f}%")
+        out=heading('🔄 双顶双底｜Reversal')
+        if out:out.append('')
+        point='底' if a['direction']=='Buy' else '顶'
+        stage={'疑似第二顶底':f'⏳ 疑似第二{point}','结构确认':f'双{point}确认'}.get(a['stage'],a['stage'])
+        shape='W形双底' if point=='底' else 'M形双顶'
+        out.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{shape}｜{stage}"])
+        out.append(f"第一{point} {a['first_price']:.8g} ({nz(a['first_utc'])})\n第二{point} {a['second_price']:.8g} ({nz(a['second_utc'])})\n价格差 {a['difference_pct']:.3f}%")
         second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
-        lines.append(f"首点放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})；第二点量比 {second}；颈线 {a['neckline']:.8g}；突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
+        out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {a['neckline']:.8g}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
+    for title,items in sections.items():block(title,items)
+    boll=[]
     oldkeys=set(previous.get('alert_keys',[]))
     current=[]
     for w in data.get('boll_alerts',[]):
         k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
         current.append(k)
-        if w['timeframe'] not in ('4h','1d') and k not in oldkeys:lines.append(f"⚠️ BOLL预警 | {w['name']} | {w['direction']} | {w['timeframe']} | 等待第二根收盘反转")
+        if w['timeframe'] not in ('4h','1d') and k not in oldkeys:boll.extend([f"{direction(w['direction'])}｜{w['name']}",f"{w['timeframe']}｜等待第二根收盘反转", ""])
     for k,a in data.get('active_boll',{}).items():
         edge=a['trigger_low'] if a['direction']=='Buy' else a['trigger_high']
         label='新增' if k not in previous.get('active_boll',{}) else '持续'
@@ -385,9 +402,11 @@ def report(data, previous=None):
         if a.get('tp2_hit'):status+='；TP2已触及'
         elif a.get('tp1_hit'):status+='；TP1已触及'
         if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
-        lines.append(f"BOLL{label} | {a['name']} | {a['direction']} | {a['timeframe']} | {status} | 失效线 {edge:.8g}")
+        boll.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{label}｜{status}",f"失效价格：{edge:.8g}", ""])
     for a in data.get('ended_boll',[]):
-        lines.append(f"BOLL失效 | {a['name']} | {a['direction']} | {a['timeframe']} | 已突破触发K线极值")
+        boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
+    block('🔔 布林线持续预警｜BOLL',boll)
+    lines.extend(['','━━━━━━━━━━━━','🌡️ 市场风险',''])
     ctx=data.get('risk_context' ,{}).get('VIX')
     lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))
     groups={}
@@ -403,6 +422,7 @@ def report(data, previous=None):
             for k,names in groups.items():lines.append(f"⚠️ 数据：{len(names)}个标的{k}（{'、'.join(names)}）；其他可用周期继续分析。")
         else:lines.append('数据异常已恢复。')
     data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{})}
+    lines.append('')
     lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
 
