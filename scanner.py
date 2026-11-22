@@ -171,7 +171,8 @@ def boll_events(name,bars,now=NOW):
             candidates.append(dict(mode='BOLL Reversal',timeframe=t,direction=direction,score=float(score),reason=f'整根出轨5＋第二根反转3＋放量{int(spike)}＋RSI极端{int(extreme)}',confirmation='第二根已收盘；核对CMC及成本',reference_candle_close_utc=stamp,reference_price=entry,proxy_only=True,setup_ready=bool(ready),risk_note=f'距离首根收盘 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；中轨2R达标={rr1>=2}；轨道为当前快照，会移动',reference_entry=entry,reference_stop=stop,reference_tp1=tp1,reference_tp2=tp2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     return candidates,alerts
 
-def evaluate(name,bars):
+def evaluate(name,bars, double_alerts=None):
+    if double_alerts is None: double_alerts=[]
     candidates=[]
     seconds={**TF,'4h':14400}
     fresh={t:d for t,d in bars.items() if len(d)>=60 and 0 <= (NOW-d.index[-1].to_pydatetime()-timedelta(seconds=seconds[t])).total_seconds() <= {'15m':2700,'1h':10800,'4h':43200,'1d':345600}[t]}
@@ -207,29 +208,40 @@ def evaluate(name,bars):
             width=a['resistance20']-a['support20']; vol=bool(ratio.iloc[-1]>=2)
             score=4*breakout+2*(width<=5*atr)+2*vol+2*momentum
             if breakout:add('Range Breakout',t,sign,score,level-sign*atr,'横盘突破、量能及动量',True,level)
-            # Confirmed local pivots: two bars on both sides, no future bars.
-            x=(d.low if sign==1 else -d.high).iloc[-60:].to_numpy(); n=len(x)
+            # First pivot: two closed bars on each side. Second: early warning,
+            # then two closed bars without a new extreme. No future data.
+            z=d.iloc[-60:]; x=(z.low if sign==1 else -z.high).to_numpy(); n=len(x)
+            q=ratio.iloc[-60:]; raw=v.iloc[-60:]
             piv=[i for i in range(2,n-2) if x[i]<=min(x[i-2:i]) and x[i]<=min(x[i+1:i+3])]
-            for j in reversed(piv):
-                if n-1-j>8:break
-                found=False
-                for i in reversed([k for k in piv if 4<=j-k<=40]):
-                    if abs(x[i]-x[j])>abs(x[i])*.01 or x[j]<x[i]-.5*atr:continue
-                    neck=(d.high.iloc[-60+i:-60+j].max() if sign==1 else d.low.iloc[-60+i:-60+j].min())
+            delta=c.diff(); g=delta.clip(lower=0).ewm(alpha=1/14,adjust=False).mean(); loss=(-delta.clip(upper=0)).ewm(alpha=1/14,adjust=False).mean()
+            r=(100-100/(1+g/loss.replace(0,np.nan))).mask((loss==0)&(g>0),100).iloc[-60:]
+            def stamp(k): return iso(z.index[k].to_pydatetime()+timedelta(seconds=seconds[t]))
+            found=False
+            for j in range(n-1,max(1,n-9),-1):
+                if x[j]>min(x[j-2:j]) or (j<n-1 and min(x[j+1:])<x[j]):continue
+                for i in reversed([k for k in piv if 8<=j-k<=40]):
+                    if abs(x[i]-x[j])>abs(x[i])*.005 or x[j]<x[i]-.5*atr:continue
+                    neck=float(z.high.iloc[i+1:j].max() if sign==1 else z.low.iloc[i+1:j].min())
                     if sign*neck-max(x[i],x[j])<atr:continue
-                    if min(x[j+1:])<min(x[i],x[j]):continue
-                    vr=ratio.iloc[-60:].iloc[max(0,j-2):min(n,j+3)]
-                    spike=bool((vr>=2).any())
-                    if not spike:continue
-                    # A volume spike alone is not reversal: require recovery from second pivot.
-                    if sign*entry-x[j]<.3*atr:continue
-                    div=False
-                    delta=c.diff();g=delta.clip(lower=0).ewm(alpha=1/14,adjust=False).mean();loss=(-delta.clip(upper=0)).ewm(alpha=1/14,adjust=False).mean();r=100-100/(1+g/loss.replace(0,np.nan));r=r.iloc[-60:]
-                    div=bool(sign*(r.iloc[j]-r.iloc[i])>0 and x[j]<=x[i])
-                    crossed=sign*(entry-neck)>0
-                    hourly=m.get('1h'); turn=bool(hourly and sign*(hourly['close']-hourly['ema20'])>0)
-                    score=8+int(crossed)+.5*div+.5*turn
-                    add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f'双底/顶4分＋放量4分（{vr.max():.2f}倍）；颈线 {neck:.6g}；背离={div}',True,sign*x[j]+sign*.3*atr)
+                    first=q.iloc[max(0,i-2):i+3]; second=q.iloc[max(0,j-2):min(n,j+3)]
+                    if not bool((first>=2).any()):continue
+                    first_peak=float(raw.iloc[max(0,i-2):i+3].max())
+                    second_peak=float(raw.iloc[max(0,j-2):j+1].max())
+                    shrink=bool(second_peak<first_peak)
+                    recovery=sign*entry-x[j]>=.3*atr
+                    reversal=bool((second>=2).any()) and recovery and sign*(entry-float(z.open.iloc[j]))>0
+                    confirmed=n-1-j>=2 and recovery and (shrink or reversal)
+                    crossed=confirmed and sign*(entry-neck)>0
+                    break_indices=[k for k in range(j+2,n) if sign*(float(z.close.iloc[k])-neck)>0 and sign*(float(z.close.iloc[k-1])-neck)<=0]
+                    break_spike=any(q.iloc[k]>=2 for k in break_indices)
+                    div=bool(sign*(r.iloc[j]-r.iloc[i])>0 and x[j]<=x[i]); hourly=m.get('1h'); turn=bool(hourly and sign*(hourly['close']-hourly['ema20'])>0)
+                    score=8+int(crossed)+.5*div+.5*turn if confirmed else 4
+                    detail=dict(name=name,timeframe=t,direction='Buy' if sign==1 else 'Sell',first_price=float(sign*x[i]),second_price=float(sign*x[j]),first_utc=stamp(i),second_utc=stamp(j),difference_pct=float(100*abs(x[i]-x[j])/abs(x[i])),neckline=neck,first_volume_ratio=float(first.max()),second_volume_ratio=float(second.max()) if pd.notna(second.max()) else None,first_volume_utc=iso(first.idxmax().to_pydatetime()+timedelta(seconds=seconds[t])),breakout_volume_confirmed=bool(break_spike),second_shrinking=shrink,score=score,stage='颈线已突破' if crossed else '结构确认' if confirmed else '疑似第二顶底')
+                    double_alerts.append(detail)
+                    if confirmed:
+                        before=len(candidates)
+                        add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f"第一顶底放量{first.max():.2f}倍；颈线 {neck:.6g}；突破放量={break_spike}",crossed,neck)
+                        if len(candidates)>before:candidates[-1].update(double_pattern=detail)
                     found=True;break
                 if found:break
     boll,alerts=boll_events(name,bars)
@@ -275,7 +287,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[]}
+            'version':'V5.5','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -310,7 +322,7 @@ def scan(previous=None):
                 if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
-            watches,item['screen_reason'],alerts=evaluate(name,bars)
+            watches,item['screen_reason'],alerts=evaluate(name,bars,output['double_alerts'])
             output['boll_alerts'].extend(alerts)
             active,ended=track_boll(name,bars,alerts,watches,previous.get('active_boll',{}))
             output['active_boll'].update(active);output['ended_boll'].extend(ended)
@@ -334,11 +346,11 @@ SOURCES=[x[2] for x in ASSETS]
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['CMC V5.4 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
+    lines=['CMC V5.5 | '+nz(data['scan_utc'])+' 新西兰时间','本轮暂无已核实的出手机会。']
     seen=set(); shown=0
     watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
     for w in watches:
-        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode']=='BOLL Reversal' else (w['name'],'other',w['direction'])
+        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],'other',w['direction'])
         if w['score']<8 or key in seen:continue
         seen.add(key);shown+=1
         lines.append(f"{w['name']} | {w['direction']} | {w['mode']} | {w['timeframe']} | {w['score']:.1f}/10")
@@ -349,11 +361,17 @@ def report(data, previous=None):
             import re
             match=re.search(r'([0-9.]+) ATR',note)
             reasons=[]
+            if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
             lines.append('仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
     if not shown:lines.append('暂无8分以上技术候选。')
+    for a in data.get('double_alerts',[]):
+        lines.append(f"双顶底 | {a['name']} | {a['direction']} | {a['timeframe']} | {a['stage']}")
+        lines.append(f"第一点 {a['first_price']:.8g} ({nz(a['first_utc'])})；第二点 {a['second_price']:.8g} ({nz(a['second_utc'])})；差 {a['difference_pct']:.3f}%")
+        second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
+        lines.append(f"首点放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})；第二点量比 {second}；颈线 {a['neckline']:.8g}；突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
     oldkeys=set(previous.get('alert_keys',[]))
     current=[]
     for w in data.get('boll_alerts',[]):
