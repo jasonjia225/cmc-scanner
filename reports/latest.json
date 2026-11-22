@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-22T03:15:44.888515Z",
+  "scan_utc": "2026-11-22T03:30:59.293513Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.7",
@@ -458,22 +458,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T03:15:00Z",
+        "15m": "2026-11-22T03:30:00Z",
         "1h": "2026-11-22T03:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T03:15:00Z",
+      "last_complete_candle_utc": "2026-11-22T03:30:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 59183.47,
-          "ema20": 59857.197362988925,
-          "ema50": 59794.150356434664,
-          "rsi14": 20.251255873732518,
-          "atr14": 193.7417284807115,
-          "support20": 59286.15,
-          "resistance20": 60347.99,
+          "close": 59243.49,
+          "ema20": 59798.749042704265,
+          "ema50": 59772.55583265294,
+          "rsi14": 24.069707859435383,
+          "atr14": 194.19946216066077,
+          "support20": 59122.0,
+          "resistance20": 60232.79,
           "bars": 600
         },
         "1h": {
@@ -540,21 +540,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T03:15:00Z",
+        "15m": "2026-11-22T03:30:00Z",
         "1h": "2026-11-22T03:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T03:15:00Z",
+      "last_complete_candle_utc": "2026-11-22T03:30:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1659.09,
-          "ema20": 1676.8651301780749,
-          "ema50": 1674.4078924163487,
-          "rsi14": 22.39613423286758,
-          "atr14": 5.737271172740613,
-          "support20": 1663.93,
+          "close": 1659.35,
+          "ema20": 1675.1970225420678,
+          "ema50": 1673.8173868314123,
+          "rsi14": 22.998579655952412,
+          "atr14": 5.703180374687712,
+          "support20": 1658.0,
           "resistance20": 1686.64,
           "bars": 600
         },
@@ -590,42 +590,24 @@
         }
       },
       "watch": {
-        "mode": "Double Bottom/Top Reversal",
-        "timeframe": "15m",
+        "mode": "Trend",
+        "timeframe": "4h",
         "direction": "Sell",
-        "score": 10.0,
-        "reason": "第一顶底放量2.48倍；颈线 1672.15；突破放量=True",
+        "score": 8.0,
+        "reason": "趋势、突破及动量独立评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-22T03:15:00Z",
-        "reference_price": 1659.09,
+        "reference_candle_close_utc": "2026-11-22T00:00:00Z",
+        "reference_price": 1682.3,
         "proxy_only": true,
         "setup_ready": false,
-        "risk_note": "距离参考触发点 2.28 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-        "reference_entry": 1659.09,
-        "reference_stop": 1688.3611813518223,
-        "reference_tp1": 1600.547637296355,
-        "reference_tp2": 1571.2764559445327,
+        "risk_note": "距离参考触发点 3.02 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+        "reference_entry": 1682.3,
+        "reference_stop": 1830.2900417800467,
+        "reference_tp1": 1386.3199164399064,
+        "reference_tp2": 1238.3298746598596,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 1.7642913495845558,
-        "double_pattern": {
-          "name": "Ethereum (USD)",
-          "timeframe": "15m",
-          "direction": "Sell",
-          "first_price": 1686.03,
-          "second_price": 1686.64,
-          "first_utc": "2026-11-21T21:30:00Z",
-          "second_utc": "2026-11-22T01:30:00Z",
-          "difference_pct": 0.03617966465603384,
-          "neckline": 1672.15,
-          "first_volume_ratio": 2.48107036824272,
-          "second_volume_ratio": 1.1636313271341705,
-          "first_volume_utc": "2026-11-21T22:00:00Z",
-          "breakout_volume_confirmed": true,
-          "second_shrinking": true,
-          "score": 10.0,
-          "stage": "颈线已突破"
-        }
+        "stop_pct": 8.796887700175166
       },
       "screen_reason": null
     },
@@ -1001,46 +983,6 @@
   ],
   "watch_candidates": [
     {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "Double Bottom/Top Reversal",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 10.0,
-      "reason": "第一顶底放量2.48倍；颈线 1672.15；突破放量=True",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T03:15:00Z",
-      "reference_price": 1659.09,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "距离参考触发点 2.28 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 1659.09,
-      "reference_stop": 1688.3611813518223,
-      "reference_tp1": 1600.547637296355,
-      "reference_tp2": 1571.2764559445327,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.7642913495845558,
-      "double_pattern": {
-        "name": "Ethereum (USD)",
-        "timeframe": "15m",
-        "direction": "Sell",
-        "first_price": 1686.03,
-        "second_price": 1686.64,
-        "first_utc": "2026-11-21T21:30:00Z",
-        "second_utc": "2026-11-22T01:30:00Z",
-        "difference_pct": 0.03617966465603384,
-        "neckline": 1672.15,
-        "first_volume_ratio": 2.48107036824272,
-        "second_volume_ratio": 1.1636313271341705,
-        "first_volume_utc": "2026-11-21T22:00:00Z",
-        "breakout_volume_confirmed": true,
-        "second_shrinking": true,
-        "score": 10.0,
-        "stage": "颈线已突破"
-      }
-    },
-    {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
       "mode": "Trend",
@@ -1087,28 +1029,6 @@
     {
       "name": "Ethereum (USD)",
       "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T03:15:00Z",
-      "reference_price": 1659.09,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.84 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 1659.09,
-      "reference_stop": 1669.6672711727406,
-      "reference_tp1": 1637.9354576545186,
-      "reference_tp2": 1627.358186481778,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.6375345022114934
-    },
-    {
-      "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
       "mode": "Trend",
       "timeframe": "4h",
       "direction": "Sell",
@@ -1129,31 +1049,19 @@
       "stop_pct": 8.796887700175166
     }
   ],
-  "research_setups": [
+  "research_setups": [],
+  "boll_alerts": [
     {
       "name": "Ethereum (USD)",
-      "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "Range Breakout",
       "timeframe": "15m",
-      "direction": "Sell",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T03:15:00Z",
-      "reference_price": 1659.09,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.84 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 1659.09,
-      "reference_stop": 1669.6672711727406,
-      "reference_tp1": 1637.9354576545186,
-      "reference_tp2": 1627.358186481778,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.6375345022114934
-    }
-  ],
-  "boll_alerts": [
+      "direction": "Buy",
+      "reference_price": 1659.35,
+      "reference_candle_close_utc": "2026-11-22T03:30:00Z",
+      "trigger_low": 1657.13,
+      "trigger_high": 1662.39,
+      "score": 5,
+      "reason": "第一根整根出轨；等待下一根收盘反转"
+    },
     {
       "name": "Gold - Cash",
       "timeframe": "1d",
@@ -1206,26 +1114,7 @@
     }
   },
   "ended_boll": [],
-  "double_alerts": [
-    {
-      "name": "Ethereum (USD)",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "first_price": 1686.03,
-      "second_price": 1686.64,
-      "first_utc": "2026-11-21T21:30:00Z",
-      "second_utc": "2026-11-22T01:30:00Z",
-      "difference_pct": 0.03617966465603384,
-      "neckline": 1672.15,
-      "first_volume_ratio": 2.48107036824272,
-      "second_volume_ratio": 1.1636313271341705,
-      "first_volume_utc": "2026-11-21T22:00:00Z",
-      "breakout_volume_confirmed": true,
-      "second_shrinking": true,
-      "score": 10.0,
-      "stage": "颈线已突破"
-    }
-  ],
+  "double_alerts": [],
   "risk_context": {
     "VIX": {
       "close": 35.88999938964844,
@@ -1243,6 +1132,7 @@
     "alert_keys": [
       "Bitcoin (USD)|Buy|15m|2026-11-22T02:45:00Z",
       "Ethereum (USD)|Buy|15m|2026-11-22T03:00:00Z",
+      "Ethereum (USD)|Buy|15m|2026-11-22T03:30:00Z",
       "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
       "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z"
     ],
