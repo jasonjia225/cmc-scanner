@@ -34,8 +34,10 @@ ASSETS = [
 ]
 INDEX_FUTURES={'Germany 40 - Cash':'FDAX=F','US NDAQ 100 - Cash':'NQ=F','Hong Kong 50 - Cash':'HSI=F'}
 
+INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':['2800.HK']}
+
 def volume_allowed(name,d):
-    return name not in ('USD/JPY','NZD/USD') and (name not in INDEX_FUTURES or d.attrs.get('futures',False))
+    return name not in ('USD/JPY','NZD/USD') and (name not in INDEX_FUTURES or (d.attrs.get('futures',False) or d.attrs.get('etf',False)))
 
 def session_status(name,source,df,tf):
     if df is None or df.empty:return '获取失败或无数据'
@@ -60,7 +62,7 @@ def resolve_conflicts(watches,details):
         buy,sell=scores['Buy'],scores['Sell']
         preferred='Buy' if buy>sell else 'Sell' if sell>buy else None
         for w in ws:w['setup_ready']=False;w['conflict']=True
-        conflicts.append(dict(timeframe=tf,preferred=preferred,reason='多空冲突；等待进一步确认',buy_stage=buy,sell_stage=sell))
+        conflicts.append(dict(timeframe=tf,preferred=preferred,reason='多空冲突；等待进一步确认',buy_stage=buy,sell_stage=sell, sides={side:[{'score':a.get('score'), 'neckline':a.get('neckline'), 'stage':a.get('stage')} for a in ds if a['direction']==side] for side in sides}))
     return conflicts
 
 # Actual data providers vary. This scan does not claim guaranteed exchange real-time data.
@@ -125,7 +127,7 @@ def aggregate_4h(hourly, name=None):
     if hourly is None or hourly.empty:return None
     # UTC 4h buckets; accept only four strictly consecutive hourly candles.
     groups=[]
-    if not hourly.attrs.get('futures') and name in {'NVDA','MU','MSTR','TSLA','SNDK','US NDAQ 100 - Cash'}:
+    if not hourly.attrs.get('futures') and not hourly.attrs.get('etf') and name in {'NVDA','MU','MSTR','TSLA','SNDK','US NDAQ 100 - Cash'}:
         local=hourly.index.tz_convert('America/New_York')
         # Only full 09:30–13:30 regular-session blocks; discard partial session tail.
         mask=(local.hour*60+local.minute>=570)&(local.hour*60+local.minute<810)
@@ -318,7 +320,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.1','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -326,28 +328,38 @@ def scan(previous=None):
               'timeframes':{},'candle_close_utc':{},'last_complete_candle_utc':None,'errors':{},'metrics':{},'watch':None}
         bars={}
         futures_bars={}
+        item['source_attempts']={};item['timeframe_sources']={}
         if name in INDEX_FUTURES:
+            options=[(INDEX_FUTURES[name],'futures')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
             for tf in ('15m','1h','1d'):
-                df,err=yahoo(INDEX_FUTURES[name],tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
-                if df is not None and len(df)>=60 and df.volume.fillna(0).gt(0).any() and session_status(name,'futures',df,tf)=='可用':
-                    df.attrs['futures']=True;futures_bars[tf]=df
-            # Keep all periods on one source; never mix cash and futures levels.
-            if len(futures_bars)==3:
-                source='Yahoo Finance '+INDEX_FUTURES[name]+' futures proxy';item['proxy_source']=source
-            else:futures_bars={}
+                fallback=None
+                for ticker,kind in options:
+                    df,err=yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
+                    label='Yahoo Finance '+ticker+' '+kind+' proxy'
+                    status=session_status(name,label,df,tf)
+                    valid=df is not None and len(df)>=60
+                    vol=valid and df.volume.fillna(0).gt(0).any()
+                    item['source_attempts'][tf+' '+ticker]={'error':err,'status':status,'bars':len(df) if df is not None else 0,'volume_available':bool(vol)}
+                    if not valid or (kind!='cash' and not vol):continue
+                    df.attrs.update(proxy_source=label,futures=kind=='futures',etf=kind=='etf')
+                    if fallback is None:fallback=df
+                    if status=='可用':fallback=df;break
+                if fallback is not None:futures_bars[tf]=fallback
+            source='mixed index proxies';item['proxy_source']=source
         if name.startswith('China A50'):
             for tf in ['15m','1h','4h','1d']:item['timeframes'][tf]=False
             item['errors']['contract']='CMC specific active month and expiry not independently verified; signal disabled'
         else:
             for tf in ['15m','1h','1d']:
-                if futures_bars:
-                    df,err=futures_bars[tf],None
+                if name in INDEX_FUTURES:
+                    df,err=futures_bars.get(tf),None
                 elif symbol:
                     df,err=yahoo(symbol,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
                 else:
                     df,err=coinbase('BTC-USD' if 'Bitcoin' in name else 'ETH-USD',TF[tf])
                 if df is not None and len(df)>0:
                     bars[tf]=df;item['timeframes'][tf]=True
+                    item['timeframe_sources'][tf]=df.attrs.get('proxy_source',source)
                     item['metrics'][tf]=metrics(df)
                     closed=iso(df.index[-1].to_pydatetime()+timedelta(seconds=TF[tf]))
                     item['candle_close_utc'][tf]=closed
@@ -359,26 +371,38 @@ def scan(previous=None):
             item['timeframes']['4h']=four is not None and not four.empty
             if four is not None and not four.empty:
                 bars['4h']=four
+                item['timeframe_sources']['4h']=four.attrs.get('proxy_source',source)
                 item['metrics']['4h']=metrics(four)
                 closed=iso(four.index[-1].to_pydatetime()+timedelta(hours=4))
                 item['candle_close_utc']['4h']=closed
                 if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                     item['last_complete_candle_utc']=closed
             else:item['errors']['4h']='insufficient contiguous 1h candles for complete UTC-aligned 4h bar'
-            watches,item['screen_reason'],alerts=evaluate(name,bars,output['double_alerts'])
-            item['session_status']={tf:session_status(name,source,bars.get(tf),tf) for tf in ('15m','1h','4h','1d')}
-            details=[a for a in output['double_alerts'] if a['name']==name]
-            output['conflicts'].extend({'name':name,**x} for x in resolve_conflicts(watches,details))
-            if name in INDEX_FUTURES:
-                item['screen_reason']='；'.join(tf+':'+status+('（历史不足60根）' if tf in bars and len(bars[tf])<60 else '') for tf,status in item['session_status'].items())+('；现货无可靠成交量，放量策略受限' if not futures_bars else '；期货代理')+('；无8分候选' if not watches else '；有候选')
-            output['boll_alerts'].extend(alerts)
+            watches=[]; alerts=[]; details=[]
+            groups={}
+            for tf,d in bars.items():groups.setdefault(d.attrs.get('proxy_source',source),{})[tf]=d
             prior=previous.get('active_boll',{})
-            compatible={k:v for k,v in prior.items() if v.get('proxy_source',dict((x[0],x[2]) for x in ASSETS).get(name))==source or v['name']!=name}
-            active,ended=track_boll(name,bars,alerts,watches,compatible)
-            for k,v in prior.items():
-                if v['name']==name and k not in compatible:active[k]={**v,'data_unverified':True,'status':'原数据源待核实，保留预警'}
-            for v in active.values():v.setdefault('proxy_source',source)
-            output['active_boll'].update(active);output['ended_boll'].extend(ended)
+            remaining={k:v for k,v in prior.items() if v['name']==name}
+            active_all={}; ended_all=[]
+            for src,subset in groups.items():
+                ds=[]; ws,_,aa=evaluate(name,subset,ds)
+                for x in ws+aa+ds:x['proxy_source']=src
+                if ' etf ' in src:
+                    for w in ws:w['setup_ready']=False;w['risk_note']+='；ETF代理仅观察'
+                watches.extend(ws);alerts.extend(aa);details.extend(ds)
+                compatible={k:v for k,v in remaining.items() if v.get('proxy_source',dict((x[0],x[2]) for x in ASSETS).get(name))==src}
+                active,ended=track_boll(name,subset,aa,ws,compatible)
+                for k,v in active.items():
+                    v.setdefault('proxy_source',src);active_all[k]=v
+                ended_all.extend(ended)
+                for k in compatible:remaining.pop(k,None)
+            for k,v in remaining.items():active_all[k]={**v,'data_unverified':True}
+            output['double_alerts'].extend(details)
+            output['boll_alerts'].extend(alerts)
+            output['active_boll'].update(active_all);output['ended_boll'].extend(ended_all)
+            item['session_status']={tf:session_status(name,item['timeframe_sources'].get(tf,source),bars.get(tf),tf) for tf in ('15m','1h','4h','1d')}
+            output['conflicts'].extend({'name':name,**x} for x in resolve_conflicts(watches,details))
+            item['screen_reason']='有候选' if watches else '无8分候选或数据不足'
             item['watch']=watches[0] if watches else None
             for w in watches:
                 candidate={'name':name,'proxy_source':source,**w}
@@ -399,7 +423,7 @@ SOURCES=[x[2] for x in ASSETS]
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
+    lines=['📊 CMC V5.8.1 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -428,11 +452,14 @@ def report(data, previous=None):
             if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
+            out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
     for x in data.get('conflicts',[]):
         out=heading('⚖️ 多空冲突')
         out.extend([f"{x['name']}｜{x['timeframe']}", '倾向：'+(direction(x['preferred'])+'观察' if x['preferred'] else '方向未定')+'；暂不入场',''])
-    if not shown:lines.append('暂无8分以上技术候选。')
+        for side,patterns in x.get('sides',{}).items():
+            for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {a['neckline']:.8g}")
+    if not shown:lines.append('存在8分以上候选，因多空冲突暂不入场。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
     for a in data.get('double_alerts',[]):
         out=heading('🔄 双顶双底｜Reversal')
         if out:out.append('')
@@ -440,8 +467,10 @@ def report(data, previous=None):
         stage={'疑似第二顶底':f'⏳ 疑似第二{point}','结构确认':f'双{point}确认'}.get(a['stage'],a['stage'])
         shape='W形双底' if point=='底' else 'M形双顶'
         out.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{shape}｜{stage}"])
+        if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
         out.append(f"第一{point} {a['first_price']:.8g} ({nz(a['first_utc'])})\n第二{point} {a['second_price']:.8g} ({nz(a['second_utc'])})\n价格差 {a['difference_pct']:.3f}%")
         second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
+        if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
         out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {a['neckline']:.8g}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
     for title,items in sections.items():block(title,items)
     boll=[]
@@ -462,7 +491,15 @@ def report(data, previous=None):
     for a in data.get('ended_boll',[]):
         boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
     block('🔔 布林线持续预警｜BOLL',boll)
-    block('📋 股指诊断',[a['name']+'｜'+a['screen_reason'] for a in data['assets'] if a['name'] in INDEX_FUTURES])
+    index_notes=[]
+    for a in data['assets']:
+        if a['name'] not in INDEX_FUTURES:continue
+        short={'Germany 40 - Cash':'德国40','US NDAQ 100 - Cash':'纳指100','Hong Kong 50 - Cash':'香港50'}[a['name']]
+        srcs=a.get('timeframe_sources',{}); usable=[t for t in srcs if a.get('session_status',{}).get(t)=='可用']
+        kinds=set('期货' if ' futures ' in srcs[t] else 'ETF' if ' etf ' in srcs[t] else '现货' for t in usable)
+        label='/'.join(sorted(kinds)) if kinds else '暂无新数据'
+        index_notes.append(short+' '+label+('（部分周期）' if len(usable)<4 and usable else ''))
+    block('📋 股指简报',['｜'.join(index_notes)])
     lines.extend(['','━━━━━━━━━━━━','🌡️ 市场风险',''])
     ctx=data.get('risk_context' ,{}).get('VIX')
     lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))
