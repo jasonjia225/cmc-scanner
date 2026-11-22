@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-22T12:15:45.245384Z",
+  "scan_utc": "2026-11-22T12:31:02.490951Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.7",
@@ -458,21 +458,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T12:15:00Z",
+        "15m": "2026-11-22T12:30:00Z",
         "1h": "2026-11-22T12:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T12:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T12:15:00Z",
+      "last_complete_candle_utc": "2026-11-22T12:30:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 61130.74,
-          "ema20": 60365.891663044094,
-          "ema50": 59933.49835831901,
-          "rsi14": 75.6099443744865,
-          "atr14": 303.27635379636496,
-          "support20": 58890.3,
+          "close": 60534.96,
+          "ema20": 60381.99340942085,
+          "ema50": 59957.08508937006,
+          "rsi14": 56.96147644599476,
+          "atr14": 368.1166142394818,
+          "support20": 58903.14,
           "resistance20": 61238.93,
           "bars": 600
         },
@@ -521,21 +521,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T12:15:00Z",
+        "15m": "2026-11-22T12:30:00Z",
         "1h": "2026-11-22T12:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T12:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T12:15:00Z",
+      "last_complete_candle_utc": "2026-11-22T12:30:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1710.48,
-          "ema20": 1694.916034252008,
-          "ema50": 1682.560826626943,
-          "rsi14": 72.11019359287067,
-          "atr14": 7.86786929064185,
-          "support20": 1655.41,
+          "close": 1699.3,
+          "ema20": 1695.333554799436,
+          "ema50": 1683.2172647984662,
+          "rsi14": 57.80692551176303,
+          "atr14": 9.945878627024577,
+          "support20": 1659.06,
           "resistance20": 1721.19,
           "bars": 600
         },
@@ -975,26 +975,7 @@
     }
   },
   "ended_boll": [],
-  "double_alerts": [
-    {
-      "name": "Bitcoin (USD)",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "first_price": 61238.93,
-      "second_price": 61163.86,
-      "first_utc": "2026-11-22T10:00:00Z",
-      "second_utc": "2026-11-22T12:15:00Z",
-      "difference_pct": 0.12258542074461411,
-      "neckline": 60594.13,
-      "first_volume_ratio": 4.514357344061776,
-      "second_volume_ratio": 0.8063821974667932,
-      "first_volume_utc": "2026-11-22T10:00:00Z",
-      "breakout_volume_confirmed": false,
-      "second_shrinking": true,
-      "score": 4,
-      "stage": "疑似第二顶底"
-    }
-  ],
+  "double_alerts": [],
   "risk_context": {
     "VIX": {
       "close": 35.88999938964844,
