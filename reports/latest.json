@@ -1,8 +1,8 @@
 {
-  "scan_utc": "2026-11-22T23:31:06.603692Z",
+  "scan_utc": "2026-11-22T23:45:43.355210Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
-  "version": "V5.7",
+  "version": "V5.8",
   "cmc_quotes_verified": false,
   "high_quality_signals": [],
   "assets": [
@@ -67,7 +67,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "MU",
@@ -130,7 +136,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "MSTR",
@@ -193,7 +205,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "TSLA",
@@ -256,7 +274,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "SNDK",
@@ -319,7 +343,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "Germany 40 - Cash",
@@ -382,7 +412,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "15m:数据延迟或过期（休市状态未核实）；1h:数据延迟或过期（休市状态未核实）；4h:数据延迟或过期（休市状态未核实）；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "US NDAQ 100 - Cash",
@@ -445,7 +481,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "15m:周末通常休市（交易所日历未核实）；1h:周末通常休市（交易所日历未核实）；4h:周末通常休市（交易所日历未核实）；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "session_status": {
+        "15m": "周末通常休市（交易所日历未核实）",
+        "1h": "周末通常休市（交易所日历未核实）",
+        "4h": "周末通常休市（交易所日历未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "Bitcoin (USD)",
@@ -458,20 +500,20 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T23:30:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-22T23:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T23:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 60929.72,
-          "ema20": 60797.55986257782,
-          "ema50": 60638.67552004146,
-          "rsi14": 56.46603863041146,
-          "atr14": 221.36190552717602,
+          "close": 61192.24,
+          "ema20": 60835.148447094216,
+          "ema50": 60660.38393101681,
+          "rsi14": 64.11251887583563,
+          "atr14": 231.11105513237763,
           "support20": 60475.79,
           "resistance20": 61171.08,
           "bars": 600
@@ -508,44 +550,33 @@
         }
       },
       "watch": {
-        "mode": "Double Bottom/Top Reversal",
+        "mode": "Range Breakout",
         "timeframe": "15m",
         "direction": "Buy",
-        "score": 8.5,
-        "reason": "第一顶底放量2.10倍；颈线 61325；突破放量=False",
+        "score": 10.0,
+        "reason": "横盘突破、量能及动量",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-        "reference_price": 60929.72,
+        "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+        "reference_price": 61192.24,
         "proxy_only": true,
         "setup_ready": false,
-        "risk_note": "距离参考触发点 1.79 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-        "reference_entry": 60929.72,
-        "reference_stop": 60583.091428341846,
-        "reference_tp1": 61622.97714331631,
-        "reference_tp2": 61969.60571497447,
+        "risk_note": "距离参考触发点 0.09 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
+        "reference_entry": 61192.24,
+        "reference_stop": 60939.96894486762,
+        "reference_tp1": 61696.78211026475,
+        "reference_tp2": 61949.05316539713,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 0.5688990063603692,
-        "double_pattern": {
-          "name": "Bitcoin (USD)",
-          "timeframe": "15m",
-          "direction": "Buy",
-          "first_price": 60650.26,
-          "second_price": 60649.5,
-          "first_utc": "2026-11-22T16:00:00Z",
-          "second_utc": "2026-11-22T22:30:00Z",
-          "difference_pct": 0.0012530861368146439,
-          "neckline": 61324.99,
-          "first_volume_ratio": 2.1029597006594,
-          "second_volume_ratio": 2.271414023431012,
-          "first_volume_utc": "2026-11-22T16:30:00Z",
-          "breakout_volume_confirmed": false,
-          "second_shrinking": true,
-          "score": 8.5,
-          "stage": "结构确认"
-        }
+        "stop_pct": 0.41225987990041907,
+        "conflict": true
       },
-      "screen_reason": null
+      "screen_reason": null,
+      "session_status": {
+        "15m": "可用",
+        "1h": "可用",
+        "4h": "可用",
+        "1d": "可用"
+      }
     },
     {
       "name": "Ethereum (USD)",
@@ -558,21 +589,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T23:30:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-22T23:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T23:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1718.87,
-          "ema20": 1714.9115561139736,
-          "ema50": 1708.6954947106246,
-          "rsi14": 57.71608711618639,
-          "atr14": 6.430227533218433,
-          "support20": 1708.36,
+          "close": 1719.63,
+          "ema20": 1715.3609317221667,
+          "ema50": 1709.124298839374,
+          "rsi14": 58.685826779596965,
+          "atr14": 6.350211280845701,
+          "support20": 1708.55,
           "resistance20": 1727.31,
           "bars": 600
         },
@@ -614,18 +645,18 @@
         "score": 8.5,
         "reason": "第一顶底放量2.04倍；颈线 1727.31；突破放量=False",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-        "reference_price": 1718.87,
+        "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+        "reference_price": 1719.63,
         "proxy_only": true,
         "setup_ready": false,
-        "risk_note": "距离参考触发点 1.31 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-        "reference_entry": 1718.87,
-        "reference_stop": 1705.8209317400344,
-        "reference_tp1": 1744.9681365199308,
-        "reference_tp2": 1758.0172047798962,
+        "risk_note": "距离参考触发点 1.21 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+        "reference_entry": 1719.63,
+        "reference_stop": 1705.8449366157463,
+        "reference_tp1": 1747.2001267685077,
+        "reference_tp2": 1760.9851901527616,
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
-        "stop_pct": 0.7591655133876007,
+        "stop_pct": 0.801629617083548,
         "double_pattern": {
           "name": "Ethereum (USD)",
           "timeframe": "15m",
@@ -643,9 +674,16 @@
           "second_shrinking": true,
           "score": 8.5,
           "stage": "结构确认"
-        }
+        },
+        "conflict": true
       },
-      "screen_reason": null
+      "screen_reason": null,
+      "session_status": {
+        "15m": "可用",
+        "1h": "可用",
+        "4h": "可用",
+        "1d": "可用"
+      }
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -699,7 +737,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "15m:数据延迟或过期（休市状态未核实）；1h:数据延迟或过期（休市状态未核实）；4h:获取失败或无数据；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "获取失败或无数据",
+        "1d": "可用"
+      }
     },
     {
       "name": "USD/JPY",
@@ -762,7 +806,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "NZD/USD",
@@ -825,7 +875,13 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "Gold - Cash",
@@ -838,23 +894,23 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T23:30:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-20T22:00:00Z",
         "1d": "2026-11-21T05:00:00Z",
         "4h": "2026-11-20T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T23:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3585.0,
-          "ema20": 3536.024032380008,
-          "ema50": 3546.790761726858,
-          "rsi14": 64.68975498862622,
-          "atr14": 19.069129984735465,
+          "close": 3581.800048828125,
+          "ema20": 3539.4616617366737,
+          "ema50": 3547.7605241526503,
+          "rsi14": 63.971378298268476,
+          "atr14": 18.838175208242884,
           "support20": 3502.89990234375,
-          "resistance20": 3577.199951171875,
-          "bars": 347
+          "resistance20": 3588.0,
+          "bars": 348
         },
         "1h": {
           "close": 3515.39990234375,
@@ -887,27 +943,14 @@
           "bars": 325
         }
       },
-      "watch": {
-        "mode": "Range Breakout",
-        "timeframe": "15m",
-        "direction": "Buy",
-        "score": 8.0,
-        "reason": "横盘突破、量能及动量",
-        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-        "reference_price": 3585.0,
-        "proxy_only": true,
-        "setup_ready": true,
-        "risk_note": "距离参考触发点 0.41 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-        "reference_entry": 3585.0,
-        "reference_stop": 3558.1308211871396,
-        "reference_tp1": 3638.7383576257207,
-        "reference_tp2": 3665.607536438581,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 0.7494889487548216
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "可用",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "Silver - Cash",
@@ -920,23 +963,23 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T23:30:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-20T22:00:00Z",
         "1d": "2026-11-21T05:00:00Z",
         "4h": "2026-11-20T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T23:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 42.279998779296875,
-          "ema20": 41.225822647496784,
-          "ema50": 41.48497944418137,
-          "rsi14": 67.6578809857663,
-          "atr14": 0.3558399448339928,
+          "close": 42.119998931884766,
+          "ema20": 41.283408623780176,
+          "ema50": 41.49782527949585,
+          "rsi14": 66.04126009787066,
+          "atr14": 0.351570709048258,
           "support20": 40.6150016784668,
-          "resistance20": 41.94499969482422,
-          "bars": 346
+          "resistance20": 42.345001220703125,
+          "bars": 347
         },
         "1h": {
           "close": 41.06999969482422,
@@ -969,27 +1012,14 @@
           "bars": 322
         }
       },
-      "watch": {
-        "mode": "Range Breakout",
-        "timeframe": "15m",
-        "direction": "Buy",
-        "score": 8.0,
-        "reason": "横盘突破、量能及动量",
-        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-        "reference_price": 42.279998779296875,
-        "proxy_only": true,
-        "setup_ready": true,
-        "risk_note": "距离参考触发点 0.94 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-        "reference_entry": 42.279998779296875,
-        "reference_stop": 41.58915974999022,
-        "reference_tp1": 43.66167683791018,
-        "reference_tp2": 44.35251586721683,
-        "rr_tp1": 2.0,
-        "rr_tp2": 3.0,
-        "stop_pct": 1.6339618005025414
-      },
-      "screen_reason": null
+      "watch": null,
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "可用",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     },
     {
       "name": "Crude Oil West Texas - Cash",
@@ -1002,23 +1032,23 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T23:30:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-20T22:00:00Z",
         "1d": "2026-11-21T05:00:00Z",
         "4h": "2026-11-20T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T23:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 82.68000030517578,
-          "ema20": 83.1290246245708,
-          "ema50": 82.77415394003954,
-          "rsi14": 43.96749479668056,
-          "atr14": 0.387634217557861,
-          "support20": 82.20999908447266,
+          "close": 82.8499984741211,
+          "ema20": 83.11623721170068,
+          "ema50": 82.78315653661102,
+          "rsi14": 46.706623864646204,
+          "atr14": 0.3692321222189066,
+          "support20": 82.26000213623047,
           "resistance20": 84.06999969482422,
-          "bars": 347
+          "bars": 348
         },
         "1h": {
           "close": 83.41000366210938,
@@ -1052,10 +1082,62 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期"
+      "screen_reason": "无8分候选或数据不足/过期",
+      "session_status": {
+        "15m": "可用",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
+        "1d": "可用"
+      }
     }
   ],
   "watch_candidates": [
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "Range Breakout",
+      "timeframe": "15m",
+      "direction": "Buy",
+      "score": 10.0,
+      "reason": "横盘突破、量能及动量",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+      "reference_price": 61192.24,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "距离参考触发点 0.09 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
+      "reference_entry": 61192.24,
+      "reference_stop": 60939.96894486762,
+      "reference_tp1": 61696.78211026475,
+      "reference_tp2": 61949.05316539713,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 0.41225987990041907,
+      "conflict": true
+    },
+    {
+      "name": "Bitcoin (USD)",
+      "proxy_source": "Coinbase BTC-USD spot",
+      "mode": "Trend",
+      "timeframe": "15m",
+      "direction": "Buy",
+      "score": 10.0,
+      "reason": "趋势、突破及动量独立评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+      "reference_price": 61192.24,
+      "proxy_only": true,
+      "setup_ready": false,
+      "risk_note": "距离参考触发点 0.09 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
+      "reference_entry": 61192.24,
+      "reference_stop": 60406.45668346029,
+      "reference_tp1": 62763.80663307942,
+      "reference_tp2": 63549.58994961913,
+      "rr_tp1": 2.0,
+      "rr_tp2": 3.0,
+      "stop_pct": 1.2841224909232112,
+      "conflict": true
+    },
     {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
@@ -1065,18 +1147,18 @@
       "score": 8.5,
       "reason": "第一顶底放量2.10倍；颈线 61325；突破放量=False",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 60929.72,
+      "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+      "reference_price": 61192.24,
       "proxy_only": true,
       "setup_ready": false,
-      "risk_note": "距离参考触发点 1.79 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 60929.72,
-      "reference_stop": 60583.091428341846,
-      "reference_tp1": 61622.97714331631,
-      "reference_tp2": 61969.60571497447,
+      "risk_note": "距离参考触发点 0.57 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
+      "reference_entry": 61192.24,
+      "reference_stop": 60580.16668346029,
+      "reference_tp1": 62416.38663307942,
+      "reference_tp2": 63028.45994961913,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 0.5688990063603692,
+      "stop_pct": 1.000246626924771,
       "double_pattern": {
         "name": "Bitcoin (USD)",
         "timeframe": "15m",
@@ -1094,7 +1176,8 @@
         "second_shrinking": true,
         "score": 8.5,
         "stage": "结构确认"
-      }
+      },
+      "conflict": true
     },
     {
       "name": "Ethereum (USD)",
@@ -1105,18 +1188,18 @@
       "score": 8.5,
       "reason": "第一顶底放量2.04倍；颈线 1727.31；突破放量=False",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 1718.87,
+      "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+      "reference_price": 1719.63,
       "proxy_only": true,
       "setup_ready": false,
-      "risk_note": "距离参考触发点 1.31 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 1718.87,
-      "reference_stop": 1705.8209317400344,
-      "reference_tp1": 1744.9681365199308,
-      "reference_tp2": 1758.0172047798962,
+      "risk_note": "距离参考触发点 1.21 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+      "reference_entry": 1719.63,
+      "reference_stop": 1705.8449366157463,
+      "reference_tp1": 1747.2001267685077,
+      "reference_tp2": 1760.9851901527616,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 0.7591655133876007,
+      "stop_pct": 0.801629617083548,
       "double_pattern": {
         "name": "Ethereum (USD)",
         "timeframe": "15m",
@@ -1134,29 +1217,8 @@
         "second_shrinking": true,
         "score": 8.5,
         "stage": "结构确认"
-      }
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Trend",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "趋势、突破及动量独立评分",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 60929.72,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "距离参考触发点 1.09 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 60929.72,
-      "reference_stop": 60409.38142834185,
-      "reference_tp1": 61970.39714331631,
-      "reference_tp2": 62490.735714974464,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.8539979695592795
+      },
+      "conflict": true
     },
     {
       "name": "Ethereum (USD)",
@@ -1167,123 +1229,23 @@
       "score": 8.0,
       "reason": "趋势、突破及动量独立评分",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 1718.87,
+      "reference_candle_close_utc": "2026-11-22T23:45:00Z",
+      "reference_price": 1719.63,
       "proxy_only": true,
       "setup_ready": false,
-      "risk_note": "距离参考触发点 1.31 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
-      "reference_entry": 1718.87,
-      "reference_stop": 1706.4309317400343,
-      "reference_tp1": 1743.748136519931,
-      "reference_tp2": 1756.1872047798965,
+      "risk_note": "距离参考触发点 1.21 ATR；近端阻力/支撑挡住2R=True；目标为理论值",
+      "reference_entry": 1719.63,
+      "reference_stop": 1706.6449366157462,
+      "reference_tp1": 1745.6001267685078,
+      "reference_tp2": 1758.5851901527617,
       "rr_tp1": 2.0,
       "rr_tp2": 3.0,
-      "stop_pct": 0.7236770820344501
-    },
-    {
-      "name": "Gold - Cash",
-      "proxy_source": "Yahoo Finance COMEX gold futures proxy",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 3585.0,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.41 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 3585.0,
-      "reference_stop": 3558.1308211871396,
-      "reference_tp1": 3638.7383576257207,
-      "reference_tp2": 3665.607536438581,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.7494889487548216
-    },
-    {
-      "name": "Silver - Cash",
-      "proxy_source": "Yahoo Finance COMEX silver futures proxy",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 42.279998779296875,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.94 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 42.279998779296875,
-      "reference_stop": 41.58915974999022,
-      "reference_tp1": 43.66167683791018,
-      "reference_tp2": 44.35251586721683,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.6339618005025414
+      "stop_pct": 0.7551079816154558,
+      "conflict": true
     }
   ],
-  "research_setups": [
-    {
-      "name": "Gold - Cash",
-      "proxy_source": "Yahoo Finance COMEX gold futures proxy",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 3585.0,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.41 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 3585.0,
-      "reference_stop": 3558.1308211871396,
-      "reference_tp1": 3638.7383576257207,
-      "reference_tp2": 3665.607536438581,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 0.7494889487548216
-    },
-    {
-      "name": "Silver - Cash",
-      "proxy_source": "Yahoo Finance COMEX silver futures proxy",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "reference_price": 42.279998779296875,
-      "proxy_only": true,
-      "setup_ready": true,
-      "risk_note": "距离参考触发点 0.94 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 42.279998779296875,
-      "reference_stop": 41.58915974999022,
-      "reference_tp1": 43.66167683791018,
-      "reference_tp2": 44.35251586721683,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.6339618005025414
-    }
-  ],
-  "boll_alerts": [
-    {
-      "name": "Silver - Cash",
-      "timeframe": "15m",
-      "direction": "Sell",
-      "reference_price": 42.279998779296875,
-      "reference_candle_close_utc": "2026-11-22T23:30:00Z",
-      "trigger_low": 41.95000076293945,
-      "trigger_high": 42.345001220703125,
-      "score": 5,
-      "reason": "第一根整根出轨；等待下一根收盘反转"
-    }
-  ],
+  "research_setups": [],
+  "boll_alerts": [],
   "active_boll": {
     "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z": {
       "name": "Gold - Cash",
@@ -1296,7 +1258,8 @@
       "score": 5,
       "reason": "第一根整根出轨；等待下一根收盘反转",
       "status": "等待第二根收盘反转",
-      "data_unverified": false
+      "data_unverified": false,
+      "proxy_source": "Yahoo Finance COMEX gold futures proxy"
     },
     "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z": {
       "name": "Silver - Cash",
@@ -1309,7 +1272,8 @@
       "score": 5,
       "reason": "第一根整根出轨；等待下一根收盘反转",
       "status": "等待第二根收盘反转",
-      "data_unverified": false
+      "data_unverified": false,
+      "proxy_source": "Yahoo Finance COMEX silver futures proxy"
     }
   },
   "ended_boll": [],
@@ -1337,13 +1301,13 @@
       "timeframe": "15m",
       "direction": "Sell",
       "first_price": 61324.99,
-      "second_price": 61171.08,
+      "second_price": 61287.57,
       "first_utc": "2026-11-22T16:45:00Z",
-      "second_utc": "2026-11-22T23:15:00Z",
-      "difference_pct": 0.2509743580879446,
+      "second_utc": "2026-11-22T23:45:00Z",
+      "difference_pct": 0.06101917016211214,
       "neckline": 60452.05,
       "first_volume_ratio": 2.1029597006594,
-      "second_volume_ratio": 3.2133809266254008,
+      "second_volume_ratio": 3.553972680481572,
       "first_volume_utc": "2026-11-22T16:30:00Z",
       "breakout_volume_confirmed": false,
       "second_shrinking": false,
@@ -1415,7 +1379,7 @@
       "difference_pct": 0.027878449958182325,
       "neckline": 3502.89990234375,
       "first_volume_ratio": 2.6367707387342247,
-      "second_volume_ratio": 0.48383241167189917,
+      "second_volume_ratio": 0.9811841878128776,
       "first_volume_utc": "2026-11-20T15:15:00Z",
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
@@ -1433,7 +1397,7 @@
       "difference_pct": 0.3529773266310042,
       "neckline": 40.6150016784668,
       "first_volume_ratio": 2.5351978691019785,
-      "second_volume_ratio": 0.4399498681879078,
+      "second_volume_ratio": 1.1478456285924197,
       "first_volume_utc": "2026-11-20T14:45:00Z",
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
@@ -1451,12 +1415,30 @@
       "difference_pct": 0.048433124229347056,
       "neckline": 84.06999969482422,
       "first_volume_ratio": 2.982327349720653,
-      "second_volume_ratio": 0.354554107482794,
+      "second_volume_ratio": 0.3681160628673865,
       "first_volume_utc": "2026-11-20T19:30:00Z",
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 4,
       "stage": "疑似第二顶底"
+    }
+  ],
+  "conflicts": [
+    {
+      "name": "Bitcoin (USD)",
+      "timeframe": "15m",
+      "preferred": "Buy",
+      "reason": "多空冲突；等待进一步确认",
+      "buy_stage": 2,
+      "sell_stage": 1
+    },
+    {
+      "name": "Ethereum (USD)",
+      "timeframe": "15m",
+      "preferred": "Buy",
+      "reason": "多空冲突；等待进一步确认",
+      "buy_stage": 2,
+      "sell_stage": 1
     }
   ],
   "risk_context": {
@@ -1498,7 +1480,8 @@
         "score": 5,
         "reason": "第一根整根出轨；等待下一根收盘反转",
         "status": "等待第二根收盘反转",
-        "data_unverified": false
+        "data_unverified": false,
+        "proxy_source": "Yahoo Finance COMEX gold futures proxy"
       },
       "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z": {
         "name": "Silver - Cash",
@@ -1511,7 +1494,8 @@
         "score": 5,
         "reason": "第一根整根出轨；等待下一根收盘反转",
         "status": "等待第二根收盘反转",
-        "data_unverified": false
+        "data_unverified": false,
+        "proxy_source": "Yahoo Finance COMEX silver futures proxy"
       }
     }
   }
