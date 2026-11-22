@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-22T10:01:09.408302Z",
+  "scan_utc": "2026-11-22T10:15:52.720224Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.7",
@@ -458,22 +458,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T10:00:00Z",
+        "15m": "2026-11-22T10:15:00Z",
         "1h": "2026-11-22T10:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T08:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T10:00:00Z",
+      "last_complete_candle_utc": "2026-11-22T10:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 61027.03,
-          "ema20": 59585.39815099914,
-          "ema50": 59520.91110271287,
-          "rsi14": 80.91942015683983,
-          "atr14": 364.45450356518916,
+          "close": 60921.25,
+          "ema20": 59712.62213661827,
+          "ema50": 59575.82635359086,
+          "rsi14": 77.51068706294737,
+          "atr14": 370.95561045339,
           "support20": 58636.18,
-          "resistance20": 60306.05,
+          "resistance20": 61238.93,
           "bars": 600
         },
         "1h": {
@@ -540,22 +540,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-22T10:00:00Z",
+        "15m": "2026-11-22T10:15:00Z",
         "1h": "2026-11-22T10:00:00Z",
         "1d": "2026-11-22T00:00:00Z",
         "4h": "2026-11-22T08:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-22T10:00:00Z",
+      "last_complete_candle_utc": "2026-11-22T10:15:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1714.67,
-          "ema20": 1676.703096377355,
-          "ema50": 1671.7960283478906,
-          "rsi14": 82.2570626684519,
-          "atr14": 10.359444268354899,
+          "close": 1710.75,
+          "ema20": 1679.9456586271306,
+          "ema50": 1673.32363507955,
+          "rsi14": 77.38659540593639,
+          "atr14": 10.265912534900975,
           "support20": 1644.62,
-          "resistance20": 1696.76,
+          "resistance20": 1721.19,
           "bars": 600
         },
         "1h": {
@@ -1007,28 +1007,6 @@
     {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Range Breakout",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 8.0,
-      "reason": "横盘突破、量能及动量",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-22T10:00:00Z",
-      "reference_price": 61027.03,
-      "proxy_only": true,
-      "setup_ready": false,
-      "risk_note": "距离参考触发点 1.98 ATR；近端阻力/支撑挡住2R=False；目标为理论值",
-      "reference_entry": 61027.03,
-      "reference_stop": 59941.59549643481,
-      "reference_tp1": 63197.89900713037,
-      "reference_tp2": 64283.33351069556,
-      "rr_tp1": 2.0,
-      "rr_tp2": 3.0,
-      "stop_pct": 1.7786126959892787
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
       "mode": "Trend",
       "timeframe": "4h",
       "direction": "Sell",
@@ -1139,7 +1117,30 @@
       "stop_pct": 1.2136139131765398
     }
   ],
-  "boll_alerts": [],
+  "boll_alerts": [
+    {
+      "name": "Bitcoin (USD)",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "reference_price": 60921.25,
+      "reference_candle_close_utc": "2026-11-22T10:15:00Z",
+      "trigger_low": 60711.78,
+      "trigger_high": 61167.25,
+      "score": 5,
+      "reason": "第一根整根出轨；等待下一根收盘反转"
+    },
+    {
+      "name": "Ethereum (USD)",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "reference_price": 1710.75,
+      "reference_candle_close_utc": "2026-11-22T10:15:00Z",
+      "trigger_low": 1707.16,
+      "trigger_high": 1716.21,
+      "score": 5,
+      "reason": "第一根整根出轨；等待下一根收盘反转"
+    }
+  ],
   "active_boll": {
     "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z": {
       "name": "Gold - Cash",
@@ -1186,8 +1187,10 @@
   "notification_state": {
     "alert_keys": [
       "Bitcoin (USD)|Buy|15m|2026-11-22T02:45:00Z",
+      "Bitcoin (USD)|Sell|15m|2026-11-22T10:15:00Z",
       "Ethereum (USD)|Buy|15m|2026-11-22T03:00:00Z",
       "Ethereum (USD)|Buy|15m|2026-11-22T03:30:00Z",
+      "Ethereum (USD)|Sell|15m|2026-11-22T10:15:00Z",
       "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
       "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z"
     ],
