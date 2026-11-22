@@ -1,8 +1,8 @@
 {
-  "scan_utc": "2026-11-22T23:47:30.666568Z",
+  "scan_utc": "2026-11-22T23:53:57.807422Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
-  "version": "V5.8",
+  "version": "V5.8.1",
   "cmc_quotes_verified": false,
   "high_quality_signals": [],
   "assets": [
@@ -67,13 +67,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
         "15m": "周末通常休市（交易所日历未核实）",
         "1h": "周末通常休市（交易所日历未核实）",
         "4h": "周末通常休市（交易所日历未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "MU",
@@ -136,13 +143,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
         "15m": "周末通常休市（交易所日历未核实）",
         "1h": "周末通常休市（交易所日历未核实）",
         "4h": "周末通常休市（交易所日历未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "MSTR",
@@ -205,13 +219,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
         "15m": "周末通常休市（交易所日历未核实）",
         "1h": "周末通常休市（交易所日历未核实）",
         "4h": "周末通常休市（交易所日历未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "TSLA",
@@ -274,13 +295,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
         "15m": "周末通常休市（交易所日历未核实）",
         "1h": "周末通常休市（交易所日历未核实）",
         "4h": "周末通常休市（交易所日历未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "SNDK",
@@ -343,17 +371,24 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
         "15m": "周末通常休市（交易所日历未核实）",
         "1h": "周末通常休市（交易所日历未核实）",
         "4h": "周末通常休市（交易所日历未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "Germany 40 - Cash",
-      "proxy_source": "Yahoo Finance DAX cash index proxy",
+      "proxy_source": "mixed index proxies",
       "currency": null,
       "timeframes": {
         "15m": true,
@@ -371,58 +406,114 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 24802.779296875,
-          "ema20": 24935.605556705115,
-          "ema50": 25156.277911668763,
-          "rsi14": 31.727967811655134,
-          "atr14": 62.377789783573235,
-          "support20": 24814.150390625,
-          "resistance20": 25062.05078125,
-          "bars": 171
+          "close": 204.3000030517578,
+          "ema20": 205.4368142621249,
+          "ema50": 207.28321658174758,
+          "rsi14": 28.639567177074085,
+          "atr14": 0.42133759765854917,
+          "support20": 204.5,
+          "resistance20": 206.5,
+          "bars": 160
         },
         "1h": {
-          "close": 24802.779296875,
-          "ema20": 25275.148692800456,
-          "ema50": 25750.351250585176,
-          "rsi14": 22.428841412316032,
-          "atr14": 121.42292046824203,
-          "support20": 24814.150390625,
-          "resistance20": 25945.51953125,
+          "close": 204.3000030517578,
+          "ema20": 208.22682439212505,
+          "ema50": 212.16291921614166,
+          "rsi14": 21.199562906525273,
+          "atr14": 0.9312278922223051,
+          "support20": 204.5,
+          "resistance20": 213.8000030517578,
           "bars": 595
         },
         "1d": {
-          "close": 24802.779296875,
-          "ema20": 25903.074297454412,
-          "ema50": 25798.3433094199,
-          "rsi14": 35.14212217978465,
-          "atr14": 393.7982494573052,
-          "support20": 25013.5390625,
-          "resistance20": 27001.669921875,
+          "close": 204.3000030517578,
+          "ema20": 213.4649607527463,
+          "ema50": 212.61869052474705,
+          "rsi14": 35.36132630118402,
+          "atr14": 3.2076591119813664,
+          "support20": 206.10000610351562,
+          "resistance20": 222.4499969482422,
           "bars": 67
         },
         "4h": {
-          "close": 24873.779296875,
-          "ema20": 25960.355403437472,
-          "ema50": 25933.28458027896,
-          "rsi14": 26.330444922275262,
-          "atr14": 264.4120079818276,
-          "support20": 24916.939453125,
-          "resistance20": 27001.669921875,
+          "close": 204.9499969482422,
+          "ema20": 213.92161974270792,
+          "ema50": 213.70743294203788,
+          "rsi14": 26.200070251086444,
+          "atr14": 2.0914566429792503,
+          "support20": 205.3000030517578,
+          "resistance20": 222.4499969482422,
           "bars": 132
         }
       },
       "watch": null,
-      "screen_reason": "15m:数据延迟或过期（休市状态未核实）；1h:数据延迟或过期（休市状态未核实）；4h:数据延迟或过期（休市状态未核实）；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "source_attempts": {
+        "15m FDAX=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "15m EXS1.DE": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 160,
+          "volume_available": true
+        },
+        "15m ^GDAXI": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 171,
+          "volume_available": false
+        },
+        "1h FDAX=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1h EXS1.DE": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 595,
+          "volume_available": true
+        },
+        "1h ^GDAXI": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 595,
+          "volume_available": false
+        },
+        "1d FDAX=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1d EXS1.DE": {
+          "error": null,
+          "status": "可用",
+          "bars": 67,
+          "volume_available": true
+        }
+      },
+      "timeframe_sources": {
+        "15m": "Yahoo Finance EXS1.DE etf proxy",
+        "1h": "Yahoo Finance EXS1.DE etf proxy",
+        "1d": "Yahoo Finance EXS1.DE etf proxy",
+        "4h": "Yahoo Finance EXS1.DE etf proxy"
+      },
       "session_status": {
         "15m": "数据延迟或过期（休市状态未核实）",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "US NDAQ 100 - Cash",
-      "proxy_source": "Yahoo Finance NDX cash index proxy",
+      "proxy_source": "mixed index proxies",
       "currency": null,
       "timeframes": {
         "15m": true,
@@ -431,63 +522,101 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-20T21:15:00Z",
+        "15m": "2026-11-22T23:45:00Z",
         "1h": "2026-11-20T22:00:00Z",
-        "1d": "2026-11-21T14:30:00Z",
-        "4h": "2026-11-20T18:30:00Z"
+        "1d": "2026-11-21T05:00:00Z",
+        "4h": "2026-11-20T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-21T14:30:00Z",
+      "last_complete_candle_utc": "2026-11-22T23:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 25028.982421875,
-          "ema20": 25425.717266387244,
-          "ema50": 25951.240385894696,
-          "rsi14": 24.01450818509042,
-          "atr14": 157.20783496344163,
-          "support20": 24915.06640625,
-          "resistance20": 25898.630859375,
-          "bars": 131
+          "close": 25685.75,
+          "ema20": 25473.605970675533,
+          "ema50": 25729.327005191488,
+          "rsi14": 55.87739907021575,
+          "atr14": 185.51982180879358,
+          "support20": 24976.5,
+          "resistance20": 25767.0,
+          "bars": 347
         },
         "1h": {
-          "close": 25028.982421875,
-          "ema20": 26081.24182089814,
-          "ema50": 26801.11938390944,
-          "rsi14": 14.46002389492618,
-          "atr14": 272.47528992776455,
-          "support20": 24915.06640625,
-          "resistance20": 27744.9453125,
-          "bars": 456
+          "close": 25126.5,
+          "ema20": 25957.437399991715,
+          "ema50": 26508.993018610934,
+          "rsi14": 20.026531048185632,
+          "atr14": 263.9165952601324,
+          "support20": 24976.5,
+          "resistance20": 26545.75,
+          "bars": 1470
         },
         "1d": {
-          "close": 25028.98046875,
-          "ema20": 27717.609989945347,
-          "ema50": 28652.535724080495,
-          "rsi14": 26.297703012339355,
-          "atr14": 760.803495480871,
-          "support20": 26481.8203125,
-          "resistance20": 29848.7109375,
-          "bars": 65
+          "close": 25126.5,
+          "ema20": 27831.30582597806,
+          "ema50": 28764.948144239694,
+          "rsi14": 26.53497082993748,
+          "atr14": 917.364070755103,
+          "support20": 26366.5,
+          "resistance20": 30178.0,
+          "bars": 64
         },
         "4h": {
-          "close": 25495.49609375,
-          "ema20": 27803.793592526585,
-          "ema50": 28696.493902361322,
-          "rsi14": 28.373503808086284,
-          "atr14": 698.5259875582927,
-          "support20": 26584.484375,
-          "resistance20": 29794.04296875,
-          "bars": 65
+          "close": 25341.75,
+          "ema20": 26870.000945436503,
+          "ema50": 27445.95555837433,
+          "rsi14": 22.363180798477927,
+          "atr14": 432.9034313494918,
+          "support20": 25805.5,
+          "resistance20": 27838.0,
+          "bars": 321
         }
       },
       "watch": null,
-      "screen_reason": "15m:周末通常休市（交易所日历未核实）；1h:周末通常休市（交易所日历未核实）；4h:周末通常休市（交易所日历未核实）；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "source_attempts": {
+        "15m NQ=F": {
+          "error": null,
+          "status": "可用",
+          "bars": 347,
+          "volume_available": true
+        },
+        "1h NQ=F": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 1470,
+          "volume_available": true
+        },
+        "1h QQQ": {
+          "error": null,
+          "status": "周末通常休市（交易所日历未核实）",
+          "bars": 456,
+          "volume_available": true
+        },
+        "1h ^NDX": {
+          "error": null,
+          "status": "周末通常休市（交易所日历未核实）",
+          "bars": 456,
+          "volume_available": true
+        },
+        "1d NQ=F": {
+          "error": null,
+          "status": "可用",
+          "bars": 64,
+          "volume_available": true
+        }
+      },
+      "timeframe_sources": {
+        "15m": "Yahoo Finance NQ=F futures proxy",
+        "1h": "Yahoo Finance NQ=F futures proxy",
+        "1d": "Yahoo Finance NQ=F futures proxy",
+        "4h": "Yahoo Finance NQ=F futures proxy"
+      },
       "session_status": {
-        "15m": "周末通常休市（交易所日历未核实）",
-        "1h": "周末通常休市（交易所日历未核实）",
-        "4h": "周末通常休市（交易所日历未核实）",
+        "15m": "可用",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "Bitcoin (USD)",
@@ -568,15 +697,23 @@
         "rr_tp1": 2.0,
         "rr_tp2": 3.0,
         "stop_pct": 0.41225987990041907,
+        "proxy_source": "Coinbase BTC-USD spot",
         "conflict": true
       },
-      "screen_reason": null,
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Coinbase BTC-USD spot",
+        "1h": "Coinbase BTC-USD spot",
+        "1d": "Coinbase BTC-USD spot",
+        "4h": "Coinbase BTC-USD spot"
+      },
       "session_status": {
         "15m": "可用",
         "1h": "可用",
         "4h": "可用",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "有候选"
     },
     {
       "name": "Ethereum (USD)",
@@ -673,21 +810,30 @@
           "breakout_volume_confirmed": false,
           "second_shrinking": true,
           "score": 8.5,
-          "stage": "结构确认"
+          "stage": "结构确认",
+          "proxy_source": "Coinbase ETH-USD spot"
         },
+        "proxy_source": "Coinbase ETH-USD spot",
         "conflict": true
       },
-      "screen_reason": null,
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Coinbase ETH-USD spot",
+        "1h": "Coinbase ETH-USD spot",
+        "1d": "Coinbase ETH-USD spot",
+        "4h": "Coinbase ETH-USD spot"
+      },
       "session_status": {
         "15m": "可用",
         "1h": "可用",
         "4h": "可用",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "有候选"
     },
     {
       "name": "Hong Kong 50 - Cash",
-      "proxy_source": "Yahoo Finance Hang Seng cash index proxy",
+      "proxy_source": "mixed index proxies",
       "currency": null,
       "timeframes": {
         "15m": true,
@@ -706,44 +852,99 @@
       },
       "metrics": {
         "15m": {
-          "close": 22410.80078125,
-          "ema20": 22422.52978142532,
-          "ema50": 22644.343678231315,
-          "rsi14": 41.92759192846611,
-          "atr14": 52.45317679204857,
-          "support20": 22307.419921875,
-          "resistance20": 22473.509765625,
-          "bars": 120
+          "close": 22.540000915527344,
+          "ema20": 22.55812564019738,
+          "ema50": 22.788085120359508,
+          "rsi14": 40.93840336828181,
+          "atr14": 0.07164887265579284,
+          "support20": 22.420000076293945,
+          "resistance20": 22.6200008392334,
+          "bars": 115
         },
         "1h": {
-          "close": 22410.80078125,
-          "ema20": 22772.97657488484,
-          "ema50": 23248.797819182702,
-          "rsi14": 23.63832790143043,
-          "atr14": 114.28329099711065,
-          "support20": 22307.419921875,
-          "resistance20": 23436.970703125,
+          "close": 22.540000915527344,
+          "ema20": 22.8999223703846,
+          "ema50": 23.379828561656527,
+          "rsi14": 24.19756878340418,
+          "atr14": 0.12641818592195408,
+          "support20": 22.420000076293945,
+          "resistance20": 23.559999465942383,
           "bars": 448
         },
         "1d": {
-          "close": 22410.80078125,
-          "ema20": 23623.360036219743,
-          "ema50": 24067.093129278364,
-          "rsi14": 31.516160600843094,
-          "atr14": 385.8106339129753,
-          "support20": 22772.2109375,
-          "resistance20": 24871.919921875,
+          "close": 22.540000915527344,
+          "ema20": 23.845297953249016,
+          "ema50": 24.445736294588936,
+          "rsi14": 29.41941777603776,
+          "atr14": 0.39557040217690476,
+          "support20": 22.899999618530273,
+          "resistance20": 25.020000457763672,
           "bars": 65
         }
       },
       "watch": null,
-      "screen_reason": "15m:数据延迟或过期（休市状态未核实）；1h:数据延迟或过期（休市状态未核实）；4h:获取失败或无数据；1d:可用；现货无可靠成交量，放量策略受限；无8分候选",
+      "source_attempts": {
+        "15m HSI=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "15m 2800.HK": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 115,
+          "volume_available": true
+        },
+        "15m ^HSI": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 120,
+          "volume_available": false
+        },
+        "1h HSI=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1h 2800.HK": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 448,
+          "volume_available": true
+        },
+        "1h ^HSI": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 448,
+          "volume_available": false
+        },
+        "1d HSI=F": {
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1d 2800.HK": {
+          "error": null,
+          "status": "可用",
+          "bars": 65,
+          "volume_available": true
+        }
+      },
+      "timeframe_sources": {
+        "15m": "Yahoo Finance 2800.HK etf proxy",
+        "1h": "Yahoo Finance 2800.HK etf proxy",
+        "1d": "Yahoo Finance 2800.HK etf proxy"
+      },
       "session_status": {
         "15m": "数据延迟或过期（休市状态未核实）",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "获取失败或无数据",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "USD/JPY",
@@ -806,13 +1007,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance FX indicative",
+        "1h": "Yahoo Finance FX indicative",
+        "1d": "Yahoo Finance FX indicative",
+        "4h": "Yahoo Finance FX indicative"
+      },
       "session_status": {
         "15m": "数据延迟或过期（休市状态未核实）",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "NZD/USD",
@@ -875,13 +1083,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance FX indicative",
+        "1h": "Yahoo Finance FX indicative",
+        "1d": "Yahoo Finance FX indicative",
+        "4h": "Yahoo Finance FX indicative"
+      },
       "session_status": {
         "15m": "数据延迟或过期（休市状态未核实）",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "Gold - Cash",
@@ -903,11 +1118,11 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3579.300048828125,
-          "ema20": 3539.2235664985787,
-          "ema50": 3547.662484936964,
-          "rsi14": 63.40484741615459,
-          "atr14": 18.838175208242884,
+          "close": 3579.60009765625,
+          "ema20": 3539.2521425774476,
+          "ema50": 3547.674251557675,
+          "rsi14": 63.47378127366003,
+          "atr14": 18.93103583882324,
           "support20": 3502.89990234375,
           "resistance20": 3588.0,
           "bars": 348
@@ -944,13 +1159,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance COMEX gold futures proxy",
+        "1h": "Yahoo Finance COMEX gold futures proxy",
+        "1d": "Yahoo Finance COMEX gold futures proxy",
+        "4h": "Yahoo Finance COMEX gold futures proxy"
+      },
       "session_status": {
         "15m": "可用",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "Silver - Cash",
@@ -972,11 +1194,11 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 42.05500030517578,
-          "ema20": 41.27721827837932,
-          "ema50": 41.49527631374256,
-          "rsi14": 65.21724514428519,
-          "atr14": 0.351570709048258,
+          "close": 42.01499938964844,
+          "ema20": 41.273408667376714,
+          "ema50": 41.493707650388544,
+          "rsi14": 64.68995759572917,
+          "atr14": 0.35514208312401135,
           "support20": 40.6150016784668,
           "resistance20": 42.345001220703125,
           "bars": 347
@@ -1013,13 +1235,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance COMEX silver futures proxy",
+        "1h": "Yahoo Finance COMEX silver futures proxy",
+        "1d": "Yahoo Finance COMEX silver futures proxy",
+        "4h": "Yahoo Finance COMEX silver futures proxy"
+      },
       "session_status": {
         "15m": "可用",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     },
     {
       "name": "Crude Oil West Texas - Cash",
@@ -1041,11 +1270,11 @@
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 82.91999816894531,
-          "ema20": 83.12290384930299,
-          "ema50": 82.78590162268254,
-          "rsi14": 48.10941171916688,
-          "atr14": 0.3692321222189066,
+          "close": 82.86000061035156,
+          "ema20": 83.11718979610359,
+          "ema50": 82.7835487772475,
+          "rsi14": 46.91169234009129,
+          "atr14": 0.3713748921686834,
           "support20": 82.26000213623047,
           "resistance20": 84.06999969482422,
           "bars": 348
@@ -1082,13 +1311,20 @@
         }
       },
       "watch": null,
-      "screen_reason": "无8分候选或数据不足/过期",
+      "source_attempts": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance NYMEX WTI futures proxy",
+        "1h": "Yahoo Finance NYMEX WTI futures proxy",
+        "1d": "Yahoo Finance NYMEX WTI futures proxy",
+        "4h": "Yahoo Finance NYMEX WTI futures proxy"
+      },
       "session_status": {
         "15m": "可用",
         "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
-      }
+      },
+      "screen_reason": "无8分候选或数据不足"
     }
   ],
   "watch_candidates": [
@@ -1175,7 +1411,8 @@
         "breakout_volume_confirmed": false,
         "second_shrinking": true,
         "score": 8.5,
-        "stage": "结构确认"
+        "stage": "结构确认",
+        "proxy_source": "Coinbase BTC-USD spot"
       },
       "conflict": true
     },
@@ -1216,7 +1453,8 @@
         "breakout_volume_confirmed": false,
         "second_shrinking": true,
         "score": 8.5,
-        "stage": "结构确认"
+        "stage": "结构确认",
+        "proxy_source": "Coinbase ETH-USD spot"
       },
       "conflict": true
     },
@@ -1294,7 +1532,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 8.5,
-      "stage": "结构确认"
+      "stage": "结构确认",
+      "proxy_source": "Coinbase BTC-USD spot"
     },
     {
       "name": "Bitcoin (USD)",
@@ -1312,7 +1551,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": false,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Coinbase BTC-USD spot"
     },
     {
       "name": "Ethereum (USD)",
@@ -1330,7 +1570,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 8.5,
-      "stage": "结构确认"
+      "stage": "结构确认",
+      "proxy_source": "Coinbase ETH-USD spot"
     },
     {
       "name": "Ethereum (USD)",
@@ -1348,7 +1589,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": false,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Coinbase ETH-USD spot"
     },
     {
       "name": "Ethereum (USD)",
@@ -1366,7 +1608,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Coinbase ETH-USD spot"
     },
     {
       "name": "Gold - Cash",
@@ -1384,7 +1627,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Yahoo Finance COMEX gold futures proxy"
     },
     {
       "name": "Silver - Cash",
@@ -1402,7 +1646,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Yahoo Finance COMEX silver futures proxy"
     },
     {
       "name": "Crude Oil West Texas - Cash",
@@ -1420,7 +1665,8 @@
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
       "score": 4,
-      "stage": "疑似第二顶底"
+      "stage": "疑似第二顶底",
+      "proxy_source": "Yahoo Finance NYMEX WTI futures proxy"
     }
   ],
   "conflicts": [
@@ -1430,7 +1676,23 @@
       "preferred": "Buy",
       "reason": "多空冲突；等待进一步确认",
       "buy_stage": 2,
-      "sell_stage": 1
+      "sell_stage": 1,
+      "sides": {
+        "Buy": [
+          {
+            "score": 8.5,
+            "neckline": 61324.99,
+            "stage": "结构确认"
+          }
+        ],
+        "Sell": [
+          {
+            "score": 4,
+            "neckline": 60452.05,
+            "stage": "疑似第二顶底"
+          }
+        ]
+      }
     },
     {
       "name": "Ethereum (USD)",
@@ -1438,7 +1700,23 @@
       "preferred": "Buy",
       "reason": "多空冲突；等待进一步确认",
       "buy_stage": 2,
-      "sell_stage": 1
+      "sell_stage": 1,
+      "sides": {
+        "Buy": [
+          {
+            "score": 8.5,
+            "neckline": 1727.31,
+            "stage": "结构确认"
+          }
+        ],
+        "Sell": [
+          {
+            "score": 4,
+            "neckline": 1707.56,
+            "stage": "疑似第二顶底"
+          }
+        ]
+      }
     }
   ],
   "risk_context": {
