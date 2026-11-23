@@ -391,7 +391,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.5','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.7','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -502,7 +502,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.5 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.8.7 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -518,17 +518,19 @@ def report(data, previous=None):
         if old_patterns.get(k)!=state:fresh_patterns.add(k)
         pattern_states[k]=state
     seen=set(); shown=0; repeated=0
-    watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
+    tf_order={'15m':0,'1h':1,'4h':2,'1d':3}
+    asset_order={a[0]:i for i,a in enumerate(ASSETS)}
+    watches=sorted(data['watch_candidates'],key=lambda w:(asset_order.get(w['name'],999),tf_order.get(w['timeframe'],99),not w['setup_ready'],-w['score']))
     for w in watches:
-        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],w['mode'],w['direction'])
+        key=(w['name'],w['mode'],w['direction'],w['timeframe'])
         if w['score']<8 or key in seen or w.get('conflict'):continue
         if w.get('double_pattern') and pattern_key({**w['double_pattern'],'proxy_source':w.get('proxy_source')}) not in fresh_patterns:
-            repeated+=1;continue
+            repeated+=1
         seen.add(key);shown+=1
         label={'Range Breakout':'⚡ 区间突破｜Range Breakout','Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
-        out=heading(label)
+        out=heading('📌 '+w['name'])
         if out:out.append('')
-        out.extend([f"{direction(w['direction'])}｜{w['name']}",f"周期：{w['timeframe']}｜评分：{w['score']:.1f}/10"])
+        out.extend([f"{direction(w['direction'])}｜{w['timeframe']}｜{w['score']:.1f}/10",label])
         if w['setup_ready'] and w.get('reference_tp1') is not None:
             out.append('⏳ 技术条件满足；CMC实时价格、点差及事件待核实')
             out += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {format(w['reference_tp2'],'.8g') if w['reference_tp2'] is not None else '未确认'}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
@@ -559,7 +561,7 @@ def report(data, previous=None):
         for side,patterns in x.get('sides',{}).items():
             for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {a['neckline']:.8g}")
     if not shown:lines.append('已有候选持续观察或存在冲突；无新增普通候选。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
-    if repeated:lines.append(f'{repeated}个既有双顶底候选持续观察，未重复展开。')
+    if repeated:lines.append(f'{repeated}个既有双顶底候选持续展示，形态详情仅在状态变化时展开。')
     for a in data.get('double_alerts',[]):
         if pattern_key(a) not in fresh_patterns or a['score']<8:continue
         out=heading('🔄 双顶双底｜Reversal')
@@ -573,7 +575,6 @@ def report(data, previous=None):
         second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
         if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
         out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {a['neckline']:.8g}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
-    for title,items in sections.items():block(title,items)
     boll=[]
     oldkeys=set(previous.get('alert_keys',[]))
     current=[]
@@ -589,23 +590,14 @@ def report(data, previous=None):
         elif a.get('tp1_hit'):status+='；TP1已触及'
         if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
         boll.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{label}｜{status}",f"失效价格：{edge:.8g}", ""])
+        out=sections.get('📌 '+a['name'])
+        if out is not None:out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",status,f"失效价格：{edge:.8g}"])
     for a in data.get('ended_boll',[]):
         boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
+    for title,items in sections.items():block(title,items)
     block('🔔 布林线持续预警｜BOLL',boll)
-    index_notes=[]
-    for a in data['assets']:
-        if a['name'] not in INDEX_FUTURES:continue
-        short={'Germany 40 - Cash':'德国40','US NDAQ 100 - Cash':'纳指100','Hong Kong 50 - Cash':'香港50'}[a['name']]
-        srcs=a.get('timeframe_sources',{}); usable=[t for t in srcs if a.get('session_status',{}).get(t)=='可用']
-        kinds=set('期货' if ' futures ' in srcs[t] else 'ETF' if ' etf ' in srcs[t] else 'CFD' if ' cfd ' in srcs[t] else '现货' for t in usable)
-        label='/'.join(sorted(kinds)) if kinds else '暂无新数据'
-        valid=[t for t in usable if a.get('metrics',{}).get(t) is not None]
-        missing=[t for t in ('15m','1h','4h','1d') if t not in valid]
-        index_notes.append(short+' '+label+f'（{len(valid)}/4周期可分析）'+('；缺 '+','.join(missing) if missing else ''))
-    block('📋 股指简报',index_notes)
-    lines.extend(['','━━━━━━━━━━━━','🌡️ 市场风险',''])
-    ctx=data.get('risk_context' ,{}).get('VIX')
-    lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))
+    ctx=data.get('risk_context',{}).get('VIX')
+    lines.extend(['','━━━━━━━━━━━━','🌡️ VIX：'+(f"{ctx['close']:.2f}" if ctx else '未取得')])
     groups={}
     for a in data['assets']:
         missing=tuple(t for t in ('15m','1h','4h','1d') if not a['timeframes'].get(t))
