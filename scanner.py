@@ -240,15 +240,20 @@ def evaluate(name,bars, double_alerts=None):
     fresh={t:d for t,d in bars.items() if len(d)>=60 and 0 <= (NOW-d.index[-1].to_pydatetime()-timedelta(seconds=seconds[t])).total_seconds() <= {'15m':2700,'1h':10800,'4h':43200,'1d':345600}[t]}
     m={t:metrics(d) for t,d in fresh.items()}
     # Volume is not reliable on cash indices or indicative FX.
-    def add(mode,t,sign,score,stop,reason,ready,anchor):
+    def add(mode,t,sign,score,stop,reason,ready,anchor,anchor_time=None):
         if score<8:return
         a=m[t]; entry=a['close']; atr=a['atr14']; risk=sign*(entry-stop)
         if not np.isfinite(risk) or risk<=0 or entry<=0:return
         # Prefer actual known resistance/support before theoretical R targets.
-        chase=abs(entry-anchor)/atr
+        offset=sign*(entry-anchor)/atr
+        chase=max(0.,offset)
+        limit={'Trend':.75,'Range Breakout':.75,'Double Bottom/Top Reversal':1.0}.get(mode,1.)
+        structure_ready=bool(ready)
+        # A favorable price is not a chase, but must still pass structure confirmation.
         # Actual historical swing levels, never manufacture fixed-R targets.
         levels=[]
-        for frame in fresh.values():
+        for ft,frame in fresh.items():
+            if seconds[ft]<seconds[t]:continue
             series=frame.high if sign==1 else frame.low
             for i in range(2,len(series)-2):
                 value=float(series.iloc[i])
@@ -265,9 +270,9 @@ def evaluate(name,bars, double_alerts=None):
         lower=fresh.get('15m' if t=='1h' else '1h' if t=='4h' else t)
         lm=metrics(lower) if lower is not None else None
         counter=bool(lm and sign*(lm['close']-lm['ema20'])<0 and sign*(lower.close.iloc[-1]-lower.close.iloc[-3])<0)
-        ready=bool(ready and chase<=1 and risk<=4*atr and rr1>=2 and not counter and stop>0)
+        ready=bool(ready and chase<=limit and risk<=4*atr and rr1>=2 and not counter and stop>0)
         if stop<=0:return
-        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
+        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,trigger_price=float(anchor),trigger_utc=anchor_time,atr=float(atr),distance_atr=float(offset),distance_limit=limit,structure_ready=structure_ready,countertrend=counter,risk_atr=float(risk/atr),risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     for t,d in fresh.items():
         if t=='1d':continue
         a=m[t]; atr=a['atr14']; entry=a['close']
@@ -279,12 +284,26 @@ def evaluate(name,bars, double_alerts=None):
             other=m.get('1h' if t=='15m' else '4h' if t=='1h' else '1d')
             momentum=a['rsi14'] is not None and (52<=a['rsi14']<=72 if sign==1 else 28<=a['rsi14']<=48)
             level=a['resistance20'] if sign==1 else a['support20']; breakout=sign*(entry-level)>0
-            stop=a['support20']-.3*atr if sign==1 else a['resistance20']+.3*atr
-            score=4*aligned(a)+2*bool(other and aligned(other))+2*breakout+2*momentum
-            if aligned(a):add('Trend',t,sign,score,stop,'趋势、突破及动量独立评分',breakout,level)
+            # Trend pullback: recent closed-bar EMA20 test, then reclaim/break of prior bar.
+            # Anchor is a structural level, not reset to the current price.
+            ema=c.ewm(span=20,adjust=False).mean()
+            edge=d.low if sign==1 else d.high
+            trigger=d.high if sign==1 else d.low
+            touched=[i for i in range(len(d)-5,len(d)-1) if sign*(float(edge.iloc[i])-float(ema.iloc[i]))<=.35*atr and sign*(float(c.iloc[i])-float(ema.iloc[i]))>=-1.0*atr]
+            j=touched[-1] if touched else None
+            anchor=float(trigger.iloc[-2])
+            stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=seconds[t]))
+            confirmed=bool(j is not None and sign*(entry-anchor)>0 and sign*(entry-float(d.open.iloc[-1]))>0)
+            if j is not None:
+                extreme=float(d.low.iloc[j:].min() if sign==1 else d.high.iloc[j:].max())
+            else:
+                extreme=float(d.low.iloc[-6:].min() if sign==1 else d.high.iloc[-6:].max())
+            stop=extreme-sign*.3*atr
+            score=4*aligned(a)+2*bool(other and aligned(other))+2*confirmed+2*momentum
+            if aligned(a):add('Trend',t,sign,score,stop,'趋势回调确认、方向及动量评分',confirmed,anchor,stamp)
             width=a['resistance20']-a['support20']; vol=bool(ratio.iloc[-1]>=2)
             score=4*breakout+2*(width<=5*atr)+2*vol+2*momentum
-            if breakout:add('Range Breakout',t,sign,score,level-sign*atr,'横盘突破、量能及动量',True,level)
+            if breakout:add('Range Breakout',t,sign,score,level-sign*atr,'横盘突破、量能及动量',True,level,iso((d.high if sign==1 else d.low).iloc[-21:-1].idxmax().to_pydatetime()+timedelta(seconds=seconds[t])) if sign==1 else iso(d.low.iloc[-21:-1].idxmin().to_pydatetime()+timedelta(seconds=seconds[t])))
             # First pivot: two closed bars on each side. Second: early warning,
             # then two closed bars without a new extreme. No future data.
             z=d.iloc[-60:]; x=(z.low if sign==1 else -z.high).to_numpy(); n=len(x)
@@ -323,7 +342,7 @@ def evaluate(name,bars, double_alerts=None):
                     double_alerts.append(detail)
                     if confirmed:
                         before=len(candidates)
-                        add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f"第一顶底放量{first.max():.2f}倍；颈线 {neck:.6g}；突破放量={break_spike}",crossed,neck)
+                        add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f"第一顶底放量{first.max():.2f}倍；颈线 {neck:.6g}；突破放量={break_spike}",crossed,neck,stamp(i+1+int(np.argmax(z.high.iloc[i+1:j].to_numpy()) if sign==1 else np.argmin(z.low.iloc[i+1:j].to_numpy()))))
                         if len(candidates)>before:candidates[-1].update(double_pattern=detail)
                     found=True;break
                 if found:break
@@ -372,7 +391,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.5','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -483,7 +502,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.4 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实CMC报价及成本的出手机会。']
+    lines=['📊 CMC V5.8.5 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -501,12 +520,12 @@ def report(data, previous=None):
     seen=set(); shown=0; repeated=0
     watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
     for w in watches:
-        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],'other',w['direction'])
+        key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],w['mode'],w['direction'])
         if w['score']<8 or key in seen or w.get('conflict'):continue
         if w.get('double_pattern') and pattern_key({**w['double_pattern'],'proxy_source':w.get('proxy_source')}) not in fresh_patterns:
             repeated+=1;continue
         seen.add(key);shown+=1
-        label={'Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
+        label={'Range Breakout':'⚡ 区间突破｜Range Breakout','Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
         out=heading(label)
         if out:out.append('')
         out.extend([f"{direction(w['direction'])}｜{w['name']}",f"周期：{w['timeframe']}｜评分：{w['score']:.1f}/10"])
@@ -519,7 +538,9 @@ def report(data, previous=None):
             match=re.search(r'([0-9.]+) ATR',note)
             reasons=[]
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
-            if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
+            if w.get('distance_atr',float(match.group(1)) if match else 0)>w.get('distance_limit',1):reasons.append('距离触发点过远，勿追单')
+            if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待有效回调确认或突破')
+            if w.get('risk_atr',0)>4:reasons.append('结构止损超过4 ATR')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
             if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
@@ -527,6 +548,8 @@ def report(data, previous=None):
             if w['rr_tp1']<2:reasons.append('技术目标盈亏比不足2:1')
             out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
+            if 'trigger_price' in w:
+                out.extend([f"参考价 {w['reference_entry']:.8g}｜触发点 {w['trigger_price']:.8g} ({nz(w.get('trigger_utc'))})",f"方向距离 {w['distance_atr']:+.2f} ATR｜上限 {w['distance_limit']:.2f} ATR",f"ATR {w['atr']:.6g}｜参考盈亏比 {w['rr_tp1']:.2f}:1"])
     for x in data.get('conflicts',[]):
         related=[a for a in data.get('double_alerts',[]) if a['name']==x['name'] and a['timeframe']==x['timeframe']]
         if related and not any(pattern_key(a) in fresh_patterns for a in related):
