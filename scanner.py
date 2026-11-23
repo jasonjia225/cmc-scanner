@@ -414,11 +414,77 @@ def track_boll(name,bars,alerts,watches,previous):
                     a[target+'_hit']=True
     return active,ended
 
+def latest_quote(name, symbol, source):
+    # Same instrument and provider as signal. Never mix cash, futures or ETF prices.
+    try:
+        if symbol is None:
+            product='BTC-USD' if 'Bitcoin' in name else 'ETH-USD'
+            obj,err=request_json(f'https://api.exchange.coinbase.com/products/{product}/ticker')
+            if err:return None
+            price=float(obj['price']); stamp=pd.Timestamp(obj['time'])
+        else:
+            if source.startswith('Yahoo Finance '):
+                if name in INDEX_FUTURES:
+                    symbol=source.split()[2]
+                for host in ('query1.finance.yahoo.com','query2.finance.yahoo.com'):
+                    obj,err=request_json(f'https://{host}/v8/finance/chart/{quote(symbol,safe="")}',{'interval':'1m','range':'1d','includePrePost':'false'})
+                    if err:continue
+                    try:
+                        meta=obj['chart']['result'][0]['meta']
+                        price=float(meta['regularMarketPrice']); stamp=pd.Timestamp(meta['regularMarketTime'],unit='s',tz='UTC')
+                        break
+                    except (KeyError,TypeError,ValueError,IndexError):continue
+                else:return None
+            else:return None
+        age=(pd.Timestamp.now(tz='UTC')-stamp).total_seconds()
+        if not np.isfinite(price) or price<=0 or not -5<=age<=300:return None
+        return dict(price=price,utc=stamp.isoformat(),source=source,delay_unknown=True)
+    except (KeyError,TypeError,ValueError,IndexError):return None
+
+
+def reprice_candidate(w,q):
+    # Preserve closed-candle evidence and fixed technical stops/targets.
+    w['signal_candle_price']=w.get('reference_price')
+    w['entry_quote']=q
+    w['setup_ready_at_candle']=w['setup_ready']
+    if q is None:
+        w.update(reference_entry=None,rr_tp1=0.,rr_tp2=0.,setup_ready=False)
+        w['entry_issue']='最新报价未核实'
+        return
+    entry=q['price']; sign=1 if w['direction']=='Buy' else -1
+    stop=w['reference_stop']; risk=sign*(entry-stop)
+    w['reference_entry']=entry
+    for i in (1,2):
+        target=w.get(f'reference_tp{i}')
+        w[f'rr_tp{i}']=float(sign*(target-entry)/risk) if target is not None and risk>0 else 0.
+    w['stop_pct']=100*max(0.,risk)/entry
+    if risk<=0:
+        w['setup_ready']=False;w['entry_issue']='最新价格已触及或越过参考止损';return
+    atr=w.get('atr',w.get('boll_chase_distance'))
+    anchor=w.get('trigger_price',w.get('boll_chase_anchor'))
+    if not atr or anchor is None:
+        w['setup_ready']=False;w['entry_issue']='入场距离未核实';return
+    offset=sign*(entry-anchor)/atr
+    boll=w['mode']=='BOLL Reversal'
+    distance=abs(offset) if boll else max(0.,offset)
+    w['distance_atr']=distance;w['risk_atr']=risk/atr
+    limit=w.get('distance_limit',1.)
+    reasons=[]
+    if distance>limit:reasons.append('距离触发点过远，勿追单')
+    if not boll and offset<=0:reasons.append('最新价格未保持突破确认')
+    if risk>4*atr:reasons.append('结构止损距离过大')
+    if w['rr_tp1']<2:reasons.append('最新价格盈利空间不足')
+    if boll and w['rr_tp2']<w['rr_tp1']:reasons.append('布林目标顺序异常')
+    # Conservative: a previously blocked setup cannot become ready solely from price movement.
+    w['setup_ready']=bool(w['setup_ready'] and not reasons)
+    if reasons:w['entry_issue']='；'.join(reasons)
+
+
 def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.9.1','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -485,6 +551,8 @@ def scan(previous=None):
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
                 for x in ws+aa+ds:x['proxy_source']=src
+                q=latest_quote(name,symbol,src) if ws else None
+                for w in ws:reprice_candidate(w,q)
                 for w in ws:
                     if w.get('double_pattern'):w['double_pattern']['proxy_source']=src
                 if ' etf ' in src or ' cfd ' in src or ' twelve ' in src:
@@ -529,7 +597,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.1 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.2 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -567,6 +635,7 @@ def report(data, previous=None):
             import re
             match=re.search(r'([0-9.]+) ATR',note)
             reasons=[]
+            if w.get('entry_issue'):reasons.append(w['entry_issue'])
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if w.get('distance_atr',float(match.group(1)) if match else 0)>w.get('distance_limit',1):reasons.append('距离触发点过远，勿追单')
             if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待回调或突破确认')
@@ -575,8 +644,8 @@ def report(data, previous=None):
             if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
             if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
             if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
-            if w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('盈利空间不足')
-            out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
+            if w.get('reference_entry') is not None and w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('盈利空间不足')
+            out.append('👀 仅观察：'+('；'.join(dict.fromkeys(reasons)) or '入场条件或风险参数未达标'))
         def price(v):
             return quote(v,w['name'])
         entry=w.get('reference_entry')
