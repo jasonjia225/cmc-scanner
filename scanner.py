@@ -34,6 +34,9 @@ ASSETS = [
 ]
 INDEX_FUTURES={'Germany 40 - Cash':'FDAX=F','US NDAQ 100 - Cash':'NQ=F','Hong Kong 50 - Cash':'HSI=F'}
 
+INDEX_EXTRA_FUTURES={'US NDAQ 100 - Cash':['MNQ=F'],'Germany 40 - Cash':['FDXM=F'],'Hong Kong 50 - Cash':[]}
+OANDA_INDEX={'US NDAQ 100 - Cash':'NAS100_USD','Germany 40 - Cash':'DE30_EUR','Hong Kong 50 - Cash':'HK33_HKD'}
+
 INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':['2800.HK']}
 
 def volume_allowed(name,d):
@@ -101,6 +104,20 @@ def yahoo(symbol,interval,range_):
             return clean(df,TF[interval]),None
         except (TypeError,KeyError,IndexError) as e: errors.append(f'{host}: malformed response {e}')
     return None,'; '.join(errors)
+
+def oanda_index(name,tf):
+    # Optional authorized read-only CFD feed. Tick counts are NOT futures volume.
+    token=os.getenv('OANDA_API_TOKEN')
+    if not token:return None,'OANDA_API_TOKEN not configured'
+    host='api-fxtrade.oanda.com' if os.getenv('OANDA_ENV')=='live' else 'api-fxpractice.oanda.com'
+    try:
+        r=S.get(f'https://{host}/v3/instruments/{OANDA_INDEX[name]}/candles',
+          headers={'Authorization':'Bearer '+token},params={'granularity':{'15m':'M15','1h':'H1','1d':'D'}[tf], 'count':500,'price':'M'},timeout=13)
+        if r.status_code!=200:return None,f'OANDA HTTP {r.status_code}'
+        rows=[{'time':c['time'],**{k:float(c['mid'][v]) for k,v in zip(('open','high','low','close'),'ohlc')},'volume':np.nan} for c in r.json()['candles'] if c['complete']]
+        if not rows:return None,'OANDA no complete candles'
+        return clean(pd.DataFrame(rows).set_index('time'),TF[tf]),None
+    except (requests.RequestException,ValueError,KeyError,TypeError):return None,'OANDA request or parse failure'
 
 def coinbase(symbol,seconds):
     # Coinbase Exchange candles: [time,low,high,open,close,volume], max 300 buckets.
@@ -211,7 +228,6 @@ def evaluate(name,bars, double_alerts=None):
     fresh={t:d for t,d in bars.items() if len(d)>=60 and 0 <= (NOW-d.index[-1].to_pydatetime()-timedelta(seconds=seconds[t])).total_seconds() <= {'15m':2700,'1h':10800,'4h':43200,'1d':345600}[t]}
     m={t:metrics(d) for t,d in fresh.items()}
     # Volume is not reliable on cash indices or indicative FX.
-    volume_ok=name not in ('US NDAQ 100 - Cash','Hong Kong 50 - Cash','Germany 40 - Cash','USD/JPY','NZD/USD')
     def add(mode,t,sign,score,stop,reason,ready,anchor):
         if score<8:return
         a=m[t]; entry=a['close']; atr=a['atr14']; risk=sign*(entry-stop)
@@ -288,6 +304,7 @@ def track_boll(name,bars,alerts,watches,previous):
     for w in alerts:
         if w['timeframe'] not in ('4h','1d'):continue
         k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
+        if name in INDEX_FUTURES:k+='|'+w.get('proxy_source','unknown')
         active.setdefault(k,{**w,'status':'等待第二根收盘反转'})
     # Recover the immediately preceding trigger when upgrading after confirmation.
     for w in watches:
@@ -297,6 +314,7 @@ def track_boll(name,bars,alerts,watches,previous):
         if d is None or len(d)<2:continue
         stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=14400 if t=='4h' else 86400))
         k='|'.join((name,w['direction'],t,stamp))
+        if name in INDEX_FUTURES:k+='|'+w.get('proxy_source','unknown')
         a=active.setdefault(k,dict(name=name,direction=w['direction'],timeframe=t,reference_candle_close_utc=stamp,trigger_low=float(d.low.iloc[-2]),trigger_high=float(d.high.iloc[-2])))
         a.update(status='反转已确认',score=w['score'],tp1=w['reference_tp1'],tp2=w['reference_tp2'],confirmed_utc=w['reference_candle_close_utc'])
     for k,a in list(active.items()):
@@ -320,7 +338,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.1','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -330,17 +348,17 @@ def scan(previous=None):
         futures_bars={}
         item['source_attempts']={};item['timeframe_sources']={}
         if name in INDEX_FUTURES:
-            options=[(INDEX_FUTURES[name],'futures')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
+            options=[(INDEX_FUTURES[name],'futures')]+[(x,'futures') for x in INDEX_EXTRA_FUTURES[name]]+[(OANDA_INDEX[name],'cfd')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
             for tf in ('15m','1h','1d'):
                 fallback=None
                 for ticker,kind in options:
-                    df,err=yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
-                    label='Yahoo Finance '+ticker+' '+kind+' proxy'
+                    df,err=(oanda_index(name,tf) if kind=='cfd' else yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf]))
+                    label=('OANDA ' if kind=='cfd' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
                     status=session_status(name,label,df,tf)
                     valid=df is not None and len(df)>=60
                     vol=valid and df.volume.fillna(0).gt(0).any()
                     item['source_attempts'][tf+' '+ticker]={'error':err,'status':status,'bars':len(df) if df is not None else 0,'volume_available':bool(vol)}
-                    if not valid or (kind!='cash' and not vol):continue
+                    if not valid or (kind in ('futures','etf') and not vol):continue
                     df.attrs.update(proxy_source=label,futures=kind=='futures',etf=kind=='etf')
                     if fallback is None:fallback=df
                     if status=='可用':fallback=df;break
@@ -387,8 +405,8 @@ def scan(previous=None):
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
                 for x in ws+aa+ds:x['proxy_source']=src
-                if ' etf ' in src:
-                    for w in ws:w['setup_ready']=False;w['risk_note']+='；ETF代理仅观察'
+                if ' etf ' in src or ' cfd ' in src:
+                    for w in ws:w['setup_ready']=False;w['risk_note']+='；非CMC代理仅观察'
                 watches.extend(ws);alerts.extend(aa);details.extend(ds)
                 compatible={k:v for k,v in remaining.items() if v.get('proxy_source',dict((x[0],x[2]) for x in ASSETS).get(name))==src}
                 active,ended=track_boll(name,subset,aa,ws,compatible)
@@ -423,7 +441,7 @@ SOURCES=[x[2] for x in ASSETS]
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.1 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
+    lines=['📊 CMC V5.8.2 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -496,9 +514,9 @@ def report(data, previous=None):
         if a['name'] not in INDEX_FUTURES:continue
         short={'Germany 40 - Cash':'德国40','US NDAQ 100 - Cash':'纳指100','Hong Kong 50 - Cash':'香港50'}[a['name']]
         srcs=a.get('timeframe_sources',{}); usable=[t for t in srcs if a.get('session_status',{}).get(t)=='可用']
-        kinds=set('期货' if ' futures ' in srcs[t] else 'ETF' if ' etf ' in srcs[t] else '现货' for t in usable)
+        kinds=set('期货' if ' futures ' in srcs[t] else 'ETF' if ' etf ' in srcs[t] else 'CFD' if ' cfd ' in srcs[t] else '现货' for t in usable)
         label='/'.join(sorted(kinds)) if kinds else '暂无新数据'
-        index_notes.append(short+' '+label+('（部分周期）' if len(usable)<4 and usable else ''))
+        index_notes.append(short+' '+label+f'（{sum(1 for t in usable if a.get("metrics",{}).get(t) is not None)}/4周期可分析）')
     block('📋 股指简报',['｜'.join(index_notes)])
     lines.extend(['','━━━━━━━━━━━━','🌡️ 市场风险',''])
     ctx=data.get('risk_context' ,{}).get('VIX')
