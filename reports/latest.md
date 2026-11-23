@@ -1,11 +1,21 @@
 📊 CMC V5.8.3 交易扫描报告
-🕒 11-23 15:31 新西兰时间
+🕒 11-23 15:45 新西兰时间
 
 🎯 正式交易机会
 本轮暂无已核实的出手机会。
 
 ━━━━━━━━━━━━
 ⚡ Range Breakout
+
+🔴 SELL 做空｜Bitcoin (USD)
+周期：15m｜评分：8.0/10
+来源：Coinbase BTC-USD spot
+👀 仅观察：真实技术目标未核实
+
+🔴 SELL 做空｜Ethereum (USD)
+周期：15m｜评分：8.0/10
+来源：Coinbase ETH-USD spot
+👀 仅观察：真实技术目标未核实
 
 🟢 BUY 做多｜Gold - Cash
 周期：1h｜评分：8.0/10
@@ -22,6 +32,9 @@
 
 ━━━━━━━━━━━━
 🔔 布林线持续预警｜BOLL
+
+🟢 BUY 做多｜Hong Kong 50 - Cash
+15m｜等待第二根收盘反转
 
 🟢 BUY 做多｜Gold - Cash
 1d｜持续｜等待第二根收盘反转
