@@ -1,6 +1,5 @@
 name: CMC 10-asset hourly scan
 on:
-  
   workflow_dispatch:
 permissions:
   contents: write
@@ -19,6 +18,13 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: python scanner.py
+        env:
+          OANDA_API_TOKEN: ${{ secrets.OANDA_API_TOKEN }}
+          OANDA_ENV: ${{ vars.OANDA_ENV }}
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          TWELVE_DATA_NDX_SYMBOL: ${{ vars.TWELVE_DATA_NDX_SYMBOL }}
+          TWELVE_DATA_DAX_SYMBOL: ${{ vars.TWELVE_DATA_DAX_SYMBOL }}
+          TWELVE_DATA_HSI_SYMBOL: ${{ vars.TWELVE_DATA_HSI_SYMBOL }}
       - name: Publish report to repository
         run: |
           git config user.name 'github-actions[bot]'
@@ -33,45 +39,4 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python - <<'PY'
-          import os
-          import pathlib
-          import urllib.parse
-          import urllib.request
-
-          token = os.environ["TELEGRAM_BOT_TOKEN"]
-          chat_id = os.environ["TELEGRAM_CHAT_ID"]
-          report = pathlib.Path("reports/latest.md").read_text(
-              encoding="utf-8"
-          )
-
-          message = "📊 CMC 每小时扫描报告\n\n" + report
-          message = message[:3900]
-
-          data = urllib.parse.urlencode({
-              "chat_id": chat_id,
-              "text": message
-          }).encode("utf-8")
-
-          url = f"https://api.telegram.org/bot{token}/sendMessage"
-          
-          import time
-          import urllib.error
-
-          for attempt in range(4):
-              try:
-                  request = urllib.request.Request(url, data=data)
-                  with urllib.request.urlopen(request, timeout=60) as response:
-                      print("Telegram notification sent:", response.status)
-                  break
-              except urllib.error.HTTPError as e:
-                  print("Telegram HTTP error:", e.code)
-                  raise
-              except (TimeoutError, OSError, urllib.error.URLError) as e:
-                  print("Telegram attempt failed:", attempt + 1, type(e).__name__)
-                  if attempt == 3:
-                      raise
-                  time.sleep(5 * (2 ** attempt))
-          PY
-
+        run: python telegram_send.py reports/latest.md
