@@ -1,5 +1,5 @@
 📊 CMC V5.8.3 交易扫描报告
-🕒 11-23 17:01 新西兰时间
+🕒 11-23 17:15 新西兰时间
 
 🎯 正式交易机会
 本轮暂无已核实的出手机会。
@@ -10,6 +10,11 @@
 🔴 SELL 做空｜NZD/USD
 周期：4h｜评分：8.0/10
 来源：Yahoo Finance FX indicative
+👀 仅观察：真实技术目标未核实
+
+🟢 BUY 做多｜Crude Oil West Texas - Cash
+周期：15m｜评分：8.0/10
+来源：Yahoo Finance NYMEX WTI futures proxy
 👀 仅观察：真实技术目标未核实
 
 ━━━━━━━━━━━━
