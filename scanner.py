@@ -418,7 +418,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.9.0','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.1','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -529,7 +529,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.0 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.1 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -556,12 +556,12 @@ def report(data, previous=None):
         if w.get('double_pattern') and pattern_key({**w['double_pattern'],'proxy_source':w.get('proxy_source')}) not in fresh_patterns:
             repeated+=1
         seen.add(key);shown+=1
-        label={'Range Breakout':'⚡ 区间突破｜Range Breakout','Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
+        label={'Range Breakout':'⚡ 区间突破','Trend':'📈 趋势交易','Double Bottom/Top Reversal':'🔄 双顶双底','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩'}.get(w['mode'],'⚡ '+w['mode'])
         out=heading('📌 '+w['name'])
         if out:out.append('')
         out.extend([f"{direction(w['direction'])}｜{w['timeframe']}｜{w['score']:.1f}/10",label])
         if w['setup_ready'] and w.get('reference_tp1') is not None:
-            out.extend(['来源：'+w['proxy_source'],'⏳ 技术条件满足；CMC报价及成本待核实'])
+            out.append('⏳ 技术条件满足；CMC报价及成本待核实')
         else:
             note=w.get('risk_note','')
             import re
@@ -569,40 +569,21 @@ def report(data, previous=None):
             reasons=[]
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if w.get('distance_atr',float(match.group(1)) if match else 0)>w.get('distance_limit',1):reasons.append('距离触发点过远，勿追单')
-            if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待有效回调确认或突破')
+            if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待回调或突破确认')
             if w.get('risk_atr',0)>4:reasons.append('结构止损距离过大')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
             if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
             if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
-            if w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('技术目标盈亏比不足2:1')
-            out.append('来源：'+w['proxy_source'])
+            if w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('盈利空间不足')
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
         def price(v):
             return quote(v,w['name'])
         entry=w.get('reference_entry')
-        out.append(f"参考入场价：{price(entry)}（{nz(w.get('reference_candle_close_utc'))}）")
-        if 'trigger_price' in w:
-            sign=1 if w['direction']=='Buy' else -1
-            anchor=w['trigger_price']; edge=anchor+sign*w['atr']*w['distance_limit']
-            out.append(f"触发价：{price(anchor)}（{nz(w.get('trigger_utc'))}）")
-            out.append(f"触发后距离参考区间：{price(min(anchor,edge))}–{price(max(anchor,edge))}（非入场许可）")
-            out.append(f"禁止追{'多：高于' if sign==1 else '空：低于'}{price(edge)}")
-        elif w['mode']=='BOLL Reversal' and w.get('boll_chase_anchor') is not None:
-            anchor=w['boll_chase_anchor']; delta=w['boll_chase_distance']
-            out.append(f"首根收盘参考：{price(anchor)}；距离限制区间：{price(anchor-delta)}–{price(anchor+delta)}（须反转确认）")
-        out.append(f"参考止损 SL：{price(w.get('reference_stop'))}")
-        out.append(f"参考止盈 TP1：{price(w.get('reference_tp1'))}｜TP2：{price(w.get('reference_tp2'))}")
-        levels=w.get('intermediate_levels',[])
-        if levels:out.append("途中次级支撑/阻力："+'、'.join(price(v) for v in levels[:3])+(f"（另有{len(levels)-3}处；突破未保证）" if len(levels)>3 else '（突破未保证）'))
-        elif w.get('minor_obstacle') is not None:out.append(f"途中次级支撑/阻力：{price(w['minor_obstacle'])}（突破未保证）")
-        stop=w.get('reference_stop')
-        if entry is not None and stop is not None:
-            side=1 if w['direction']=='Buy' else -1
-            minimum=entry+side*2*abs(entry-stop)
-            if minimum>0:out.append(f"2:1所需止盈价：{price(minimum)}（数学门槛，非技术目标）")
-        rr=lambda target,key: f"{w[key]:.2f}:1" if w.get(target) is not None else '未确认'
-        out.append(f"参考盈亏比（按{price(entry)}）：TP1 {rr('reference_tp1','rr_tp1')}｜TP2 {rr('reference_tp2','rr_tp2')}（未计成本）")
+        out.append(f"参考入场：{price(entry)}")
+        out.append(f"🛑 止损：{price(w.get('reference_stop'))}")
+        out.append(f"🎯 止盈1：{price(w.get('reference_tp1'))}")
+        out.append(f"🎯 止盈2：{price(w.get('reference_tp2'))}")
     for x in data.get('conflicts',[]):
         related=[a for a in data.get('double_alerts',[]) if a['name']==x['name'] and a['timeframe']==x['timeframe']]
         if related and not any(pattern_key(a) in fresh_patterns for a in related):
@@ -610,22 +591,18 @@ def report(data, previous=None):
         out=heading('⚖️ 多空冲突')
         out.extend([f"{x['name']}｜{x['timeframe']}", '倾向：'+(direction(x['preferred'])+'观察' if x['preferred'] else '方向未定')+'；暂不入场',''])
         for side,patterns in x.get('sides',{}).items():
-            for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {quote(a['neckline'],x['name'])}")
+            for a in patterns:out.append(f"{direction(side)} {a['score']}分")
     if not shown:lines.append('已有候选持续观察或存在冲突；无新增普通候选。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
     if repeated:lines.append(f'{repeated}个既有双顶底候选持续展示，形态详情仅在状态变化时展开。')
     for a in data.get('double_alerts',[]):
         if pattern_key(a) not in fresh_patterns or a['score']<8:continue
-        out=heading('🔄 双顶双底｜Reversal')
+        out=heading('🔄 双顶双底')
         if out:out.append('')
         point='底' if a['direction']=='Buy' else '顶'
         stage={'疑似第二顶底':f'⏳ 疑似第二{point}','结构确认':f'双{point}确认'}.get(a['stage'],a['stage'])
         shape='W形双底' if point=='底' else 'M形双顶'
         out.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{shape}｜{stage}"])
-        if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
-        out.append(f"第一{point} {quote(a['first_price'],a['name'])} ({nz(a['first_utc'])})\n第二{point} {quote(a['second_price'],a['name'])} ({nz(a['second_utc'])})\n价格差 {a['difference_pct']:.3f}%")
-        second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
-        if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
-        out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {quote(a['neckline'],a['name'])}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
+        out.append(f"评分：{a['score']:.1f}/10｜👀 仅观察：{stage}")
     boll=[]
     oldkeys=set(previous.get('alert_keys',[]))
     current=[]
