@@ -246,12 +246,28 @@ def evaluate(name,bars, double_alerts=None):
         if not np.isfinite(risk) or risk<=0 or entry<=0:return
         # Prefer actual known resistance/support before theoretical R targets.
         chase=abs(entry-anchor)/atr
-        target=entry+sign*2*risk
-        obstacle=a['resistance20'] if sign==1 else a['support20']
-        blocked=0<sign*(obstacle-entry)<2*risk
-        ready=bool(ready and chase<=1 and risk<=4*atr and not blocked and min(stop,entry+sign*3*risk)>0)
-        if min(stop,entry+sign*3*risk)<=0:return
-        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；目标为理论值',reference_entry=entry,reference_stop=float(stop),reference_tp1=float(target),reference_tp2=float(entry+sign*3*risk),rr_tp1=2.,rr_tp2=3.,stop_pct=100*risk/entry))
+        # Actual historical swing levels, never manufacture fixed-R targets.
+        levels=[]
+        for frame in fresh.values():
+            series=frame.high if sign==1 else frame.low
+            for i in range(2,len(series)-2):
+                value=float(series.iloc[i])
+                if sign*(value-entry)>0 and sign*value>=max(sign*series.iloc[i-2:i+3]):levels.append(value)
+        levels=sorted(set(levels),key=lambda x:sign*(x-entry))
+        distinct=[]
+        for value in levels:
+            if not distinct or abs(value-distinct[-1])>=.25*atr:distinct.append(value)
+        target=distinct[0] if distinct else None
+        target2=distinct[1] if len(distinct)>1 else None
+        rr1=sign*(target-entry)/risk if target is not None else 0.
+        rr2=sign*(target2-entry)/risk if target2 is not None else 0.
+        blocked=bool(target is not None and rr1<2)
+        lower=fresh.get('15m' if t=='1h' else '1h' if t=='4h' else t)
+        lm=metrics(lower) if lower is not None else None
+        counter=bool(lm and sign*(lm['close']-lm['ema20'])<0 and sign*(lower.close.iloc[-1]-lower.close.iloc[-3])<0)
+        ready=bool(ready and chase<=1 and risk<=4*atr and rr1>=2 and not counter and stop>0)
+        if stop<=0:return
+        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     for t,d in fresh.items():
         if t=='1d':continue
         a=m[t]; atr=a['atr14']; entry=a['close']
@@ -356,7 +372,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -370,7 +386,7 @@ def scan(previous=None):
             for tf in ('15m','1h','1d'):
                 fallback=None
                 for ticker,kind in options:
-                    df,err=(oanda_index(name,tf) if kind=='cfd' else twelve_index(name,tf) if kind=='twelve' else yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf]))
+                    df,err=(oanda_index(name,tf) if kind=='cfd' else twelve_index(name,tf) if kind=='twelve' else yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'6mo'}[tf]))
                     label=('OANDA ' if kind=='cfd' else 'Twelve Data ' if kind=='twelve' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
                     status=session_status(name,label,df,tf)
                     valid=df is not None and len(df)>=60
@@ -390,7 +406,7 @@ def scan(previous=None):
                 if name in INDEX_FUTURES:
                     df,err=futures_bars.get(tf),None
                 elif symbol:
-                    df,err=yahoo(symbol,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf])
+                    df,err=yahoo(symbol,tf,{'15m':'5d','1h':'3mo','1d':'6mo'}[tf])
                 else:
                     df,err=coinbase('BTC-USD' if 'Bitcoin' in name else 'ETH-USD',TF[tf])
                 if df is not None and len(df)>0:
@@ -467,7 +483,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.3 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
+    lines=['📊 CMC V5.8.4 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实CMC报价及成本的出手机会。']
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -494,8 +510,9 @@ def report(data, previous=None):
         out=heading(label)
         if out:out.append('')
         out.extend([f"{direction(w['direction'])}｜{w['name']}",f"周期：{w['timeframe']}｜评分：{w['score']:.1f}/10"])
-        if w['setup_ready'] and '目标为理论值' not in w.get('risk_note',''):
-            out += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {w['reference_tp2']:.8g}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
+        if w['setup_ready'] and w.get('reference_tp1') is not None:
+            out.append('⏳ 技术条件满足；CMC实时价格、点差及事件待核实')
+            out += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {format(w['reference_tp2'],'.8g') if w['reference_tp2'] is not None else '未确认'}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
         else:
             note=w.get('risk_note','')
             import re
@@ -504,8 +521,10 @@ def report(data, previous=None):
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
+            if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
+            if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
             if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
-            if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
+            if w['rr_tp1']<2:reasons.append('技术目标盈亏比不足2:1')
             out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
     for x in data.get('conflicts',[]):
@@ -519,7 +538,7 @@ def report(data, previous=None):
     if not shown:lines.append('已有候选持续观察或存在冲突；无新增普通候选。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
     if repeated:lines.append(f'{repeated}个既有双顶底候选持续观察，未重复展开。')
     for a in data.get('double_alerts',[]):
-        if pattern_key(a) not in fresh_patterns:continue
+        if pattern_key(a) not in fresh_patterns or a['score']<8:continue
         out=heading('🔄 双顶双底｜Reversal')
         if out:out.append('')
         point='底' if a['direction']=='Buy' else '顶'
@@ -557,8 +576,10 @@ def report(data, previous=None):
         srcs=a.get('timeframe_sources',{}); usable=[t for t in srcs if a.get('session_status',{}).get(t)=='可用']
         kinds=set('期货' if ' futures ' in srcs[t] else 'ETF' if ' etf ' in srcs[t] else 'CFD' if ' cfd ' in srcs[t] else '现货' for t in usable)
         label='/'.join(sorted(kinds)) if kinds else '暂无新数据'
-        index_notes.append(short+' '+label+f'（{sum(1 for t in usable if a.get("metrics",{}).get(t) is not None)}/4周期可分析）')
-    block('📋 股指简报',['｜'.join(index_notes)])
+        valid=[t for t in usable if a.get('metrics',{}).get(t) is not None]
+        missing=[t for t in ('15m','1h','4h','1d') if t not in valid]
+        index_notes.append(short+' '+label+f'（{len(valid)}/4周期可分析）'+('；缺 '+','.join(missing) if missing else ''))
+    block('📋 股指简报',index_notes)
     lines.extend(['','━━━━━━━━━━━━','🌡️ 市场风险',''])
     ctx=data.get('risk_context' ,{}).get('VIX')
     lines.append('VIX风险参考：'+(f"{ctx['close']:.2f} | "+('极高风险' if ctx['close']>=45 else '高风险' if ctx['close']>=35 else '偏高' if ctx['close']>=25 else '常规' if ctx['close']>=15 else '低波动') if ctx else '未取得'))

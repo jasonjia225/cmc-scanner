@@ -31,3 +31,12 @@ GitHub Actions**不能直接发送消息到现有ChatGPT聊天**。可把上述�
 pip install -r requirements.txt
 python scanner.py
 ```
+
+## V5.8.4 upgrade notes (supersede older notes above)
+- 15 instruments, existing external 15-minute dispatch unchanged. Do not add a second scan schedule.
+- Historical swing targets replace fixed R projections; no executable CMC signal without CMC quotes/cost verification. Countertrend filter is provisional, not backtested.
+- DAX Yahoo futures returned 404 in uploaded report. OANDA/Twelve Data credentials now passed from Actions secrets; instruments and subscription must be verified. No claim of live coverage.
+- Telegram sends multiple chunks instead of truncation.
+- events.yml checks every five minutes, but GitHub can delay. Populate events.json with verified entries `{ "name": "...", "time": "2026-12-01T13:30:00+00:00", "source": "official URL" }`. Empty by default; no automatic calendar discovery. This is not a guaranteed 30-minute delivery service.
+- Existing daily 128-symbol task is NOT migrated: full exact whitelist and provider mapping absent from archive. Keep existing task active.
+- Original reports retained as historical state, not new V5.8.4 scans.
