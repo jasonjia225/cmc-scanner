@@ -239,7 +239,7 @@ def structural_targets(fresh,t,sign,entry,atr):
     pivots=[]
     for ft,frame in fresh.items():
         rank=order.index(ft)-base
-        if rank not in (0,1):continue
+        if rank not in ((0,1,2) if t=='15m' else (0,1)):continue
         frame=frame.iloc[-120:]; local=metrics(frame)['atr14']
         if not np.isfinite(local) or local<=0:continue
         series=sign*(frame.high if sign==1 else frame.low)
@@ -257,7 +257,11 @@ def structural_targets(fresh,t,sign,entry,atr):
         tests=[]
         for item in group:
             if not any(item[4]==q[4] and abs(item[3]-q[3])<6 for q in tests):tests.append(item)
-        strong=any(q[2]>=1.0 or (q[1]==1 and q[2]>=.5) for q in group) or any(sum(x[4]==q[4] for x in tests)>=2 for q in tests)
+        # For 15m entries, distinguish short-term pivots from major higher-timeframe structure.
+        if t=='15m':
+            strong=any((q[1]>=1 and q[2]>=1.0) or (q[1]==2 and q[2]>=.5) or (q[1]==0 and q[2]>=2.0) for q in group) or any(q[1]>=1 and sum(x[4]==q[4] for x in tests)>=2 for q in tests)
+        else:
+            strong=any(q[2]>=1.0 or (q[1]==1 and q[2]>=.5) for q in group) or any(sum(x[4]==q[4] for x in tests)>=2 for q in tests)
         (major if strong else minor).append(entry+sign*group[0][0])
     return major,minor
 
@@ -291,7 +295,7 @@ def evaluate(name,bars, double_alerts=None):
         counter=bool(lm and sign*(lm['close']-lm['ema20'])<0 and sign*(lower.close.iloc[-1]-lower.close.iloc[-3])<0)
         ready=bool(ready and chase<=limit and risk<=4*atr and rr1>=2 and not counter and stop>0)
         if stop<=0:return
-        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,trigger_price=float(anchor),trigger_utc=anchor_time,atr=float(atr),distance_atr=float(offset),distance_limit=limit,structure_ready=structure_ready,countertrend=counter,risk_atr=float(risk/atr),risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),minor_obstacle=near_minor,reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
+        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,trigger_price=float(anchor),trigger_utc=anchor_time,atr=float(atr),distance_atr=float(offset),distance_limit=limit,structure_ready=structure_ready,countertrend=counter,risk_atr=float(risk/atr),risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),minor_obstacle=near_minor,intermediate_levels=[v for v in minor if target is None or sign*(v-target)<0],reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     for t,d in fresh.items():
         if t=='1d':continue
         a=m[t]; atr=a['atr14']; entry=a['close']
@@ -414,7 +418,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.9a','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.0','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -525,7 +529,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.9a 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.0 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -589,7 +593,14 @@ def report(data, previous=None):
             out.append(f"首根收盘参考：{price(anchor)}；距离限制区间：{price(anchor-delta)}–{price(anchor+delta)}（须反转确认）")
         out.append(f"参考止损 SL：{price(w.get('reference_stop'))}")
         out.append(f"参考止盈 TP1：{price(w.get('reference_tp1'))}｜TP2：{price(w.get('reference_tp2'))}")
-        if w.get('minor_obstacle') is not None:out.append(f"途中次级支撑/阻力：{price(w['minor_obstacle'])}（突破未保证）")
+        levels=w.get('intermediate_levels',[])
+        if levels:out.append("途中次级支撑/阻力："+'、'.join(price(v) for v in levels[:3])+(f"（另有{len(levels)-3}处；突破未保证）" if len(levels)>3 else '（突破未保证）'))
+        elif w.get('minor_obstacle') is not None:out.append(f"途中次级支撑/阻力：{price(w['minor_obstacle'])}（突破未保证）")
+        stop=w.get('reference_stop')
+        if entry is not None and stop is not None:
+            side=1 if w['direction']=='Buy' else -1
+            minimum=entry+side*2*abs(entry-stop)
+            if minimum>0:out.append(f"2:1所需止盈价：{price(minimum)}（数学门槛，非技术目标）")
         rr=lambda target,key: f"{w[key]:.2f}:1" if w.get(target) is not None else '未确认'
         out.append(f"参考盈亏比（按{price(entry)}）：TP1 {rr('reference_tp1','rr_tp1')}｜TP2 {rr('reference_tp2','rr_tp2')}（未计成本）")
     for x in data.get('conflicts',[]):
