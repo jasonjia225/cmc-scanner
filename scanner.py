@@ -233,6 +233,34 @@ def boll_events(name,bars,now=NOW):
             candidates.append(dict(mode='BOLL Reversal',boll_chase_anchor=float(c.iloc[-2]),boll_chase_distance=atr,timeframe=t,direction=direction,score=float(score),reason=f'整根出轨5＋第二根反转3＋放量{int(spike)}＋RSI极端{int(extreme)}',confirmation='第二根已收盘；核对CMC及成本',reference_candle_close_utc=stamp,reference_price=entry,proxy_only=True,setup_ready=bool(ready),risk_note=f'距离首根收盘 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；中轨2R达标={rr1>=2}；轨道为当前快照，会移动',reference_entry=entry,reference_stop=stop,reference_tp1=tp1,reference_tp2=tp2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     return candidates,alerts
 
+def structural_targets(fresh,t,sign,entry,atr):
+    """Confirmed pivots only; score prominence, repeated tests and higher timeframe."""
+    order=['15m','1h','4h','1d']; base=order.index(t)
+    pivots=[]
+    for ft,frame in fresh.items():
+        rank=order.index(ft)-base
+        if rank not in (0,1):continue
+        frame=frame.iloc[-120:]; local=metrics(frame)['atr14']
+        if not np.isfinite(local) or local<=0:continue
+        series=sign*(frame.high if sign==1 else frame.low)
+        for i in range(3,len(series)-3):
+            v=float(series.iloc[i]); distance=v-sign*entry
+            if distance<=0 or v<series.iloc[i-3:i+4].max():continue
+            prominence=min(v-series.iloc[i-3:i].min(),v-series.iloc[i+1:i+4].min())/local
+            pivots.append((distance,rank,float(prominence),i,ft))
+    groups=[]
+    for item in sorted(pivots):
+        if not groups or item[0]-groups[-1][0][0]>.35*atr:groups.append([item])
+        else:groups[-1].append(item)
+    major=[]; minor=[]
+    for group in groups:
+        tests=[]
+        for item in group:
+            if not any(item[4]==q[4] and abs(item[3]-q[3])<6 for q in tests):tests.append(item)
+        strong=any(q[2]>=1.0 or (q[1]==1 and q[2]>=.5) for q in group) or any(sum(x[4]==q[4] for x in tests)>=2 for q in tests)
+        (major if strong else minor).append(entry+sign*group[0][0])
+    return major,minor
+
 def evaluate(name,bars, double_alerts=None):
     if double_alerts is None: double_alerts=[]
     candidates=[]
@@ -251,19 +279,10 @@ def evaluate(name,bars, double_alerts=None):
         structure_ready=bool(ready)
         # A favorable price is not a chase, but must still pass structure confirmation.
         # Actual historical swing levels, never manufacture fixed-R targets.
-        levels=[]
-        for ft,frame in fresh.items():
-            if seconds[ft]<seconds[t]:continue
-            series=frame.high if sign==1 else frame.low
-            for i in range(2,len(series)-2):
-                value=float(series.iloc[i])
-                if sign*(value-entry)>0 and sign*value>=max(sign*series.iloc[i-2:i+3]):levels.append(value)
-        levels=sorted(set(levels),key=lambda x:sign*(x-entry))
-        distinct=[]
-        for value in levels:
-            if not distinct or abs(value-distinct[-1])>=.25*atr:distinct.append(value)
+        distinct,minor=structural_targets(fresh,t,sign,entry,atr)
         target=distinct[0] if distinct else None
         target2=distinct[1] if len(distinct)>1 else None
+        near_minor=next((v for v in minor if target is None or sign*(v-target)<0),None)
         rr1=sign*(target-entry)/risk if target is not None else 0.
         rr2=sign*(target2-entry)/risk if target2 is not None else 0.
         blocked=bool(target is not None and rr1<2)
@@ -272,7 +291,7 @@ def evaluate(name,bars, double_alerts=None):
         counter=bool(lm and sign*(lm['close']-lm['ema20'])<0 and sign*(lower.close.iloc[-1]-lower.close.iloc[-3])<0)
         ready=bool(ready and chase<=limit and risk<=4*atr and rr1>=2 and not counter and stop>0)
         if stop<=0:return
-        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,trigger_price=float(anchor),trigger_utc=anchor_time,atr=float(atr),distance_atr=float(offset),distance_limit=limit,structure_ready=structure_ready,countertrend=counter,risk_atr=float(risk/atr),risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
+        candidates.append(dict(mode=mode,timeframe=t,direction='Buy' if sign==1 else 'Sell',score=float(score),reason=reason,confirmation='核对CMC报价、点差、交易时段及事件；结构目标须验证',reference_candle_close_utc=iso(fresh[t].index[-1].to_pydatetime()+timedelta(seconds=seconds[t])),reference_price=entry,proxy_only=True,setup_ready=ready,trigger_price=float(anchor),trigger_utc=anchor_time,atr=float(atr),distance_atr=float(offset),distance_limit=limit,structure_ready=structure_ready,countertrend=counter,risk_atr=float(risk/atr),risk_note=f'距离参考触发点 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；'+('逆向反弹或回调尚未结束；' if counter else '')+('真实技术目标未核实' if target is None else '历史结构目标'),reference_entry=entry,reference_stop=float(stop),minor_obstacle=near_minor,reference_tp1=target,reference_tp2=target2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     for t,d in fresh.items():
         if t=='1d':continue
         a=m[t]; atr=a['atr14']; entry=a['close']
@@ -298,6 +317,10 @@ def evaluate(name,bars, double_alerts=None):
                 extreme=float(d.low.iloc[j:].min() if sign==1 else d.high.iloc[j:].max())
             else:
                 extreme=float(d.low.iloc[-6:].min() if sign==1 else d.high.iloc[-6:].max())
+            if confirmed and j is not None:
+                adverse=sign*edge
+                piv=[k for k in range(max(j,2),len(d)-2) if adverse.iloc[k]<=adverse.iloc[k-2:k+3].min() and adverse.iloc[k]<=adverse.iloc[k+1:].min()]
+                if piv:extreme=float(edge.iloc[piv[-1]])
             stop=extreme-sign*.3*atr
             score=4*aligned(a)+2*bool(other and aligned(other))+2*confirmed+2*momentum
             if aligned(a):add('Trend',t,sign,score,stop,'趋势回调确认、方向及动量评分',confirmed,anchor,stamp)
@@ -342,7 +365,7 @@ def evaluate(name,bars, double_alerts=None):
                     double_alerts.append(detail)
                     if confirmed:
                         before=len(candidates)
-                        add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f"第一顶底放量{first.max():.2f}倍；颈线 {neck:.6g}；突破放量={break_spike}",crossed,neck,stamp(i+1+int(np.argmax(z.high.iloc[i+1:j].to_numpy()) if sign==1 else np.argmin(z.low.iloc[i+1:j].to_numpy()))))
+                        add('Double Bottom/Top Reversal',t,sign,score,sign*(min(x[i],x[j])-.3*atr),f"第一顶底放量{first.max():.2f}倍；颈线 {neck:.2f}；突破放量={break_spike}",crossed,neck,stamp(i+1+int(np.argmax(z.high.iloc[i+1:j].to_numpy()) if sign==1 else np.argmin(z.low.iloc[i+1:j].to_numpy()))))
                         if len(candidates)>before:candidates[-1].update(double_pattern=detail)
                     found=True;break
                 if found:break
@@ -391,7 +414,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.8','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.9a','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -502,11 +525,13 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.8 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.8.9a 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
         return sections[title]
+    def quote(v,name):
+        return format(v,'.4f' if name=='NZD/USD' else '.2f') if v is not None and np.isfinite(v) else '未确认'
     def direction(d):return '🟢 BUY 做多' if d=='Buy' else '🔴 SELL 做空'
     def block(title, items):
         if items:lines.extend(['','━━━━━━━━━━━━',title,'']+items)
@@ -550,7 +575,7 @@ def report(data, previous=None):
             out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
         def price(v):
-            return format(v,'.9g') if v is not None and np.isfinite(v) else '未确认'
+            return quote(v,w['name'])
         entry=w.get('reference_entry')
         out.append(f"参考入场价：{price(entry)}（{nz(w.get('reference_candle_close_utc'))}）")
         if 'trigger_price' in w:
@@ -564,6 +589,7 @@ def report(data, previous=None):
             out.append(f"首根收盘参考：{price(anchor)}；距离限制区间：{price(anchor-delta)}–{price(anchor+delta)}（须反转确认）")
         out.append(f"参考止损 SL：{price(w.get('reference_stop'))}")
         out.append(f"参考止盈 TP1：{price(w.get('reference_tp1'))}｜TP2：{price(w.get('reference_tp2'))}")
+        if w.get('minor_obstacle') is not None:out.append(f"途中次级支撑/阻力：{price(w['minor_obstacle'])}（突破未保证）")
         rr=lambda target,key: f"{w[key]:.2f}:1" if w.get(target) is not None else '未确认'
         out.append(f"参考盈亏比（按{price(entry)}）：TP1 {rr('reference_tp1','rr_tp1')}｜TP2 {rr('reference_tp2','rr_tp2')}（未计成本）")
     for x in data.get('conflicts',[]):
@@ -573,7 +599,7 @@ def report(data, previous=None):
         out=heading('⚖️ 多空冲突')
         out.extend([f"{x['name']}｜{x['timeframe']}", '倾向：'+(direction(x['preferred'])+'观察' if x['preferred'] else '方向未定')+'；暂不入场',''])
         for side,patterns in x.get('sides',{}).items():
-            for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {a['neckline']:.8g}")
+            for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {quote(a['neckline'],x['name'])}")
     if not shown:lines.append('已有候选持续观察或存在冲突；无新增普通候选。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
     if repeated:lines.append(f'{repeated}个既有双顶底候选持续展示，形态详情仅在状态变化时展开。')
     for a in data.get('double_alerts',[]):
@@ -585,10 +611,10 @@ def report(data, previous=None):
         shape='W形双底' if point=='底' else 'M形双顶'
         out.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{shape}｜{stage}"])
         if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
-        out.append(f"第一{point} {a['first_price']:.8g} ({nz(a['first_utc'])})\n第二{point} {a['second_price']:.8g} ({nz(a['second_utc'])})\n价格差 {a['difference_pct']:.3f}%")
+        out.append(f"第一{point} {quote(a['first_price'],a['name'])} ({nz(a['first_utc'])})\n第二{point} {quote(a['second_price'],a['name'])} ({nz(a['second_utc'])})\n价格差 {a['difference_pct']:.3f}%")
         second='未知' if a['second_volume_ratio'] is None else f"{a['second_volume_ratio']:.2f}倍"
         if a.get('name') in INDEX_FUTURES:out.append('来源：'+a.get('proxy_source','未知'))
-        out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {a['neckline']:.8g}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
+        out.append(f"第一{point}放量 {a['first_volume_ratio']:.2f}倍 ({nz(a['first_volume_utc'])})\n第二{point}量比 {second}\n颈线 {quote(a['neckline'],a['name'])}\n突破放量 {'已确认' if a['breakout_volume_confirmed'] else '未确认'}")
     boll=[]
     oldkeys=set(previous.get('alert_keys',[]))
     current=[]
@@ -604,9 +630,9 @@ def report(data, previous=None):
         elif a.get('tp1_hit'):status+='；TP1已触及'
         if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
         out=heading('📌 '+a['name'])
-        out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",f"{label}｜{status}",f"失效价格：{edge:.9g}"])
-        if a.get('tp1') is not None:out.append(f"参考TP1：{a['tp1']:.9g}")
-        if a.get('tp2') is not None:out.append(f"参考TP2：{a['tp2']:.9g}")
+        out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",f"{label}｜{status}",f"失效价格：{quote(edge,a['name'])}"])
+        if a.get('tp1') is not None:out.append(f"参考TP1：{quote(a['tp1'],a['name'])}")
+        if a.get('tp2') is not None:out.append(f"参考TP2：{quote(a['tp2'],a['name'])}")
     for a in data.get('ended_boll',[]):
         boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
     for title,items in sections.items():block(title,items)
