@@ -119,6 +119,18 @@ def oanda_index(name,tf):
         return clean(pd.DataFrame(rows).set_index('time'),TF[tf]),None
     except (requests.RequestException,ValueError,KeyError,TypeError):return None,'OANDA request or parse failure'
 
+def twelve_index(name,tf):
+    key=os.getenv('TWELVE_DATA_API_KEY')
+    suffix={'US NDAQ 100 - Cash':'NDX','Germany 40 - Cash':'DAX','Hong Kong 50 - Cash':'HSI'}[name]
+    symbol=os.getenv('TWELVE_DATA_'+suffix+'_SYMBOL')
+    if not key or not symbol:return None,'Twelve Data key or instrument not configured'
+    obj,err=request_json('https://api.twelvedata.com/time_series',{'symbol':symbol,'interval':{'15m':'15min','1h':'1h','1d':'1day'}[tf],'outputsize':1000,'timezone':'UTC','apikey':key})
+    if err:return None,'Twelve Data request failed'
+    try:
+        rows=[{'time':r['datetime'],**{k:float(r[k]) for k in ('open','high','low','close')},'volume':np.nan} for r in obj['values']]
+        return clean(pd.DataFrame(rows).set_index('time'),TF[tf]),None
+    except (KeyError,TypeError,ValueError):return None,'Twelve Data unavailable or invalid candles'
+
 def coinbase(symbol,seconds):
     # Coinbase Exchange candles: [time,low,high,open,close,volume], max 300 buckets.
     # Chunking 200 candles per request, enough for EMA50 and daily trends.
@@ -144,7 +156,7 @@ def aggregate_4h(hourly, name=None):
     if hourly is None or hourly.empty:return None
     # UTC 4h buckets; accept only four strictly consecutive hourly candles.
     groups=[]
-    if not hourly.attrs.get('futures') and not hourly.attrs.get('etf') and name in {'NVDA','MU','MSTR','TSLA','SNDK','US NDAQ 100 - Cash'}:
+    if not hourly.attrs.get('futures') and name in {'NVDA','MU','MSTR','TSLA','SNDK','US NDAQ 100 - Cash'}:
         local=hourly.index.tz_convert('America/New_York')
         # Only full 09:30–13:30 regular-session blocks; discard partial session tail.
         mask=(local.hour*60+local.minute>=570)&(local.hour*60+local.minute<810)
@@ -271,15 +283,21 @@ def evaluate(name,bars, double_alerts=None):
                 for i in reversed([k for k in piv if 8<=j-k<=40]):
                     if abs(x[i]-x[j])>abs(x[i])*.005 or x[j]<x[i]-.5*atr:continue
                     neck=float(z.high.iloc[i+1:j].max() if sign==1 else z.low.iloc[i+1:j].min())
-                    if sign*neck-max(x[i],x[j])<atr:continue
+                    if sign*neck-max(x[i],x[j])<2*atr:continue
+                    # Real approach into BOTH pivots; no flat retests or weekend bridges.
+                    if i<4 or j<4:continue
+                    if t!='1d' and any(z.index[k]-z.index[k-1]!=pd.Timedelta(seconds=seconds[t]) for k in range(i-3,n)):continue
+                    approach=lambda k: max(sign*float(v) for v in z.close.iloc[k-4:k])-x[k]
+                    if min(approach(i),approach(j))<1.5*atr:continue
+                    if sign*(float(z.close.iloc[i+2])-x[i]*sign)<.5*atr:continue
                     first=q.iloc[max(0,i-2):i+3]; second=q.iloc[max(0,j-2):min(n,j+3)]
                     if not bool((first>=2).any()):continue
                     first_peak=float(raw.iloc[max(0,i-2):i+3].max())
                     second_peak=float(raw.iloc[max(0,j-2):j+1].max())
                     shrink=bool(second_peak<first_peak)
-                    recovery=sign*entry-x[j]>=.3*atr
+                    recovery=sign*entry-x[j]>=.75*atr
                     reversal=bool((second>=2).any()) and recovery and sign*(entry-float(z.open.iloc[j]))>0
-                    confirmed=n-1-j>=2 and recovery and (shrink or reversal)
+                    confirmed=n-1-j>=2 and recovery and (shrink or reversal) and sign*(float(z.close.iloc[j+2])-sign*x[j])>=.5*atr
                     crossed=confirmed and sign*(entry-neck)>0
                     break_indices=[k for k in range(j+2,n) if sign*(float(z.close.iloc[k])-neck)>0 and sign*(float(z.close.iloc[k-1])-neck)<=0]
                     break_spike=any(q.iloc[k]>=2 for k in break_indices)
@@ -338,7 +356,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -348,12 +366,12 @@ def scan(previous=None):
         futures_bars={}
         item['source_attempts']={};item['timeframe_sources']={}
         if name in INDEX_FUTURES:
-            options=[(INDEX_FUTURES[name],'futures')]+[(x,'futures') for x in INDEX_EXTRA_FUTURES[name]]+[(OANDA_INDEX[name],'cfd')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
+            options=[(INDEX_FUTURES[name],'futures')]+[(x,'futures') for x in INDEX_EXTRA_FUTURES[name]]+[(OANDA_INDEX[name],'cfd'),(os.getenv('TWELVE_DATA_'+{'US NDAQ 100 - Cash':'NDX','Germany 40 - Cash':'DAX','Hong Kong 50 - Cash':'HSI'}[name]+'_SYMBOL') or 'unconfigured','twelve')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
             for tf in ('15m','1h','1d'):
                 fallback=None
                 for ticker,kind in options:
-                    df,err=(oanda_index(name,tf) if kind=='cfd' else yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf]))
-                    label=('OANDA ' if kind=='cfd' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
+                    df,err=(oanda_index(name,tf) if kind=='cfd' else twelve_index(name,tf) if kind=='twelve' else yahoo(ticker,tf,{'15m':'5d','1h':'3mo','1d':'3mo'}[tf]))
+                    label=('OANDA ' if kind=='cfd' else 'Twelve Data ' if kind=='twelve' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
                     status=session_status(name,label,df,tf)
                     valid=df is not None and len(df)>=60
                     vol=valid and df.volume.fillna(0).gt(0).any()
@@ -405,7 +423,9 @@ def scan(previous=None):
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
                 for x in ws+aa+ds:x['proxy_source']=src
-                if ' etf ' in src or ' cfd ' in src:
+                for w in ws:
+                    if w.get('double_pattern'):w['double_pattern']['proxy_source']=src
+                if ' etf ' in src or ' cfd ' in src or ' twelve ' in src:
                     for w in ws:w['setup_ready']=False;w['risk_note']+='；非CMC代理仅观察'
                 watches.extend(ws);alerts.extend(aa);details.extend(ds)
                 compatible={k:v for k,v in remaining.items() if v.get('proxy_source',dict((x[0],x[2]) for x in ASSETS).get(name))==src}
@@ -439,9 +459,15 @@ def nz(s):
 SHORT={x[0]:x[0] for x in ASSETS}
 SOURCES=[x[2] for x in ASSETS]
 
+def pattern_key(a):
+    return '|'.join(str(a.get(k,'')) for k in ('name','timeframe','direction','proxy_source','first_utc'))
+
+def pattern_state(a):
+    return a['stage']+'|'+str(bool(a.get('breakout_volume_confirmed')))
+
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.2 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
+    lines=['📊 CMC V5.8.3 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','本轮暂无已核实的出手机会。']
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -449,11 +475,20 @@ def report(data, previous=None):
     def direction(d):return '🟢 BUY 做多' if d=='Buy' else '🔴 SELL 做空'
     def block(title, items):
         if items:lines.extend(['','━━━━━━━━━━━━',title,'']+items)
-    seen=set(); shown=0
+    old_patterns=previous.get('pattern_states',{})
+    pattern_states=dict(old_patterns)
+    fresh_patterns=set()
+    for a in data.get('double_alerts',[]):
+        k=pattern_key(a); state=pattern_state(a)
+        if old_patterns.get(k)!=state:fresh_patterns.add(k)
+        pattern_states[k]=state
+    seen=set(); shown=0; repeated=0
     watches=sorted(data['watch_candidates'],key=lambda w:(w['setup_ready'],w['score']),reverse=True)
     for w in watches:
         key=(w['name'],w['mode'],w['direction'],w['timeframe']) if w['mode'] in ('BOLL Reversal','Double Bottom/Top Reversal') else (w['name'],'other',w['direction'])
         if w['score']<8 or key in seen or w.get('conflict'):continue
+        if w.get('double_pattern') and pattern_key({**w['double_pattern'],'proxy_source':w.get('proxy_source')}) not in fresh_patterns:
+            repeated+=1;continue
         seen.add(key);shown+=1
         label={'Trend':'📈 趋势交易｜Trend','Double Bottom/Top Reversal':'🔄 双顶双底｜Reversal','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩｜Breakout'}.get(w['mode'],'⚡ '+w['mode'])
         out=heading(label)
@@ -469,16 +504,22 @@ def report(data, previous=None):
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if match and float(match.group(1))>1:reasons.append('距离触发点过远，勿追单')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
+            if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
             if w['rr_tp1']<2:reasons.append('中轨盈亏比不足2:1')
             out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
     for x in data.get('conflicts',[]):
+        related=[a for a in data.get('double_alerts',[]) if a['name']==x['name'] and a['timeframe']==x['timeframe']]
+        if related and not any(pattern_key(a) in fresh_patterns for a in related):
+            heading('⚖️ 多空冲突').append(f"{x['name']}｜{x['timeframe']}｜持续冲突，暂不入场");continue
         out=heading('⚖️ 多空冲突')
         out.extend([f"{x['name']}｜{x['timeframe']}", '倾向：'+(direction(x['preferred'])+'观察' if x['preferred'] else '方向未定')+'；暂不入场',''])
         for side,patterns in x.get('sides',{}).items():
             for a in patterns:out.append(f"{direction(side)} {a['score']}分｜颈线 {a['neckline']:.8g}")
-    if not shown:lines.append('存在8分以上候选，因多空冲突暂不入场。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
+    if not shown:lines.append('已有候选持续观察或存在冲突；无新增普通候选。' if any(w['score']>=8 for w in watches) else '暂无8分以上技术候选。')
+    if repeated:lines.append(f'{repeated}个既有双顶底候选持续观察，未重复展开。')
     for a in data.get('double_alerts',[]):
+        if pattern_key(a) not in fresh_patterns:continue
         out=heading('🔄 双顶双底｜Reversal')
         if out:out.append('')
         point='底' if a['direction']=='Buy' else '顶'
@@ -533,7 +574,7 @@ def report(data, previous=None):
         if groups:
             for k,names in groups.items():lines.append(f"⚠️ 数据：{len(names)}个标的{k}（{'、'.join(names)}）；其他可用周期继续分析。")
         else:lines.append('数据异常已恢复。')
-    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{})}
+    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{}),'pattern_states':dict(list(pattern_states.items())[-2000:])}
     lines.append('')
     lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
