@@ -230,7 +230,7 @@ def boll_events(name,bars,now=NOW):
             obstacle=float(d.high.iloc[-21:-2].max() if sign==1 else d.low.iloc[-21:-2].min())
             blocked=0<sign*(obstacle-entry)<2*risk
             ready=rr1>=2 and rr2>=rr1 and chase<=1 and risk<=4*atr and not blocked
-            candidates.append(dict(mode='BOLL Reversal',timeframe=t,direction=direction,score=float(score),reason=f'整根出轨5＋第二根反转3＋放量{int(spike)}＋RSI极端{int(extreme)}',confirmation='第二根已收盘；核对CMC及成本',reference_candle_close_utc=stamp,reference_price=entry,proxy_only=True,setup_ready=bool(ready),risk_note=f'距离首根收盘 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；中轨2R达标={rr1>=2}；轨道为当前快照，会移动',reference_entry=entry,reference_stop=stop,reference_tp1=tp1,reference_tp2=tp2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
+            candidates.append(dict(mode='BOLL Reversal',boll_chase_anchor=float(c.iloc[-2]),boll_chase_distance=atr,timeframe=t,direction=direction,score=float(score),reason=f'整根出轨5＋第二根反转3＋放量{int(spike)}＋RSI极端{int(extreme)}',confirmation='第二根已收盘；核对CMC及成本',reference_candle_close_utc=stamp,reference_price=entry,proxy_only=True,setup_ready=bool(ready),risk_note=f'距离首根收盘 {chase:.2f} ATR；近端阻力/支撑挡住2R={blocked}；中轨2R达标={rr1>=2}；轨道为当前快照，会移动',reference_entry=entry,reference_stop=stop,reference_tp1=tp1,reference_tp2=tp2,rr_tp1=float(rr1),rr_tp2=float(rr2),stop_pct=100*risk/entry))
     return candidates,alerts
 
 def evaluate(name,bars, double_alerts=None):
@@ -391,7 +391,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.8.7','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.8.8','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -502,7 +502,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.8.7 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.8.8 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -532,8 +532,7 @@ def report(data, previous=None):
         if out:out.append('')
         out.extend([f"{direction(w['direction'])}｜{w['timeframe']}｜{w['score']:.1f}/10",label])
         if w['setup_ready'] and w.get('reference_tp1') is not None:
-            out.append('⏳ 技术条件满足；CMC实时价格、点差及事件待核实')
-            out += [w['reason'],f"技术入场参考 {w['reference_entry']:.8g}（{nz(w['reference_candle_close_utc'])}）",'来源：'+w['proxy_source'],f"止损 {w['reference_stop']:.8g} | TP1 {w['reference_tp1']:.8g} | TP2 {format(w['reference_tp2'],'.8g') if w['reference_tp2'] is not None else '未确认'}",f"盈亏比 {w['rr_tp1']:.2f}:1，未计成本；CMC及事件风险待核实"]
+            out.extend(['来源：'+w['proxy_source'],'⏳ 技术条件满足；CMC报价及成本待核实'])
         else:
             note=w.get('risk_note','')
             import re
@@ -542,16 +541,31 @@ def report(data, previous=None):
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if w.get('distance_atr',float(match.group(1)) if match else 0)>w.get('distance_limit',1):reasons.append('距离触发点过远，勿追单')
             if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待有效回调确认或突破')
-            if w.get('risk_atr',0)>4:reasons.append('结构止损超过4 ATR')
+            if w.get('risk_atr',0)>4:reasons.append('结构止损距离过大')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
             if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
             if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
-            if w['rr_tp1']<2:reasons.append('技术目标盈亏比不足2:1')
+            if w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('技术目标盈亏比不足2:1')
             out.append('来源：'+w['proxy_source'])
             out.append('👀 仅观察：'+('；'.join(reasons) or '入场条件或风险参数未达标'))
-            if 'trigger_price' in w:
-                out.extend([f"参考价 {w['reference_entry']:.8g}｜触发点 {w['trigger_price']:.8g} ({nz(w.get('trigger_utc'))})",f"方向距离 {w['distance_atr']:+.2f} ATR｜上限 {w['distance_limit']:.2f} ATR",f"ATR {w['atr']:.6g}｜参考盈亏比 {w['rr_tp1']:.2f}:1"])
+        def price(v):
+            return format(v,'.9g') if v is not None and np.isfinite(v) else '未确认'
+        entry=w.get('reference_entry')
+        out.append(f"参考入场价：{price(entry)}（{nz(w.get('reference_candle_close_utc'))}）")
+        if 'trigger_price' in w:
+            sign=1 if w['direction']=='Buy' else -1
+            anchor=w['trigger_price']; edge=anchor+sign*w['atr']*w['distance_limit']
+            out.append(f"触发价：{price(anchor)}（{nz(w.get('trigger_utc'))}）")
+            out.append(f"触发后距离参考区间：{price(min(anchor,edge))}–{price(max(anchor,edge))}（非入场许可）")
+            out.append(f"禁止追{'多：高于' if sign==1 else '空：低于'}{price(edge)}")
+        elif w['mode']=='BOLL Reversal' and w.get('boll_chase_anchor') is not None:
+            anchor=w['boll_chase_anchor']; delta=w['boll_chase_distance']
+            out.append(f"首根收盘参考：{price(anchor)}；距离限制区间：{price(anchor-delta)}–{price(anchor+delta)}（须反转确认）")
+        out.append(f"参考止损 SL：{price(w.get('reference_stop'))}")
+        out.append(f"参考止盈 TP1：{price(w.get('reference_tp1'))}｜TP2：{price(w.get('reference_tp2'))}")
+        rr=lambda target,key: f"{w[key]:.2f}:1" if w.get(target) is not None else '未确认'
+        out.append(f"参考盈亏比（按{price(entry)}）：TP1 {rr('reference_tp1','rr_tp1')}｜TP2 {rr('reference_tp2','rr_tp2')}（未计成本）")
     for x in data.get('conflicts',[]):
         related=[a for a in data.get('double_alerts',[]) if a['name']==x['name'] and a['timeframe']==x['timeframe']]
         if related and not any(pattern_key(a) in fresh_patterns for a in related):
@@ -589,9 +603,10 @@ def report(data, previous=None):
         if a.get('tp2_hit'):status+='；TP2已触及'
         elif a.get('tp1_hit'):status+='；TP1已触及'
         if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
-        boll.extend([f"{direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜{label}｜{status}",f"失效价格：{edge:.8g}", ""])
-        out=sections.get('📌 '+a['name'])
-        if out is not None:out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",status,f"失效价格：{edge:.8g}"])
+        out=heading('📌 '+a['name'])
+        out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",f"{label}｜{status}",f"失效价格：{edge:.9g}"])
+        if a.get('tp1') is not None:out.append(f"参考TP1：{a['tp1']:.9g}")
+        if a.get('tp2') is not None:out.append(f"参考TP2：{a['tp2']:.9g}")
     for a in data.get('ended_boll',[]):
         boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
     for title,items in sections.items():block(title,items)
