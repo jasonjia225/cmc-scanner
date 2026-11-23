@@ -1,5 +1,5 @@
 📊 CMC V5.8.3 交易扫描报告
-🕒 11-23 14:01 新西兰时间
+🕒 11-23 14:15 新西兰时间
 
 🎯 正式交易机会
 本轮暂无已核实的出手机会。
@@ -10,12 +10,12 @@
 🟢 BUY 做多｜Bitcoin (USD)
 周期：15m｜评分：8.0/10
 来源：Coinbase BTC-USD spot
-👀 仅观察：支撑/阻力限制目标；真实技术目标未核实
-
-🟢 BUY 做多｜Ethereum (USD)
-周期：15m｜评分：8.0/10
-来源：Coinbase ETH-USD spot
 👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；真实技术目标未核实
+
+🟢 BUY 做多｜Gold - Cash
+周期：15m｜评分：8.0/10
+来源：Yahoo Finance COMEX gold futures proxy
+👀 仅观察：真实技术目标未核实
 
 ━━━━━━━━━━━━
 🔔 布林线持续预警｜BOLL
