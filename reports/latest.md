@@ -1,23 +1,15 @@
 📊 CMC V5.8.3 交易扫描报告
-🕒 11-23 16:31 新西兰时间
+🕒 11-23 16:45 新西兰时间
 
 🎯 正式交易机会
 本轮暂无已核实的出手机会。
 
 ━━━━━━━━━━━━
-⚡ Range Breakout
-
-🟢 BUY 做多｜Ethereum (USD)
-周期：15m｜评分：10.0/10
-来源：Coinbase ETH-USD spot
-👀 仅观察：真实技术目标未核实
-
-━━━━━━━━━━━━
 📈 趋势交易｜Trend
 
-🔴 SELL 做空｜Hong Kong 50 - Cash
+🔴 SELL 做空｜NZD/USD
 周期：15m｜评分：8.0/10
-来源：Yahoo Finance 2800.HK etf proxy
+来源：Yahoo Finance FX indicative
 👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；真实技术目标未核实
 
 ━━━━━━━━━━━━
