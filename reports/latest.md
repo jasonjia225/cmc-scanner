@@ -1,5 +1,5 @@
 📊 CMC V5.8.4 交易扫描报告
-🕒 11-23 21:01 新西兰时间
+🕒 11-23 21:15 新西兰时间
 
 🎯 正式交易机会
 本轮暂无已核实CMC报价及成本的出手机会。
@@ -10,7 +10,7 @@
 🔴 SELL 做空｜US NDAQ 100 - Cash
 周期：1h｜评分：8.0/10
 来源：Yahoo Finance NQ=F futures proxy
-👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；技术目标盈亏比不足2:1
+👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；等待反弹或回调结束；技术目标盈亏比不足2:1
 
 🔴 SELL 做空｜NZD/USD
 周期：1h｜评分：8.0/10
@@ -27,10 +27,18 @@
 来源：Yahoo Finance COMEX silver futures proxy
 👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；技术目标盈亏比不足2:1
 
-━━━━━━━━━━━━
-⚖️ 多空冲突
+🔴 SELL 做空｜Crude Oil West Texas - Cash
+周期：4h｜评分：8.0/10
+来源：Yahoo Finance NYMEX WTI futures proxy
+👀 仅观察：距离触发点过远，勿追单；支撑/阻力限制目标；技术目标盈亏比不足2:1
 
-Bitcoin (USD)｜15m｜持续冲突，暂不入场
+━━━━━━━━━━━━
+⚡ Range Breakout
+
+🟢 BUY 做多｜USD/JPY
+周期：15m｜评分：8.0/10
+来源：Yahoo Finance FX indicative
+👀 仅观察：支撑/阻力限制目标；技术目标盈亏比不足2:1
 
 ━━━━━━━━━━━━
 🔔 布林线持续预警｜BOLL
