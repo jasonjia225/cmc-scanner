@@ -14,7 +14,7 @@ S = requests.Session()
 S.headers.update({'User-Agent':'Mozilla/5.0 CMC-research-scanner/1.0','Accept':'application/json'})
 UTC=timezone.utc
 NOW=datetime.now(UTC)
-# V5: fifteen instruments; VIX is context only.
+# V5: fourteen instruments; VIX is context only.
 ASSETS = [
  ('NVDA','NVDA','Yahoo Finance US equity'),
  ('MU','MU','Yahoo Finance US equity'),
@@ -26,7 +26,6 @@ ASSETS = [
  ('Bitcoin (USD)',None,'Coinbase BTC-USD spot'),
  ('Ethereum (USD)',None,'Coinbase ETH-USD spot'),
  ('Hong Kong 50 - Cash','^HSI','Yahoo Finance Hang Seng cash index proxy'),
- ('USD/JPY','JPY=X','Yahoo Finance FX indicative'),
  ('NZD/USD','NZDUSD=X','Yahoo Finance FX indicative'),
  ('Gold - Cash','GC=F','Yahoo Finance COMEX gold futures proxy'),
  ('Silver - Cash','SI=F','Yahoo Finance COMEX silver futures proxy'),
@@ -37,14 +36,10 @@ INDEX_FUTURES={'Germany 40 - Cash':'FDAX=F','US NDAQ 100 - Cash':'NQ=F','Hong Ko
 INDEX_EXTRA_FUTURES={'US NDAQ 100 - Cash':['MNQ=F'],'Germany 40 - Cash':['FDXM=F'],'Hong Kong 50 - Cash':[]}
 OANDA_INDEX={'US NDAQ 100 - Cash':'NAS100_USD','Germany 40 - Cash':'DE30_EUR','Hong Kong 50 - Cash':'HK33_HKD'}
 
-INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':[]}
-
-def hk50_prices_valid(values):
-    # Broad index-point sanity range, not a conversion from ETF prices.
-    return bool(np.isfinite(values).all() and (values >= 1000).all() and (values <= 100000).all())
+INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':['2800.HK']}
 
 def volume_allowed(name,d):
-    return name not in ('USD/JPY','NZD/USD') and (name not in INDEX_FUTURES or (d.attrs.get('futures',False) or d.attrs.get('etf',False)))
+    return name != 'NZD/USD' and (name not in INDEX_FUTURES or (d.attrs.get('futures',False) or d.attrs.get('etf',False)))
 
 def session_status(name,source,df,tf):
     if df is None or df.empty:return '获取失败或无数据'
@@ -320,6 +315,10 @@ def evaluate(name,bars, double_alerts=None):
             j=touched[-1] if touched else None
             anchor=float(trigger.iloc[-2])
             stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=seconds[t]))
+            # A closed EMA reclaim with directional follow-through is a distinct pullback entry.
+            pullback=bool(j is not None and sign*(entry-float(ema.iloc[-1]))>0 and sign*(entry-float(c.iloc[-2]))>0 and sign*(entry-float(d.open.iloc[-1]))>0)
+            if pullback and sign*(entry-anchor)<=0:
+                anchor=float(max(ema.iloc[-1],c.iloc[-2]) if sign==1 else min(ema.iloc[-1],c.iloc[-2]))
             confirmed=bool(j is not None and sign*(entry-anchor)>0 and sign*(entry-float(d.open.iloc[-1]))>0)
             if j is not None:
                 extreme=float(d.low.iloc[j:].min() if sign==1 else d.high.iloc[j:].max())
@@ -436,13 +435,19 @@ def latest_quote(name, symbol, source):
                     try:
                         meta=obj['chart']['result'][0]['meta']
                         price=float(meta['regularMarketPrice']); stamp=pd.Timestamp(meta['regularMarketTime'],unit='s',tz='UTC')
+                        if not -5 <= (pd.Timestamp.now(tz='UTC')-stamp).total_seconds() <=300:
+                            result=obj['chart']['result'][0]
+                            pairs=list(zip(result['timestamp'],result['indicators']['quote'][0]['close']))
+                            valid=[(ts,v) for ts,v in pairs if v is not None and 60<= (pd.Timestamp.now(tz='UTC')-pd.Timestamp(ts,unit='s',tz='UTC')).total_seconds()<=360]
+                            if not valid:continue
+                            ts,price=valid[-1];price=float(price);stamp=pd.Timestamp(ts+60,unit='s',tz='UTC')
+                        if not np.isfinite(price) or price<=0:continue
                         break
                     except (KeyError,TypeError,ValueError,IndexError):continue
                 else:return None
             else:return None
         age=(pd.Timestamp.now(tz='UTC')-stamp).total_seconds()
         if not np.isfinite(price) or price<=0 or not -5<=age<=300:return None
-        if name=='Hong Kong 50 - Cash' and not hk50_prices_valid(np.array([price])):return None
         return dict(price=price,utc=stamp.isoformat(),source=source,delay_unknown=True)
     except (KeyError,TypeError,ValueError,IndexError):return None
 
@@ -476,8 +481,12 @@ def reprice_candidate(w,q):
     limit=w.get('distance_limit',1.)
     reasons=[]
     if distance>limit:reasons.append('距离触发点过远，勿追单')
-    if not boll and offset<=0:reasons.append('最新价格未保持突破确认')
+    if not boll and offset<=0:reasons.append('最新价格未保持回踩确认' if w['mode']=='Trend' else '最新价格未保持突破确认')
     if risk>4*atr:reasons.append('结构止损距离过大')
+    floor=max(.5*atr,.0003 if w.get('name')=='NZD/USD' else 0.)
+    if risk<floor:reasons.append('止损距离过小')
+    spread=q.get('cmc_spread')
+    if spread is not None and risk<3*spread:reasons.append('止损不足三倍点差')
     if w['rr_tp1']<2:reasons.append('最新价格盈利空间不足')
     if boll and w['rr_tp2']<w['rr_tp1']:reasons.append('布林目标顺序异常')
     # Conservative: a previously blocked setup cannot become ready solely from price movement.
@@ -489,7 +498,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.9.2','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -500,8 +509,6 @@ def scan(previous=None):
         item['source_attempts']={};item['timeframe_sources']={}
         if name in INDEX_FUTURES:
             options=[(INDEX_FUTURES[name],'futures')]+[(x,'futures') for x in INDEX_EXTRA_FUTURES[name]]+[(OANDA_INDEX[name],'cfd'),(os.getenv('TWELVE_DATA_'+{'US NDAQ 100 - Cash':'NDX','Germany 40 - Cash':'DAX','Hong Kong 50 - Cash':'HSI'}[name]+'_SYMBOL') or 'unconfigured','twelve')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
-            if name=='Hong Kong 50 - Cash':
-                options.sort(key=lambda option: option[1]!='cash')
             for tf in ('15m','1h','1d'):
                 fallback=None
                 for ticker,kind in options:
@@ -509,8 +516,6 @@ def scan(previous=None):
                     label=('OANDA ' if kind=='cfd' else 'Twelve Data ' if kind=='twelve' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
                     status=session_status(name,label,df,tf)
                     valid=df is not None and len(df)>=60
-                    if name=='Hong Kong 50 - Cash' and valid and not hk50_prices_valid(df[['open','high','low','close']].to_numpy()):
-                        valid=False;err='HK50 invalid index price scale';status='报价量级异常'
                     vol=valid and df.volume.fillna(0).gt(0).any()
                     item['source_attempts'][tf+' '+ticker]={'error':err,'status':status,'bars':len(df) if df is not None else 0,'volume_available':bool(vol)}
                     if not valid or (kind in ('futures','etf') and not vol):continue
@@ -538,9 +543,7 @@ def scan(previous=None):
                     item['candle_close_utc'][tf]=closed
                     if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                         item['last_complete_candle_utc']=closed
-                else:
-                    item['timeframes'][tf]=False
-                    if name=='Hong Kong 50 - Cash':item['errors'][tf]='HK50 valid index data unavailable'
+                else:item['timeframes'][tf]=False
                 if err:item['errors'][tf]=err
             four=aggregate_4h(bars.get('1h'),name)
             item['timeframes']['4h']=four is not None and not four.empty
@@ -558,21 +561,31 @@ def scan(previous=None):
             for tf,d in bars.items():groups.setdefault(d.attrs.get('proxy_source',source),{})[tf]=d
             prior=previous.get('active_boll',{})
             remaining={k:v for k,v in prior.items() if v['name']==name}
-            if name=='Hong Kong 50 - Cash':
-                remaining={k:v for k,v in remaining.items() if ' etf ' not in v.get('proxy_source','') and hk50_prices_valid(np.array([v.get(field,0) for field in ('trigger_low','trigger_high')]+[v[field] for field in ('tp1','tp2') if v.get(field) is not None],dtype=float))}
             active_all={}; ended_all=[]
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
                 for x in ws+aa+ds:x['proxy_source']=src
                 q=latest_quote(name,symbol,src) if ws else None
-                for w in ws:reprice_candidate(w,q)
+                for w in ws:
+                    w['name']=name
+                    reprice_candidate(w,q)
                 for w in ws:
                     if w.get('double_pattern'):w['double_pattern']['proxy_source']=src
                 if ' etf ' in src or ' cfd ' in src or ' twelve ' in src:
                     for w in ws:w['setup_ready']=False;w['risk_note']+='；非CMC代理仅观察'
                 watches.extend(ws);alerts.extend(aa);details.extend(ds)
                 compatible={k:v for k,v in remaining.items() if v.get('proxy_source',dict((x[0],x[2]) for x in ASSETS).get(name))==src}
-                active,ended=track_boll(name,subset,aa,ws,compatible)
+                invalid=set(previous.get('invalid_boll_keys',[]))
+                def boll_key(w):
+                    t=w['timeframe']; d=subset.get(t)
+                    if d is None or len(d)<2:return ''
+                    stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=14400 if t=='4h' else 86400))
+                    return '|'.join((name,w['direction'],t,stamp))+('|' + src if name in INDEX_FUTURES else '')
+                active,ended=track_boll(name,subset,aa,[w for w in ws if w['mode']!='BOLL Reversal' or w['timeframe'] not in ('4h','1d') or boll_key(w) not in invalid],{k:v for k,v in compatible.items() if k not in invalid})
+                invalid.update('|'.join(str(a[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))+('|' + src if name in INDEX_FUTURES else '') for a in ended)
+                active={k:v for k,v in active.items() if k not in invalid}
+                output.setdefault('invalid_boll_keys',[]).extend(sorted(invalid))
+                watches[:]=[w for w in watches if not (w['mode']=='BOLL Reversal' and w['timeframe'] in ('4h','1d') and boll_key(w) in invalid and w.get('proxy_source')==src)]
                 for k,v in active.items():
                     v.setdefault('proxy_source',src);active_all[k]=v
                 ended_all.extend(ended)
@@ -610,7 +623,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.2 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.3 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -634,6 +647,7 @@ def report(data, previous=None):
     for w in watches:
         key=(w['name'],w['mode'],w['direction'],w['timeframe'])
         if w['score']<8 or key in seen or w.get('conflict'):continue
+        if w['mode']=='BOLL Reversal' and any(a['name']==w['name'] and a['direction']==w['direction'] and a['timeframe']==w['timeframe'] and a.get('confirmed_utc')==w.get('reference_candle_close_utc') for a in data.get('active_boll',{}).values()):continue
         if w.get('double_pattern') and pattern_key({**w['double_pattern'],'proxy_source':w.get('proxy_source')}) not in fresh_patterns:
             repeated+=1
         seen.add(key);shown+=1
@@ -648,16 +662,18 @@ def report(data, previous=None):
             import re
             match=re.search(r'([0-9.]+) ATR',note)
             reasons=[]
-            if w.get('entry_issue'):reasons.append(w['entry_issue'])
+            if w.get('entry_issue'):reasons.extend(w['entry_issue'].split('；'))
             if w.get('double_pattern') and w['double_pattern']['stage']!='颈线已突破':reasons.append('等待颈线突破')
             if w.get('distance_atr',float(match.group(1)) if match else 0)>w.get('distance_limit',1):reasons.append('距离触发点过远，勿追单')
-            if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待回调或突破确认')
+            if w.get('structure_ready') is False and not w.get('double_pattern'):reasons.append('等待回踩确认' if w['mode']=='Trend' else '等待突破确认')
             if w.get('risk_atr',0)>4:reasons.append('结构止损距离过大')
             if '挡住2R=True' in note:reasons.append('支撑/阻力限制目标')
             if '逆向反弹' in note:reasons.append('等待反弹或回调结束')
             if '真实技术目标未核实' in note:reasons.append('真实技术目标未核实')
             if w.get('reference_entry') and w.get('reference_stop') and w.get('stop_pct',0)>0 and '目标为理论值' in note:reasons.append('真实技术目标未核实')
-            if w.get('reference_entry') is not None and w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('盈利空间不足')
+            if w.get('reference_entry') is not None and w.get('reference_tp1') is not None and w['rr_tp1']<2:reasons.append('最新价格盈利空间不足')
+            if '最新价格盈利空间不足' in reasons and '支撑/阻力限制目标' in reasons:reasons.remove('支撑/阻力限制目标')
+            if any('未保持' in r for r in reasons):reasons=[r for r in reasons if r not in ('等待回踩确认','等待突破确认')]
             out.append('👀 仅观察：'+('；'.join(dict.fromkeys(reasons)) or '入场条件或风险参数未达标'))
         def price(v):
             return quote(v,w['name'])
@@ -721,7 +737,7 @@ def report(data, previous=None):
         if groups:
             for k,names in groups.items():lines.append(f"⚠️ 数据：{len(names)}个标的{k}（{'、'.join(names)}）；其他可用周期继续分析。")
         else:lines.append('数据异常已恢复。')
-    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{}),'pattern_states':dict(list(pattern_states.items())[-2000:])}
+    data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{}),'pattern_states':dict(list(pattern_states.items())[-2000:]),'invalid_boll_keys':sorted(set(previous.get('invalid_boll_keys',[]))|set(data.get('invalid_boll_keys',[])))}
     lines.append('')
     lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
