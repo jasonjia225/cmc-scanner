@@ -1,4 +1,4 @@
-name: CMC 10-asset hourly scan
+name: CMC 14-asset scan
 on:
   workflow_dispatch:
 permissions:
@@ -17,10 +17,38 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: pip install -r requirements.txt
+      - name: Diagnose OANDA practice connection
+        env:
+          OANDA_API_TOKEN: ${{ secrets.OANDA_API_TOKEN }}
+          OANDA_ACCOUNT_ID: ${{ secrets.OANDA_ACCOUNT_ID }}
+        run: |
+          python - <<'PYCODE'
+          import os, requests
+          from datetime import datetime, timezone
+          token = os.getenv('OANDA_API_TOKEN')
+          account = os.getenv('OANDA_ACCOUNT_ID')
+          if not token or not account:
+              print('OANDA: missing token or account ID')
+          else:
+              base = 'https://api-fxpractice.oanda.com/v3'
+              headers = {'Authorization': 'Bearer ' + token}
+              for symbol in ('XAU_USD', 'XAG_USD', 'WTICO_USD'):
+                  try:
+                      r = requests.get(f'{base}/accounts/{account}/pricing', headers=headers, params={'instruments': symbol}, timeout=15)
+                      print(f'OANDA {symbol}: HTTP {r.status_code}')
+                      if r.ok:
+                          for q in r.json().get('prices', []):
+                              print('  time:', q.get('time'), 'tradeable:', q.get('tradeable'), 'status:', q.get('status'))
+                          if not r.json().get('prices'):
+                              print('  no prices returned')
+                  except (requests.RequestException, ValueError) as e:
+                      print(f'OANDA {symbol}: {type(e).__name__}')
+          PYCODE
       - run: python scanner.py
         env:
           OANDA_API_TOKEN: ${{ secrets.OANDA_API_TOKEN }}
-          OANDA_ENV: ${{ vars.OANDA_ENV }}
+          OANDA_ACCOUNT_ID: ${{ secrets.OANDA_ACCOUNT_ID }}
+          OANDA_ENV: practice
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TWELVE_DATA_NDX_SYMBOL: ${{ vars.TWELVE_DATA_NDX_SYMBOL }}
           TWELVE_DATA_DAX_SYMBOL: ${{ vars.TWELVE_DATA_DAX_SYMBOL }}
@@ -40,7 +68,3 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python telegram_send.py reports/latest.md
-env:
-  OANDA_API_TOKEN: ${{ secrets.OANDA_API_TOKEN }}
-  OANDA_ACCOUNT_ID: ${{ secrets.OANDA_ACCOUNT_ID }}
-  OANDA_ENV: practice
