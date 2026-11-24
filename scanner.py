@@ -36,6 +36,8 @@ INDEX_FUTURES={'Germany 40 - Cash':'FDAX=F','US NDAQ 100 - Cash':'NQ=F','Hong Ko
 INDEX_EXTRA_FUTURES={'US NDAQ 100 - Cash':['MNQ=F'],'Germany 40 - Cash':['FDXM=F'],'Hong Kong 50 - Cash':[]}
 OANDA_INDEX={'US NDAQ 100 - Cash':'NAS100_USD','Germany 40 - Cash':'DE30_EUR','Hong Kong 50 - Cash':'HK33_HKD'}
 
+OANDA_COMMODITIES={'Gold - Cash':'XAU_USD','Silver - Cash':'XAG_USD','Crude Oil West Texas - Cash':'WTICO_USD'}
+
 INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':['2800.HK']}
 
 def volume_allowed(name,d):
@@ -110,8 +112,8 @@ def oanda_index(name,tf):
     if not token:return None,'OANDA_API_TOKEN not configured'
     host='api-fxtrade.oanda.com' if os.getenv('OANDA_ENV')=='live' else 'api-fxpractice.oanda.com'
     try:
-        r=S.get(f'https://{host}/v3/instruments/{OANDA_INDEX[name]}/candles',
-          headers={'Authorization':'Bearer '+token},params={'granularity':{'15m':'M15','1h':'H1','1d':'D'}[tf], 'count':500,'price':'M'},timeout=13)
+        r=S.get(f'https://{host}/v3/instruments/{(OANDA_INDEX|OANDA_COMMODITIES)[name]}/candles',
+          headers={'Authorization':'Bearer '+token},params={'granularity':{'15m':'M15','1h':'H1','1d':'D'}[tf], 'count':500,'price':'M','dailyAlignment':0,'alignmentTimezone':'UTC'},timeout=13)
         if r.status_code!=200:return None,f'OANDA HTTP {r.status_code}'
         rows=[{'time':c['time'],**{k:float(c['mid'][v]) for k,v in zip(('open','high','low','close'),'ohlc')},'volume':np.nan} for c in r.json()['candles'] if c['complete']]
         if not rows:return None,'OANDA no complete candles'
@@ -387,7 +389,7 @@ def track_boll(name,bars,alerts,watches,previous):
     for w in alerts:
         if w['timeframe'] not in ('4h','1d'):continue
         k='|'.join(str(w[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))
-        if name in INDEX_FUTURES:k+='|'+w.get('proxy_source','unknown')
+        if name in INDEX_FUTURES or w.get('proxy_source','').startswith('OANDA '):k+='|'+w.get('proxy_source','unknown')
         active.setdefault(k,{**w,'status':'等待第二根收盘反转'})
     # Recover the immediately preceding trigger when upgrading after confirmation.
     for w in watches:
@@ -397,7 +399,7 @@ def track_boll(name,bars,alerts,watches,previous):
         if d is None or len(d)<2:continue
         stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=14400 if t=='4h' else 86400))
         k='|'.join((name,w['direction'],t,stamp))
-        if name in INDEX_FUTURES:k+='|'+w.get('proxy_source','unknown')
+        if name in INDEX_FUTURES or w.get('proxy_source','').startswith('OANDA '):k+='|'+w.get('proxy_source','unknown')
         a=active.setdefault(k,dict(name=name,direction=w['direction'],timeframe=t,reference_candle_close_utc=stamp,trigger_low=float(d.low.iloc[-2]),trigger_high=float(d.high.iloc[-2])))
         a.update(status='反转已确认',score=w['score'],tp1=w['reference_tp1'],tp2=w['reference_tp2'],confirmed_utc=w['reference_candle_close_utc'])
     for k,a in list(active.items()):
@@ -417,7 +419,23 @@ def track_boll(name,bars,alerts,watches,previous):
                     a[target+'_hit']=True
     return active,ended
 
+def oanda_quote(source):
+    token=os.getenv('OANDA_API_TOKEN'); account=os.getenv('OANDA_ACCOUNT_ID')
+    if not token or not account:return None,'OANDA credentials not configured'
+    host='api-fxtrade.oanda.com' if os.getenv('OANDA_ENV')=='live' else 'api-fxpractice.oanda.com'
+    try:
+        r=S.get(f'https://{host}/v3/accounts/{account}/pricing',headers={'Authorization':'Bearer '+token},params={'instruments':source.split()[1]},timeout=13)
+        if r.status_code!=200:return None,f'OANDA HTTP {r.status_code}'
+        x=r.json()['prices'][0]
+        if not x.get('tradeable',False):return None,'OANDA instrument not tradeable'
+        bid=float(x['bids'][0]['price']); ask=float(x['asks'][0]['price'])
+        stamp=pd.Timestamp(x['time']); age=(pd.Timestamp.now(tz='UTC')-stamp).total_seconds()
+        if not (0<bid<=ask and -5<=age<=300):return None,'OANDA invalid or stale price'
+        return dict(price=(bid+ask)/2,bid=bid,ask=ask,utc=stamp.isoformat(),source=source,delay_unknown=True),None
+    except (requests.RequestException,ValueError,KeyError,IndexError,TypeError):return None,'OANDA pricing request or parse failure'
+
 def latest_quote(name, symbol, source):
+    if source.startswith('OANDA '):return oanda_quote(source)[0]
     # Same instrument and provider as signal. Never mix cash, futures or ETF prices.
     try:
         if symbol is None:
@@ -435,10 +453,10 @@ def latest_quote(name, symbol, source):
                     try:
                         meta=obj['chart']['result'][0]['meta']
                         price=float(meta['regularMarketPrice']); stamp=pd.Timestamp(meta['regularMarketTime'],unit='s',tz='UTC')
-                        if not -5 <= (pd.Timestamp.now(tz='UTC')-stamp).total_seconds() <=300:
+                        if not -5 <= (pd.Timestamp.now(tz='UTC')-stamp).total_seconds() <=2100:
                             result=obj['chart']['result'][0]
                             pairs=list(zip(result['timestamp'],result['indicators']['quote'][0]['close']))
-                            valid=[(ts,v) for ts,v in pairs if v is not None and 60<= (pd.Timestamp.now(tz='UTC')-pd.Timestamp(ts,unit='s',tz='UTC')).total_seconds()<=360]
+                            valid=[(ts,v) for ts,v in pairs if v is not None and 60<= (pd.Timestamp.now(tz='UTC')-pd.Timestamp(ts,unit='s',tz='UTC')).total_seconds()<=2160]
                             if not valid:continue
                             ts,price=valid[-1];price=float(price);stamp=pd.Timestamp(ts+60,unit='s',tz='UTC')
                         if not np.isfinite(price) or price<=0:continue
@@ -447,8 +465,8 @@ def latest_quote(name, symbol, source):
                 else:return None
             else:return None
         age=(pd.Timestamp.now(tz='UTC')-stamp).total_seconds()
-        if not np.isfinite(price) or price<=0 or not -5<=age<=300:return None
-        return dict(price=price,utc=stamp.isoformat(),source=source,delay_unknown=True)
+        if not np.isfinite(price) or price<=0 or not -5<=age<=2100:return None
+        return dict(price=price,utc=stamp.isoformat(),source=source,delay_unknown=True,age_seconds=max(0,age),delayed=age>300)
     except (KeyError,TypeError,ValueError,IndexError):return None
 
 
@@ -480,6 +498,7 @@ def reprice_candidate(w,q):
     w['distance_atr']=distance;w['risk_atr']=risk/atr
     limit=w.get('distance_limit',1.)
     reasons=[]
+    if q.get('delayed'):reasons.append(f"报价时间距今{q['age_seconds']/60:.0f}分钟，仅观察")
     if distance>limit:reasons.append('距离触发点过远，勿追单')
     if not boll and offset<=0:reasons.append('最新价格未保持回踩确认' if w['mode']=='Trend' else '最新价格未保持突破确认')
     if risk>4*atr:reasons.append('结构止损距离过大')
@@ -498,7 +517,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.9.3','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -524,6 +543,20 @@ def scan(previous=None):
                     if status=='可用':fallback=df;break
                 if fallback is not None:futures_bars[tf]=fallback
             source='mixed index proxies';item['proxy_source']=source
+        commodity_bars={}
+        if name in OANDA_COMMODITIES and os.getenv('OANDA_API_TOKEN') and os.getenv('OANDA_ACCOUNT_ID'):
+            label='OANDA '+OANDA_COMMODITIES[name]+' cfd proxy'
+            oq,err=oanda_quote(label)
+            item['source_attempts']['OANDA pricing']={'error':err}
+            if oq is not None:
+                for tf in ('15m','1h','1d'):
+                    df,err=oanda_index(name,tf)
+                    item['source_attempts']['OANDA '+tf]={'error':err,'bars':len(df) if df is not None else 0}
+                    if df is not None and len(df)>=60 and session_status(name,label,df,tf)=='可用':
+                        df.attrs.update(proxy_source=label,futures=False,etf=False)
+                        commodity_bars[tf]=df
+                # Switch the whole instrument together; never combine futures and CFD targets.
+                if len(commodity_bars)!=3:commodity_bars={}
         if name.startswith('China A50'):
             for tf in ['15m','1h','4h','1d']:item['timeframes'][tf]=False
             item['errors']['contract']='CMC specific active month and expiry not independently verified; signal disabled'
@@ -531,6 +564,8 @@ def scan(previous=None):
             for tf in ['15m','1h','1d']:
                 if name in INDEX_FUTURES:
                     df,err=futures_bars.get(tf),None
+                elif commodity_bars:
+                    df,err=commodity_bars[tf],None
                 elif symbol:
                     df,err=yahoo(symbol,tf,{'15m':'5d','1h':'3mo','1d':'6mo'}[tf])
                 else:
@@ -580,9 +615,9 @@ def scan(previous=None):
                     t=w['timeframe']; d=subset.get(t)
                     if d is None or len(d)<2:return ''
                     stamp=iso(d.index[-2].to_pydatetime()+timedelta(seconds=14400 if t=='4h' else 86400))
-                    return '|'.join((name,w['direction'],t,stamp))+('|' + src if name in INDEX_FUTURES else '')
+                    return '|'.join((name,w['direction'],t,stamp))+('|' + src if name in INDEX_FUTURES or src.startswith('OANDA ') else '')
                 active,ended=track_boll(name,subset,aa,[w for w in ws if w['mode']!='BOLL Reversal' or w['timeframe'] not in ('4h','1d') or boll_key(w) not in invalid],{k:v for k,v in compatible.items() if k not in invalid})
-                invalid.update('|'.join(str(a[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))+('|' + src if name in INDEX_FUTURES else '') for a in ended)
+                invalid.update('|'.join(str(a[x]) for x in ('name','direction','timeframe','reference_candle_close_utc'))+('|' + src if name in INDEX_FUTURES or src.startswith('OANDA ') else '') for a in ended)
                 active={k:v for k,v in active.items() if k not in invalid}
                 output.setdefault('invalid_boll_keys',[]).extend(sorted(invalid))
                 watches[:]=[w for w in watches if not (w['mode']=='BOLL Reversal' and w['timeframe'] in ('4h','1d') and boll_key(w) in invalid and w.get('proxy_source')==src)]
@@ -623,7 +658,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.3 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.4 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -678,7 +713,7 @@ def report(data, previous=None):
         def price(v):
             return quote(v,w['name'])
         entry=w.get('reference_entry')
-        out.append(f"参考入场：{price(entry)}")
+        out.append(f"参考入场：{price(entry)}"+('（延迟参考）' if (w.get('entry_quote') or {}).get('delayed') else ''))
         out.append(f"🛑 止损：{price(w.get('reference_stop'))}")
         out.append(f"🎯 止盈1：{price(w.get('reference_tp1'))}")
         out.append(f"🎯 止盈2：{price(w.get('reference_tp2'))}")
