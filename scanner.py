@@ -37,7 +37,11 @@ INDEX_FUTURES={'Germany 40 - Cash':'FDAX=F','US NDAQ 100 - Cash':'NQ=F','Hong Ko
 INDEX_EXTRA_FUTURES={'US NDAQ 100 - Cash':['MNQ=F'],'Germany 40 - Cash':['FDXM=F'],'Hong Kong 50 - Cash':[]}
 OANDA_INDEX={'US NDAQ 100 - Cash':'NAS100_USD','Germany 40 - Cash':'DE30_EUR','Hong Kong 50 - Cash':'HK33_HKD'}
 
-INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':['2800.HK']}
+INDEX_ETFS={'Germany 40 - Cash':['EXS1.DE'], 'US NDAQ 100 - Cash':['QQQ'], 'Hong Kong 50 - Cash':[]}
+
+def hk50_prices_valid(values):
+    # Broad index-point sanity range, not a conversion from ETF prices.
+    return bool(np.isfinite(values).all() and (values >= 1000).all() and (values <= 100000).all())
 
 def volume_allowed(name,d):
     return name not in ('USD/JPY','NZD/USD') and (name not in INDEX_FUTURES or (d.attrs.get('futures',False) or d.attrs.get('etf',False)))
@@ -438,6 +442,7 @@ def latest_quote(name, symbol, source):
             else:return None
         age=(pd.Timestamp.now(tz='UTC')-stamp).total_seconds()
         if not np.isfinite(price) or price<=0 or not -5<=age<=300:return None
+        if name=='Hong Kong 50 - Cash' and not hk50_prices_valid(np.array([price])):return None
         return dict(price=price,utc=stamp.isoformat(),source=source,delay_unknown=True)
     except (KeyError,TypeError,ValueError,IndexError):return None
 
@@ -495,6 +500,8 @@ def scan(previous=None):
         item['source_attempts']={};item['timeframe_sources']={}
         if name in INDEX_FUTURES:
             options=[(INDEX_FUTURES[name],'futures')]+[(x,'futures') for x in INDEX_EXTRA_FUTURES[name]]+[(OANDA_INDEX[name],'cfd'),(os.getenv('TWELVE_DATA_'+{'US NDAQ 100 - Cash':'NDX','Germany 40 - Cash':'DAX','Hong Kong 50 - Cash':'HSI'}[name]+'_SYMBOL') or 'unconfigured','twelve')]+[(x,'etf') for x in INDEX_ETFS[name]]+[(symbol,'cash')]
+            if name=='Hong Kong 50 - Cash':
+                options.sort(key=lambda option: option[1]!='cash')
             for tf in ('15m','1h','1d'):
                 fallback=None
                 for ticker,kind in options:
@@ -502,6 +509,8 @@ def scan(previous=None):
                     label=('OANDA ' if kind=='cfd' else 'Twelve Data ' if kind=='twelve' else 'Yahoo Finance ')+ticker+' '+kind+' proxy'
                     status=session_status(name,label,df,tf)
                     valid=df is not None and len(df)>=60
+                    if name=='Hong Kong 50 - Cash' and valid and not hk50_prices_valid(df[['open','high','low','close']].to_numpy()):
+                        valid=False;err='HK50 invalid index price scale';status='报价量级异常'
                     vol=valid and df.volume.fillna(0).gt(0).any()
                     item['source_attempts'][tf+' '+ticker]={'error':err,'status':status,'bars':len(df) if df is not None else 0,'volume_available':bool(vol)}
                     if not valid or (kind in ('futures','etf') and not vol):continue
@@ -529,7 +538,9 @@ def scan(previous=None):
                     item['candle_close_utc'][tf]=closed
                     if not item['last_complete_candle_utc'] or closed>item['last_complete_candle_utc']:
                         item['last_complete_candle_utc']=closed
-                else:item['timeframes'][tf]=False
+                else:
+                    item['timeframes'][tf]=False
+                    if name=='Hong Kong 50 - Cash':item['errors'][tf]='HK50 valid index data unavailable'
                 if err:item['errors'][tf]=err
             four=aggregate_4h(bars.get('1h'),name)
             item['timeframes']['4h']=four is not None and not four.empty
@@ -547,6 +558,8 @@ def scan(previous=None):
             for tf,d in bars.items():groups.setdefault(d.attrs.get('proxy_source',source),{})[tf]=d
             prior=previous.get('active_boll',{})
             remaining={k:v for k,v in prior.items() if v['name']==name}
+            if name=='Hong Kong 50 - Cash':
+                remaining={k:v for k,v in remaining.items() if ' etf ' not in v.get('proxy_source','') and hk50_prices_valid(np.array([v.get(field,0) for field in ('trigger_low','trigger_high')]+[v[field] for field in ('tp1','tp2') if v.get(field) is not None],dtype=float))}
             active_all={}; ended_all=[]
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
