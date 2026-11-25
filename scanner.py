@@ -676,7 +676,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.5 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 胜利循环｜Victory Cycle V5.9.5','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])

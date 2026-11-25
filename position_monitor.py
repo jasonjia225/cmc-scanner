@@ -133,7 +133,7 @@ def assess(m, d):
 
 
 def main():
-    now=datetime.now(timezone.utc); lines=['📊 黄金与比特币多空持仓监控',now.astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M 新西兰时间')]; result={'retrieved_at':now.isoformat(),'assets':{}}
+    now=datetime.now(timezone.utc); lines=['📊 胜利循环｜多空持仓监控',now.astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M 新西兰时间')]; result={'retrieved_at':now.isoformat(),'assets':{}}
     path=Path('position_reports'); path.mkdir(exist_ok=True)
     history=previous_valid(path, now)
     try:
