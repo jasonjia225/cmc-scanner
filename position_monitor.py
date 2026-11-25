@@ -38,12 +38,21 @@ def number(x):
 
 def metrics(row,price=None,multiplier=None):
     l,s=number(row['longVolume']),number(row['shortVolume'])
-    out={'long_volume':l,'short_volume':s,'net_volume':l-s,'net_pct':100*(l-s)/(l+s) if l+s else None,'pnl_gap_usd':None}
+    out={'long_volume':l,'short_volume':s,'net_volume':l-s,'net_pct':100*(l-s)/(l+s) if l+s else None,'pnl_gap_usd':None,'long_pnl_usd':None,'short_pnl_usd':None}
     if price is not None and multiplier is not None:
         a,b=number(row['avgLongPrice']),number(row['avgShortPrice'])
         if (l and not a) or (s and not b) or price<=0 or multiplier<=0: raise ValueError('invalid cost or multiplier')
-        out['pnl_gap_usd']=((price-a)*l-(b-price)*s)*multiplier
+        out['long_pnl_usd']=(price-a)*l*multiplier
+        out['short_pnl_usd']=(b-price)*s*multiplier
+        out['pnl_gap_usd']=out['long_pnl_usd']-out['short_pnl_usd']
     return out
+
+def pnl_status(value, volume):
+    if volume == 0: return '⚪ 无持仓'
+    if value is None: return '⚪ 未核实'
+    amount=f'{value/10000:+,.2f}万美元'
+    status='🟢 盈利' if value>0 else '🔴 被套' if value<0 else '⚪ 持平'
+    return f'{status} {amount}（估算）'
 
 def main():
     now=datetime.now(timezone.utc); lines=['📊 黄金与比特币多空持仓监控',now.astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M 新西兰时间')]; result={'retrieved_at':now.isoformat(),'assets':{}}
@@ -64,11 +73,13 @@ def main():
             m.update(metrics(row,p,mult)); m['assumed_lot_size']=mult
         except Exception: pass
         gap=m['pnl_gap_usd']; pct=m['net_pct']
+        lines.append('多头：'+pnl_status(m['long_pnl_usd'],m['long_volume']))
+        lines.append('空头：'+pnl_status(m['short_pnl_usd'],m['short_volume']))
         lines.append('多空净盈亏差：'+(f'{gap/10000:+,.2f}万美元（估算）' if gap is not None else '未核实'))
         lines.append(f"多空净持仓量：{m['net_volume']:+,.2f}手")
         lines.append('多空净持仓比例：'+(f'{pct:+.2f}%' if pct is not None else '无持仓'))
         result['assets'][symbol]=m
-    lines.extend(['','Myfxbook样本，源更新时间未知；盈亏假设每手黄金100盎司、BTC 1枚（可配置），均价按手数加权，未计费用；非全球数据。'])
+    lines.extend(['','Myfxbook样本，源更新时间未知；盈亏假设每手黄金100盎司、BTC 1枚（可配置），均价按手数加权，未计费用；盈亏状态为该方向总体净浮盈亏，非所有客户均盈利或被套；非全球数据。'])
     path=Path('position_reports'); path.mkdir(exist_ok=True)
     report='\n'.join(lines); (path/'latest.md').write_text(report,encoding='utf-8'); (path/'latest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     with (path/'history.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(result,ensure_ascii=False)+'\n')
