@@ -1,10 +1,9 @@
 name: Gold and BTC position monitor
 on:
-  schedule:
-    - cron: '7,27,47 * * * *'
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: gold-btc-positions
   cancel-in-progress: false
@@ -18,6 +17,48 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install 'requests>=2.32,<3'
+      - name: Restore previous position history
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_RUN: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p position_reports
+          # Restore available historical snapshots, including pre-upgrade reports.
+          ids=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/workflows/positions.yml/runs?branch=main&status=success&per_page=100" --jq '.workflow_runs[].id')
+          tmp=$(mktemp -d)
+          trap 'rm -rf "$tmp"' EXIT
+          for id in $ids; do
+            [[ "$id" == "$CURRENT_RUN" ]] && continue
+            artifacts=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts" --jq '.artifacts[] | select(.expired == false) | .name')
+            if ! grep -Fxq "positions-$id" <<< "$artifacts"; then continue; fi
+            mkdir -p "$tmp/$id"
+            gh run download "$id" --repo "$GITHUB_REPOSITORY" --name "positions-$id" --dir "$tmp/$id"
+            # A cumulative history from an upgraded run already includes earlier snapshots.
+            if [[ -f "$tmp/$id/history-restored.marker" && -s "$tmp/$id/history.jsonl" ]]; then break; fi
+          done
+          python - "$tmp" <<'PY'
+          import json, sys
+          from pathlib import Path
+          from datetime import datetime
+          records = {}
+          for path in Path(sys.argv[1]).glob('*/history.jsonl'):
+              for line in path.read_text(encoding='utf-8').splitlines():
+                  try:
+                      row = json.loads(line)
+                      stamp = datetime.fromisoformat(row['retrieved_at'])
+                      if stamp.tzinfo is None or not isinstance(row['assets'], dict):
+                          continue
+                      records[stamp] = row
+                  except (ValueError, TypeError, KeyError):
+                      continue
+          with Path('position_reports/history.jsonl').open('w', encoding='utf-8') as f:
+              for stamp in sorted(records):
+                  f.write(json.dumps(records[stamp], ensure_ascii=False) + '\n')
+          print(f'Restored {len(records)} historical reports')
+          PY
+          touch position_reports/history-restored.marker
       - name: Scan and send
         run: python position_monitor.py
         env:
