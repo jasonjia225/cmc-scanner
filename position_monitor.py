@@ -41,7 +41,7 @@ def metrics(row,price=None,multiplier=None):
     out={'long_volume':l,'short_volume':s,'net_volume':l-s,'net_pct':100*(l-s)/(l+s) if l+s else None,'pnl_gap_usd':None,'long_pnl_usd':None,'short_pnl_usd':None}
     if price is not None and multiplier is not None:
         a,b=number(row['avgLongPrice']),number(row['avgShortPrice'])
-        if (l and not a) or (s and not b) or price<=0 or multiplier<=0: raise ValueError('invalid cost or multiplier')
+        if (l and not a) or (s and not b) or not math.isfinite(price) or price<=0 or multiplier<=0: raise ValueError('invalid cost or multiplier')
         out['long_pnl_usd']=(price-a)*l*multiplier
         out['short_pnl_usd']=(b-price)*s*multiplier
         out['pnl_gap_usd']=out['long_pnl_usd']-out['short_pnl_usd']
@@ -54,8 +54,88 @@ def pnl_status(value, volume):
     status='🟢 盈利' if value>0 else '🔴 被套' if value<0 else '⚪ 持平'
     return f'{status} {amount}（估算）'
 
+def finite(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def previous_valid(path, now):
+    # Select the newest complete, valid snapshot independently for each asset.
+    found = {}
+    try:
+        with (path / 'history.jsonl').open(encoding='utf-8') as f:
+            for line in f:
+                try:
+                    record = json.loads(line)
+                    stamp = datetime.fromisoformat(record['retrieved_at'].replace('Z', '+00:00'))
+                    if stamp.tzinfo is None or stamp >= now:
+                        continue
+                    for symbol in ('XAUUSD', 'BTCUSD'):
+                        m = record['assets'].get(symbol, {})
+                        if not isinstance(m, dict) or m.get('error'):
+                            continue
+                        if not all(finite(m.get(k)) for k in ('long_pnl_usd', 'short_pnl_usd', 'net_volume', 'assumed_lot_size')) or m['assumed_lot_size'] <= 0:
+                            continue
+                        if symbol not in found or stamp > found[symbol][0]:
+                            found[symbol] = (stamp, m)
+                except (ValueError, TypeError, KeyError, AttributeError, OverflowError):
+                    continue
+    except OSError:
+        pass
+    return found
+
+
+def compare(m, previous):
+    if previous is None:
+        return None, ['较上次：暂无对比数据']
+    stamp, old = previous
+    d = {'previous_at': stamp.isoformat(), 'net_volume_change': None,
+         'long_loss_change_usd': None, 'short_profit_change_usd': None, 'long_pnl_change_usd': None, 'short_pnl_change_usd': None}
+    if finite(m.get('net_volume')):
+        d['net_volume_change'] = m['net_volume'] - old['net_volume']
+    if m.get('assumed_lot_size') == old['assumed_lot_size']:
+        if finite(m.get('long_pnl_usd')):
+            d['long_pnl_change_usd'] = m['long_pnl_usd'] - old['long_pnl_usd']
+            d['long_loss_change_usd'] = max(0, -m['long_pnl_usd']) - max(0, -old['long_pnl_usd'])
+        if finite(m.get('short_pnl_usd')):
+            d['short_pnl_change_usd'] = m['short_pnl_usd'] - old['short_pnl_usd']
+            d['short_profit_change_usd'] = max(0, m['short_pnl_usd']) - max(0, old['short_pnl_usd'])
+    def fmt(value, unit, scale=1):
+        return f'{value/scale:+,.2f}{unit}' if finite(value) else '暂无可比数据'
+    label = stamp.astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M')
+    return d, [f'较上次有效报告（{label}）：',
+               '多头亏损变化：' + fmt(d['long_loss_change_usd'], '万美元', 10000),
+               '空头盈利变化：' + fmt(d['short_profit_change_usd'], '万美元', 10000),
+               '净持仓变化：' + fmt(d['net_volume_change'], '手')]
+
+
+def assess(m, d):
+    # Heuristic observation only; never a price forecast or entry signal.
+    l, s, pct = (m.get(k) for k in ('long_pnl_usd', 'short_pnl_usd', 'net_pct'))
+    if not all(finite(x) for x in (l, s, pct)) or not d:
+        return '方向不明', '盈亏或历史对比不足，暂不判断方向。'
+    loss, profit, net = (d.get(k) for k in ('long_loss_change_usd', 'short_profit_change_usd', 'net_volume_change'))
+    if not all(finite(x) for x in (loss, profit, net)):
+        return '方向不明', '本次与历史数据不完全可比。'
+    if l < 0 < s:
+        if loss < 0 and profit < 0 and net > 0:
+            return '关注反弹', '多头亏损收窄、空头盈利减少，净持仓向多方移动。'
+        if loss > 0 and profit > 0 and net <= 0:
+            return '偏空', '多头亏损扩大、空头盈利增加，净持仓未向多方移动。'
+    if s < 0 < l:
+        if d['long_pnl_change_usd'] < 0 and d['short_pnl_change_usd'] > 0 and net < 0:
+            return '关注回落', '多头盈利收窄、空头亏损减轻，净持仓向空方移动。'
+        if net > 0 and d['long_pnl_change_usd'] > 0 and d['short_pnl_change_usd'] < 0:
+            return '偏多', '多头盈利扩大、空头亏损扩大，净持仓向多方移动。'
+    # Symmetric pullback check uses signed P&L changes, not clipped profit/loss.
+    if pct == 0 and net == 0:
+        return '方向不明', '净持仓没有明显方向。'
+    return '方向不明', '持仓与盈亏变化未形成一致信号。'
+
+
 def main():
     now=datetime.now(timezone.utc); lines=['📊 黄金与比特币多空持仓监控',now.astimezone(ZoneInfo('Pacific/Auckland')).strftime('%m-%d %H:%M 新西兰时间')]; result={'retrieved_at':now.isoformat(),'assets':{}}
+    path=Path('position_reports'); path.mkdir(exist_ok=True)
+    history=previous_valid(path, now)
     try:
         rows={r['name'].upper().replace('/',''):r for r in outlook()}
     except Exception:
@@ -64,7 +144,7 @@ def main():
         lines.extend(['',label]); row=rows.get(symbol)
         try: m=metrics(row)
         except Exception:
-            lines.append('持仓数据未核实'); result['assets'][symbol]={'error':'missing or invalid sentiment'}; continue
+            lines.extend(['持仓数据未核实', '较上次：暂无对比数据', '方向：方向不明']); result['assets'][symbol]={'error':'missing or invalid sentiment'}; continue
         m['quote']=None
         try:
             p,source=quote(symbol); m.update(quote=p,quote_source=source)
@@ -78,9 +158,13 @@ def main():
         lines.append('多空净盈亏差：'+(f'{gap/10000:+,.2f}万美元（估算）' if gap is not None else '未核实'))
         lines.append(f"多空净持仓量：{m['net_volume']:+,.2f}手")
         lines.append('多空净持仓比例：'+(f'{pct:+.2f}%' if pct is not None else '无持仓'))
+        d, change_lines = compare(m, history.get(symbol))
+        direction, analysis = assess(m, d)
+        lines.extend(change_lines)
+        lines.extend(['分析：'+analysis, '方向：'+direction])
+        m.update(comparison=d, direction=direction, analysis=analysis)
         result['assets'][symbol]=m
-    lines.extend(['','Myfxbook样本，源更新时间未知；盈亏假设每手黄金100盎司、BTC 1枚（可配置），均价按手数加权，未计费用；盈亏状态为该方向总体净浮盈亏，非所有客户均盈利或被套；非全球数据。'])
-    path=Path('position_reports'); path.mkdir(exist_ok=True)
+    lines.extend(['','Myfxbook样本估算，源更新时间未知','持仓方向分析不等同于价格预测。'])
     report='\n'.join(lines); (path/'latest.md').write_text(report,encoding='utf-8'); (path/'latest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     with (path/'history.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(result,ensure_ascii=False)+'\n')
     send(report)
