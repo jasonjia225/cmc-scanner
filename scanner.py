@@ -676,7 +676,9 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 胜利循环｜Victory Cycle V5.9.5','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 胜利循环｜Victory Cycle V5.9.5','🕒 '+nz(data['scan_utc'])+' 新西兰时间']
+    opportunity_summary=['暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    opportunity_details=[]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -776,8 +778,22 @@ def report(data, previous=None):
         if a.get('tp2') is not None:out.append(f"参考TP2：{quote(a['tp2'],a['name'])}")
     for a in data.get('ended_boll',[]):
         boll.extend([f"❌ {direction(a['direction'])}｜{a['name']}",f"{a['timeframe']}｜已突破触发K线极值", ""])
-    for title,items in sections.items():block(title,items)
+    for title,items in sections.items():
+        if title!='⚖️ 多空冲突':block(title,items)
     block('🔔 布林线持续预警｜BOLL',boll)
+    block('⚖️ 多空冲突',sections.get('⚖️ 多空冲突',[]))
+    for title, candidates, status in (
+        ('已核实正式机会',data.get('high_quality_signals',[]),'正式机会'),
+        ('技术达标参考方案',data.get('research_setups',[]),'⏳ 技术条件满足；CMC报价及成本待核实')):
+        for w in candidates:
+            name=w['name']
+            label={'Range Breakout':'⚡ 区间突破','Trend':'📈 趋势交易','Double Bottom/Top Reversal':'🔄 双顶双底','BOLL Reversal':'🔔 布林线反转｜BOLL','Breakout':'⚡ 突破回踩'}.get(w['mode'],w['mode'])
+            opportunity_details.extend(['',f"📌 {name}",f"{direction(w['direction'])}｜{w['timeframe']}｜{w['score']:.1f}/10",label,status,
+                '参考入场：'+quote(w.get('reference_entry'),name),
+                '🛑 止损：'+quote(w.get('reference_stop'),name),
+                '🎯 止盈1：'+quote(w.get('reference_tp1'),name),
+                '🎯 止盈2：'+quote(w.get('reference_tp2'),name)])
+    block('🎯 正式交易机会',opportunity_summary+opportunity_details)
     ctx=data.get('risk_context',{}).get('VIX')
     lines.extend(['','━━━━━━━━━━━━','🌡️ VIX：'+(f"{ctx['close']:.2f}" if ctx else '未取得')])
     groups={}
