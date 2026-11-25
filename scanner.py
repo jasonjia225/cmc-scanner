@@ -401,7 +401,7 @@ def track_boll(name,bars,alerts,watches,previous):
         k='|'.join((name,w['direction'],t,stamp))
         if name in INDEX_FUTURES or w.get('proxy_source','').startswith('OANDA '):k+='|'+w.get('proxy_source','unknown')
         a=active.setdefault(k,dict(name=name,direction=w['direction'],timeframe=t,reference_candle_close_utc=stamp,trigger_low=float(d.low.iloc[-2]),trigger_high=float(d.high.iloc[-2])))
-        a.update(status='反转已确认',score=w['score'],tp1=w['reference_tp1'],tp2=w['reference_tp2'],confirmed_utc=w['reference_candle_close_utc'])
+        a.update(status='反转已确认',score=w['score'],tp1=w.get('original_targets',[w['reference_tp1'],w['reference_tp2']])[0],tp2=w.get('original_targets',[w['reference_tp1'],w['reference_tp2']])[1],confirmed_utc=w['reference_candle_close_utc'])
     for k,a in list(active.items()):
         start=pd.Timestamp(a['reference_candle_close_utc'])
         sign=1 if a['direction']=='Buy' else -1
@@ -415,7 +415,7 @@ def track_boll(name,bars,alerts,watches,previous):
         if a.get('confirmed_utc'):
             after=pd.Timestamp(a['confirmed_utc'])
             for target in ('tp1','tp2'):
-                if target in a and any(((d.loc[d.index>=after].high>=a[target]).any() if sign==1 else (d.loc[d.index>=after].low<=a[target]).any()) for d in chunks):
+                if a.get(target) is not None and any(((d.loc[d.index>=after].high>=a[target]).any() if sign==1 else (d.loc[d.index>=after].low<=a[target]).any()) for d in chunks):
                     a[target+'_hit']=True
     return active,ended
 
@@ -470,7 +470,7 @@ def latest_quote(name, symbol, source):
     except (KeyError,TypeError,ValueError,IndexError):return None
 
 
-def reprice_candidate(w,q):
+def reprice_candidate(w,q,bars=None):
     # Preserve closed-candle evidence and fixed technical stops/targets.
     w['signal_candle_price']=w.get('reference_price')
     w['entry_quote']=q
@@ -482,8 +482,20 @@ def reprice_candidate(w,q):
     entry=q['price']; sign=1 if w['direction']=='Buy' else -1
     stop=w['reference_stop']; risk=sign*(entry-stop)
     w['reference_entry']=entry
+    atr=w.get('atr',w.get('boll_chase_distance'))
+    targets=[w.get('reference_tp1'),w.get('reference_tp2')]
+    w['original_targets']=targets.copy()
+    if w['mode']!='BOLL Reversal' and bars and atr and np.isfinite(atr) and atr>0:
+        seconds={**TF,'4h':14400}
+        fresh={t:d for t,d in bars.items() if len(d)>=60 and 0 <= (NOW-d.index[-1].to_pydatetime()-timedelta(seconds=seconds[t])).total_seconds() <= {'15m':2700,'1h':10800,'4h':43200,'1d':345600}[t]}
+        major,minor=structural_targets(fresh,w['timeframe'],sign,entry,atr)
+        targets=major
+        w['intermediate_levels']=minor
+        w['minor_obstacle']=next((v for v in minor if not major or sign*(v-major[0])<0),None)
+    valid=sorted({float(v) for v in targets if v is not None and np.isfinite(v) and v>0 and sign*(v-entry)>0},reverse=sign<0)
     for i in (1,2):
-        target=w.get(f'reference_tp{i}')
+        target=valid[i-1] if len(valid)>=i else None
+        w[f'reference_tp{i}']=target
         w[f'rr_tp{i}']=float(sign*(target-entry)/risk) if target is not None and risk>0 else 0.
     w['stop_pct']=100*max(0.,risk)/entry
     if risk<=0:
@@ -507,7 +519,7 @@ def reprice_candidate(w,q):
     spread=q.get('cmc_spread')
     if spread is not None and risk<3*spread:reasons.append('止损不足三倍点差')
     if w['rr_tp1']<2:reasons.append('最新价格盈利空间不足')
-    if boll and w['rr_tp2']<w['rr_tp1']:reasons.append('布林目标顺序异常')
+    if boll and w.get('reference_tp2') is not None and w['rr_tp2']<w['rr_tp1']:reasons.append('布林目标顺序异常')
     # Conservative: a previously blocked setup cannot become ready solely from price movement.
     w['setup_ready']=bool(w['setup_ready'] and not reasons)
     if reasons:w['entry_issue']='；'.join(reasons)
@@ -517,7 +529,7 @@ def scan(previous=None):
     previous=previous or {}
 
     output={'scan_utc':iso(NOW),'timezone':'UTC','type':'public_proxy_research_only',
-            'version':'V5.9.4','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
+            'version':'V5.9.5','cmc_quotes_verified':False,'high_quality_signals':[], 'assets':[], 'watch_candidates':[], 'research_setups':[], 'boll_alerts':[], 'active_boll':{}, 'ended_boll':[], 'double_alerts':[], 'conflicts':[]}
     vix,err=yahoo('^VIX','15m','5d')
     output['risk_context']={'VIX':metrics(vix),'error':err} if vix is not None else {'VIX':None,'error':err}
     for name,symbol,source in ASSETS:
@@ -600,10 +612,10 @@ def scan(previous=None):
             for src,subset in groups.items():
                 ds=[]; ws,_,aa=evaluate(name,subset,ds)
                 for x in ws+aa+ds:x['proxy_source']=src
-                q=latest_quote(name,symbol,src) if ws else None
+                q=latest_quote(name,symbol,src) if ws or aa or any(v.get('proxy_source',source)==src for v in remaining.values()) else None
                 for w in ws:
                     w['name']=name
-                    reprice_candidate(w,q)
+                    reprice_candidate(w,q,subset)
                 for w in ws:
                     if w.get('double_pattern'):w['double_pattern']['proxy_source']=src
                 if ' etf ' in src or ' cfd ' in src or ' twelve ' in src:
@@ -622,10 +634,16 @@ def scan(previous=None):
                 output.setdefault('invalid_boll_keys',[]).extend(sorted(invalid))
                 watches[:]=[w for w in watches if not (w['mode']=='BOLL Reversal' and w['timeframe'] in ('4h','1d') and boll_key(w) in invalid and w.get('proxy_source')==src)]
                 for k,v in active.items():
-                    v.setdefault('proxy_source',src);active_all[k]=v
+                    v.setdefault('proxy_source',src)
+                    edge=v['trigger_low'] if v['direction']=='Buy' else v['trigger_high']
+                    v['distance_to_invalidation_pct']=None
+                    v['distance_quote']=q
+                    if q and not q.get('delayed') and q['price']>0:
+                        v['distance_to_invalidation_pct']=100*(1 if v['direction']=='Buy' else -1)*(q['price']-edge)/q['price']
+                    active_all[k]=v
                 ended_all.extend(ended)
                 for k in compatible:remaining.pop(k,None)
-            for k,v in remaining.items():active_all[k]={**v,'data_unverified':True}
+            for k,v in remaining.items():active_all[k]={**v,'data_unverified':True,'distance_to_invalidation_pct':None,'distance_quote':None}
             output['double_alerts'].extend(details)
             output['boll_alerts'].extend(alerts)
             output['active_boll'].update(active_all);output['ended_boll'].extend(ended_all)
@@ -658,7 +676,7 @@ def pattern_state(a):
 
 def report(data, previous=None):
     previous=previous or {}
-    lines=['📊 CMC V5.9.4 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
+    lines=['📊 CMC V5.9.5 交易扫描报告','🕒 '+nz(data['scan_utc'])+' 新西兰时间','', '🎯 正式交易机会','暂无已核实CMC报价及成本的正式机会。' if not data.get('high_quality_signals') else f"已核实正式机会：{len(data['high_quality_signals'])}", f"技术条件满足的参考方案：{len(data.get('research_setups',[]))}个（非正式下单信号）"]
     sections={}
     def heading(title):
         sections.setdefault(title, [])
@@ -752,6 +770,8 @@ def report(data, previous=None):
         if a.get('data_unverified'):status+='；暂无触发后完整K线，待核实'
         out=heading('📌 '+a['name'])
         out.extend(['',f"{direction(a['direction'])}｜{a['timeframe']}｜BOLL持续预警",f"{label}｜{status}",f"失效价格：{quote(edge,a['name'])}"])
+        distance=a.get('distance_to_invalidation_pct')
+        out.append(f'距离失效价：{distance:+.2f}%' if distance is not None else '距离失效价：未核实')
         if a.get('tp1') is not None:out.append(f"参考TP1：{quote(a['tp1'],a['name'])}")
         if a.get('tp2') is not None:out.append(f"参考TP2：{quote(a['tp2'],a['name'])}")
     for a in data.get('ended_boll',[]):
@@ -774,7 +794,6 @@ def report(data, previous=None):
         else:lines.append('数据异常已恢复。')
     data['notification_state']={'alert_keys':sorted(oldkeys.union(current))[-2000:],'issue_keys':issue_keys,'active_boll':data.get('active_boll',{}),'pattern_states':dict(list(pattern_states.items())[-2000:]),'invalid_boll_keys':sorted(set(previous.get('invalid_boll_keys',[]))|set(data.get('invalid_boll_keys',[])))}
     lines.append('')
-    lines.append('评分非盈利概率；下单前核对CMC实时价格、点差及事件风险。')
     return '\n'.join(lines)
 
 if __name__=='__main__':
