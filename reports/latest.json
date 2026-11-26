@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-26T20:45:41.717794Z",
+  "scan_utc": "2026-11-26T21:01:11.326363Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.9.5",
@@ -397,56 +397,91 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T20:45:00Z",
-        "1h": "2026-11-26T20:00:00Z",
-        "1d": "2026-11-26T00:00:00Z",
-        "4h": "2026-11-26T20:00:00Z"
+        "15m": "2026-11-26T21:00:00Z",
+        "1h": "2026-11-26T17:30:00Z",
+        "1d": "2026-11-26T08:00:00Z",
+        "4h": "2026-11-26T16:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T20:45:00Z",
+      "last_complete_candle_utc": "2026-11-26T21:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 25216.0,
-          "ema20": 25227.73493609646,
-          "ema50": 25213.13935875557,
-          "rsi14": 45.86800420893418,
-          "atr14": 18.727118052483423,
+          "close": 25227.0,
+          "ema20": 25227.664942182513,
+          "ema50": 25213.682913314176,
+          "rsi14": 50.461553808718186,
+          "atr14": 18.532323905877465,
           "support20": 25212.4,
           "resistance20": 25305.9,
-          "bars": 499
+          "bars": 500
         },
         "1h": {
-          "close": 25230.4,
-          "ema20": 25193.295977550508,
-          "ema50": 25165.762468164005,
-          "rsi14": 55.36600239763823,
-          "atr14": 72.40272965839372,
-          "support20": 25091.0,
-          "resistance20": 25305.9,
-          "bars": 499
+          "close": 208.0,
+          "ema20": 207.1601233918796,
+          "ema50": 208.18080421319576,
+          "rsi14": 55.708534865032526,
+          "atr14": 0.777868991024866,
+          "support20": 203.5,
+          "resistance20": 208.4499969482422,
+          "bars": 595
         },
         "1d": {
-          "close": 25141.6,
-          "ema20": 25711.237722628077,
-          "ema50": 25706.328375080582,
-          "rsi14": 42.94005894396007,
-          "atr14": 489.9531018763897,
-          "support20": 24537.0,
-          "resistance20": 27014.2,
-          "bars": 499
+          "close": 203.4499969482422,
+          "ema20": 211.51325683264932,
+          "ema50": 211.68089093911797,
+          "rsi14": 37.12351318171638,
+          "atr14": 3.3484096865864315,
+          "support20": 204.3000030517578,
+          "resistance20": 222.4499969482422,
+          "bars": 132
         },
         "4h": {
-          "close": 25230.4,
-          "ema20": 25206.355893845033,
-          "ema50": 25512.845193047797,
-          "rsi14": 48.30463762753342,
-          "atr14": 192.5876081373182,
-          "support20": 24571.4,
-          "resistance20": 25457.6,
-          "bars": 119
+          "close": 208.25,
+          "ema20": 209.9785043789408,
+          "ema50": 211.81788879317824,
+          "rsi14": 43.50882937159209,
+          "atr14": 2.1098605717440333,
+          "support20": 203.89999389648438,
+          "resistance20": 221.4499969482422,
+          "bars": 132
         }
       },
-      "watch": null,
+      "watch": {
+        "mode": "Trend",
+        "timeframe": "4h",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势回调确认、方向及动量评分",
+        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+        "reference_candle_close_utc": "2026-11-26T16:00:00Z",
+        "reference_price": 208.25,
+        "proxy_only": true,
+        "setup_ready": false,
+        "trigger_price": 206.9499969482422,
+        "trigger_utc": "2026-11-26T12:00:00Z",
+        "atr": 2.1098605717440333,
+        "distance_atr": -0.6161559058299365,
+        "distance_limit": 0.75,
+        "structure_ready": false,
+        "countertrend": false,
+        "risk_atr": 0.46589063192279845,
+        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标；非CMC代理仅观察",
+        "reference_entry": null,
+        "reference_stop": 209.23296427503882,
+        "minor_obstacle": null,
+        "intermediate_levels": [],
+        "reference_tp1": 207.5,
+        "reference_tp2": 206.4499969482422,
+        "rr_tp1": 0.0,
+        "rr_tp2": 0.0,
+        "stop_pct": 0.4720116566813083,
+        "proxy_source": "Yahoo Finance EXS1.DE etf proxy",
+        "name": "Germany 40 - Cash",
+        "signal_candle_price": 208.25,
+        "entry_quote": null,
+        "setup_ready_at_candle": false,
+        "entry_issue": "最新报价未核实"
+      },
       "source_attempts": {
         "15m FDAX=F": {
           "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
@@ -463,7 +498,7 @@
         "15m DE30_EUR": {
           "error": null,
           "status": "可用",
-          "bars": 499,
+          "bars": 500,
           "volume_available": false
         },
         "1h FDAX=F": {
@@ -479,9 +514,27 @@
           "volume_available": false
         },
         "1h DE30_EUR": {
+          "error": "OANDA HTTP 504",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1h unconfigured": {
+          "error": "Twelve Data key or instrument not configured",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1h EXS1.DE": {
           "error": null,
-          "status": "可用",
-          "bars": 499,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 595,
+          "volume_available": true
+        },
+        "1h ^GDAXI": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 595,
           "volume_available": false
         },
         "1d FDAX=F": {
@@ -497,25 +550,37 @@
           "volume_available": false
         },
         "1d DE30_EUR": {
+          "error": "OANDA HTTP 504",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1d unconfigured": {
+          "error": "Twelve Data key or instrument not configured",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1d EXS1.DE": {
           "error": null,
           "status": "可用",
-          "bars": 499,
-          "volume_available": false
+          "bars": 132,
+          "volume_available": true
         }
       },
       "timeframe_sources": {
         "15m": "OANDA DE30_EUR cfd proxy",
-        "1h": "OANDA DE30_EUR cfd proxy",
-        "1d": "OANDA DE30_EUR cfd proxy",
-        "4h": "OANDA DE30_EUR cfd proxy"
+        "1h": "Yahoo Finance EXS1.DE etf proxy",
+        "1d": "Yahoo Finance EXS1.DE etf proxy",
+        "4h": "Yahoo Finance EXS1.DE etf proxy"
       },
       "session_status": {
         "15m": "可用",
-        "1h": "可用",
+        "1h": "数据延迟或过期（休市状态未核实）",
         "4h": "可用",
         "1d": "可用"
       },
-      "screen_reason": "无8分候选或数据不足"
+      "screen_reason": "有候选"
     },
     {
       "name": "US NDAQ 100 - Cash",
@@ -525,17 +590,16 @@
         "15m": true,
         "1h": true,
         "1d": true,
-        "4h": false
+        "4h": true
       },
       "candle_close_utc": {
         "15m": "2026-11-26T05:00:00Z",
-        "1h": "2026-11-26T18:00:00Z",
-        "1d": "2026-11-26T05:00:00Z"
+        "1h": "2026-11-26T05:00:00Z",
+        "1d": "2026-11-26T05:00:00Z",
+        "4h": "2026-11-26T04:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T18:00:00Z",
-      "errors": {
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
-      },
+      "last_complete_candle_utc": "2026-11-26T05:00:00Z",
+      "errors": {},
       "metrics": {
         "15m": {
           "close": 26389.75,
@@ -548,14 +612,14 @@
           "bars": 368
         },
         "1h": {
-          "close": 26178.0,
-          "ema20": 26150.11953120451,
-          "ema50": 26107.739951207797,
-          "rsi14": 53.16315482356934,
-          "atr14": 137.11002047904415,
-          "support20": 25854.6,
-          "resistance20": 26389.0,
-          "bars": 500
+          "close": 26389.75,
+          "ema20": 26030.4948307451,
+          "ema50": 26086.440591318184,
+          "rsi14": 63.62231317223361,
+          "atr14": 203.24303396591,
+          "support20": 25027.5,
+          "resistance20": 26372.75,
+          "bars": 1493
         },
         "1d": {
           "close": 26100.25,
@@ -566,6 +630,16 @@
           "support20": 24976.5,
           "resistance20": 30178.0,
           "bars": 129
+        },
+        "4h": {
+          "close": 26325.75,
+          "ema20": 26235.229430656793,
+          "ema50": 26823.951561659946,
+          "rsi14": 49.15671286540909,
+          "atr14": 478.9196623178327,
+          "support20": 25027.5,
+          "resistance20": 27137.0,
+          "bars": 326
         }
       },
       "watch": null,
@@ -583,9 +657,9 @@
           "volume_available": true
         },
         "15m NAS100_USD": {
-          "error": null,
-          "status": "数据延迟或过期（休市状态未核实）",
-          "bars": 500,
+          "error": "OANDA HTTP 504",
+          "status": "获取失败或无数据",
+          "bars": 0,
           "volume_available": false
         },
         "15m unconfigured": {
@@ -620,9 +694,27 @@
         },
         "1h NAS100_USD": {
           "error": null,
-          "status": "可用",
+          "status": "数据延迟或过期（休市状态未核实）",
           "bars": 500,
           "volume_available": false
+        },
+        "1h unconfigured": {
+          "error": "Twelve Data key or instrument not configured",
+          "status": "获取失败或无数据",
+          "bars": 0,
+          "volume_available": false
+        },
+        "1h QQQ": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 456,
+          "volume_available": true
+        },
+        "1h ^NDX": {
+          "error": null,
+          "status": "数据延迟或过期（休市状态未核实）",
+          "bars": 456,
+          "volume_available": true
         },
         "1d NQ=F": {
           "error": null,
@@ -633,13 +725,14 @@
       },
       "timeframe_sources": {
         "15m": "Yahoo Finance NQ=F futures proxy",
-        "1h": "OANDA NAS100_USD cfd proxy",
-        "1d": "Yahoo Finance NQ=F futures proxy"
+        "1h": "Yahoo Finance NQ=F futures proxy",
+        "1d": "Yahoo Finance NQ=F futures proxy",
+        "4h": "Yahoo Finance NQ=F futures proxy"
       },
       "session_status": {
         "15m": "数据延迟或过期（休市状态未核实）",
-        "1h": "可用",
-        "4h": "获取失败或无数据",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "数据延迟或过期（休市状态未核实）",
         "1d": "可用"
       },
       "screen_reason": "无8分候选或数据不足"
@@ -655,32 +748,32 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T20:45:00Z",
-        "1h": "2026-11-26T20:00:00Z",
+        "15m": "2026-11-26T21:00:00Z",
+        "1h": "2026-11-26T21:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-26T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T20:45:00Z",
+      "last_complete_candle_utc": "2026-11-26T21:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 60715.13,
-          "ema20": 60565.0902828463,
-          "ema50": 60542.640611178096,
-          "rsi14": 57.602654597149574,
-          "atr14": 172.1872337368152,
-          "support20": 60212.39,
+          "close": 60687.3,
+          "ema20": 60576.72930352761,
+          "ema50": 60548.31352835488,
+          "rsi14": 56.051251222661215,
+          "atr14": 164.99885989847147,
+          "support20": 60266.76,
           "resistance20": 60779.08,
           "bars": 600
         },
         "1h": {
-          "close": 60641.82,
-          "ema20": 60446.48664863068,
-          "ema50": 60206.63440275367,
-          "rsi14": 56.34849549281173,
-          "atr14": 461.28221509207043,
+          "close": 60687.3,
+          "ema20": 60469.908521054866,
+          "ema50": 60225.752528534205,
+          "rsi14": 57.19210289435408,
+          "atr14": 436.0527579283705,
           "support20": 59842.43,
-          "resistance20": 61526.89,
+          "resistance20": 61524.42,
           "bars": 600
         },
         "1d": {
@@ -695,67 +788,67 @@
         },
         "4h": {
           "close": 60641.82,
-          "ema20": 60202.129511457446,
-          "ema50": 61322.696578274445,
-          "rsi14": 52.689753054875965,
-          "atr14": 1148.9594630895008,
-          "support20": 57208.17,
-          "resistance20": 64533.96,
-          "bars": 150
+          "ema20": 60202.03611426348,
+          "ema50": 61323.3207599521,
+          "rsi14": 52.687873773344386,
+          "atr14": 1143.858236879511,
+          "support20": 57208.75,
+          "resistance20": 64520.28,
+          "bars": 149
         }
       },
       "watch": {
         "mode": "Trend",
         "timeframe": "15m",
         "direction": "Buy",
-        "score": 10.0,
+        "score": 8.0,
         "reason": "趋势回调确认、方向及动量评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-26T20:45:00Z",
-        "reference_price": 60715.13,
+        "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+        "reference_price": 60687.3,
         "proxy_only": true,
         "setup_ready": false,
-        "trigger_price": 60669.85,
-        "trigger_utc": "2026-11-26T20:30:00Z",
-        "atr": 172.1872337368152,
-        "distance_atr": 0.2718552298223985,
+        "trigger_price": 60752.44,
+        "trigger_utc": "2026-11-26T20:45:00Z",
+        "atr": 164.99885989847147,
+        "distance_atr": 0.0,
         "distance_limit": 0.75,
-        "structure_ready": true,
+        "structure_ready": false,
         "countertrend": false,
-        "risk_atr": 1.0007488150046608,
-        "risk_note": "距离参考触发点 0.26 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-        "reference_entry": 60716.66,
-        "reference_stop": 60544.343829878955,
+        "risk_atr": 1.05442945531014,
+        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+        "reference_entry": 60734.35,
+        "reference_stop": 60560.37034203046,
         "minor_obstacle": 60779.08,
         "intermediate_levels": [
           60779.08,
           60986.31,
-          61603.49,
-          65379.35,
+          61602.52,
+          65383.29,
           65626.98
         ],
-        "reference_tp1": 60883.03,
-        "reference_tp2": 61324.99,
-        "rr_tp1": 0.9654926747914839,
-        "rr_tp2": 3.5303129101154926,
-        "stop_pct": 0.2838037700378254,
+        "reference_tp1": 60883.02,
+        "reference_tp2": 61324.38,
+        "rr_tp1": 0.854525188375917,
+        "rr_tp2": 3.3913734909359468,
+        "stop_pct": 0.2864600641474543,
         "proxy_source": "Coinbase BTC-USD spot",
         "name": "Bitcoin (USD)",
-        "signal_candle_price": 60715.13,
+        "signal_candle_price": 60687.3,
         "entry_quote": {
-          "price": 60716.66,
-          "utc": "2026-11-26T20:45:46.704670166+00:00",
+          "price": 60734.35,
+          "utc": "2026-11-26T21:01:32.377800659+00:00",
           "source": "Coinbase BTC-USD spot",
           "delay_unknown": true,
-          "age_seconds": 0.484125,
+          "age_seconds": 0.918143,
           "delayed": false
         },
         "setup_ready_at_candle": false,
         "original_targets": [
-          60883.03,
-          61324.99
+          60883.02,
+          61324.38
         ],
-        "entry_issue": "最新价格盈利空间不足"
+        "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足"
       },
       "source_attempts": {},
       "timeframe_sources": {
@@ -783,53 +876,53 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T20:45:00Z",
-        "1h": "2026-11-26T20:00:00Z",
+        "15m": "2026-11-26T21:00:00Z",
+        "1h": "2026-11-26T21:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-26T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T20:45:00Z",
+      "last_complete_candle_utc": "2026-11-26T21:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1703.18,
-          "ema20": 1697.8571120170864,
-          "ema50": 1695.3606077245945,
-          "rsi14": 59.83164514564141,
-          "atr14": 5.77444771225752,
+          "close": 1702.25,
+          "ema20": 1698.2754823011735,
+          "ema50": 1695.6307799696626,
+          "rsi14": 58.08992783833823,
+          "atr14": 5.55770144709627,
           "support20": 1680.71,
           "resistance20": 1706.7,
           "bars": 600
         },
         "1h": {
-          "close": 1702.48,
-          "ema20": 1692.6047627047992,
-          "ema50": 1686.9992576272832,
-          "rsi14": 58.713688432112654,
-          "atr14": 14.306039926167333,
+          "close": 1702.25,
+          "ema20": 1693.5112309673377,
+          "ema50": 1687.5879101467003,
+          "rsi14": 58.57520183856145,
+          "atr14": 13.659963766176896,
           "support20": 1665.51,
-          "resistance20": 1727.7,
+          "resistance20": 1728.32,
           "bars": 600
         },
         "1d": {
           "close": 1690.38,
-          "ema20": 1865.849733885139,
-          "ema50": 2093.6450368870424,
-          "rsi14": 29.355034335889684,
-          "atr14": 108.80124458385737,
+          "ema20": 1865.849733885269,
+          "ema50": 2093.6450516176687,
+          "rsi14": 29.35503433207238,
+          "atr14": 108.80124486578012,
           "support20": 1535.37,
           "resistance20": 2434.5,
           "bars": 600
         },
         "4h": {
           "close": 1702.48,
-          "ema20": 1688.0201388946941,
-          "ema50": 1722.4531221119055,
-          "rsi14": 52.7431678675236,
-          "atr14": 37.3798694218753,
-          "support20": 1606.5,
+          "ema20": 1688.0214301725046,
+          "ema50": 1722.5419558290569,
+          "rsi14": 52.73860322108531,
+          "atr14": 37.52327747017918,
+          "support20": 1606.35,
           "resistance20": 1843.67,
-          "bars": 150
+          "bars": 149
         }
       },
       "watch": {
@@ -839,52 +932,53 @@
         "score": 8.0,
         "reason": "趋势回调确认、方向及动量评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-26T20:45:00Z",
-        "reference_price": 1703.18,
+        "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+        "reference_price": 1702.25,
         "proxy_only": true,
         "setup_ready": false,
-        "trigger_price": 1702.87,
-        "trigger_utc": "2026-11-26T20:30:00Z",
-        "atr": 5.77444771225752,
-        "distance_atr": 0.12641901639362577,
+        "trigger_price": 1704.34,
+        "trigger_utc": "2026-11-26T20:45:00Z",
+        "atr": 5.55770144709627,
+        "distance_atr": 0.0,
         "distance_limit": 0.75,
         "structure_ready": false,
         "countertrend": false,
-        "risk_atr": 1.2143731596689369,
-        "risk_note": "距离参考触发点 0.05 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-        "reference_entry": 1703.6,
-        "reference_stop": 1696.5876656863227,
-        "minor_obstacle": 1703.86,
+        "risk_atr": 0.9441511898539704,
+        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+        "reference_entry": 1703.89,
+        "reference_stop": 1698.642689565871,
+        "minor_obstacle": 1704.6,
         "intermediate_levels": [
-          1703.86,
+          1704.6,
           1709.96,
           1722.47,
           1732.67,
           1845.01,
           2243.2
         ],
-        "reference_tp1": 1706.03,
-        "reference_tp2": 1713.34,
-        "rr_tp1": 0.3465322517867499,
-        "rr_tp2": 1.388981124445621,
-        "stop_pct": 0.41161859084745417,
+        "reference_tp1": 1706.57,
+        "reference_tp2": 1713.7,
+        "rr_tp1": 0.5107378405837828,
+        "rr_tp2": 1.8695291851220848,
+        "stop_pct": 0.3079606332644171,
         "proxy_source": "Coinbase ETH-USD spot",
         "name": "Ethereum (USD)",
-        "signal_candle_price": 1703.18,
+        "signal_candle_price": 1702.25,
         "entry_quote": {
-          "price": 1703.6,
-          "utc": "2026-11-26T20:45:48.172497123+00:00",
+          "price": 1703.89,
+          "utc": "2026-11-26T21:01:32.552969720+00:00",
           "source": "Coinbase ETH-USD spot",
           "delay_unknown": true,
-          "age_seconds": 1.2691189999999999,
+          "age_seconds": 3.391198,
           "delayed": false
         },
         "setup_ready_at_candle": false,
         "original_targets": [
-          1706.03,
-          1713.34
+          1706.57,
+          1713.7
         ],
-        "entry_issue": "最新价格盈利空间不足"
+        "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足",
+        "conflict": true
       },
       "source_attempts": {},
       "timeframe_sources": {
@@ -1069,31 +1163,31 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T20:45:00Z",
-        "1h": "2026-11-26T20:00:00Z",
+        "15m": "2026-11-26T21:00:00Z",
+        "1h": "2026-11-26T21:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-26T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T20:45:00Z",
+      "last_complete_candle_utc": "2026-11-26T21:00:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 0.5473453402519226,
-          "ema20": 0.5473914133056231,
-          "ema50": 0.5476696326499677,
-          "rsi14": 44.62214121203774,
-          "atr14": 0.0001355990570220756,
+          "close": 0.5473154187202454,
+          "ema20": 0.5473841757260633,
+          "ema50": 0.5476557419076257,
+          "rsi14": 43.470097174520504,
+          "atr14": 0.00012805066235458776,
           "support20": 0.5471057891845703,
           "resistance20": 0.5474652647972107,
-          "bars": 461
+          "bars": 462
         },
         "1h": {
-          "close": 0.5472854375839233,
-          "ema20": 0.5478053493439619,
-          "ema50": 0.5476582467649586,
-          "rsi14": 43.78001126477854,
-          "atr14": 0.0005263571091566633,
-          "support20": 0.5471956133842468,
+          "close": 0.5473154187202454,
+          "ema20": 0.5477586892845603,
+          "ema50": 0.5476448025279109,
+          "rsi14": 44.18588913611635,
+          "atr14": 0.0004994549490508859,
+          "support20": 0.5471057891845703,
           "resistance20": 0.5492996573448181,
           "bars": 1571
         },
@@ -1120,52 +1214,55 @@
       },
       "watch": {
         "mode": "Trend",
-        "timeframe": "4h",
+        "timeframe": "15m",
         "direction": "Sell",
         "score": 8.0,
         "reason": "趋势回调确认、方向及动量评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-26T20:00:00Z",
-        "reference_price": 0.5472854375839233,
+        "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+        "reference_price": 0.5473154187202454,
         "proxy_only": true,
         "setup_ready": false,
-        "trigger_price": 0.5471956133842468,
-        "trigger_utc": "2026-11-26T16:00:00Z",
-        "atr": 0.0014690085757466268,
-        "distance_atr": 0.0,
+        "trigger_price": 0.5473453402519226,
+        "trigger_utc": "2026-11-26T20:45:00Z",
+        "atr": 0.00012805066235458776,
+        "distance_atr": 0.35408057318005964,
         "distance_limit": 0.75,
-        "structure_ready": false,
+        "structure_ready": true,
         "countertrend": false,
-        "risk_atr": 1.2508968124945237,
-        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+        "risk_atr": 0.8882155301631192,
+        "risk_note": "距离参考触发点 0.23 ATR；近端阻力/支撑挡住2R=False；历史结构目标",
         "reference_entry": 0.5473,
-        "reference_stop": 0.5491375781449286,
-        "minor_obstacle": null,
+        "reference_stop": 0.547413736586951,
+        "minor_obstacle": 0.5472255945205688,
         "intermediate_levels": [
-          0.5435964465141296
+          0.5472255945205688,
+          0.5471057891845703,
+          0.5467468500137329,
+          0.5454347133636475
         ],
-        "reference_tp1": 0.5450779795646667,
-        "reference_tp2": null,
-        "rr_tp1": 1.2092113967864087,
-        "rr_tp2": 0.0,
-        "stop_pct": 0.3357533610320803,
+        "reference_tp1": 0.5465675592422485,
+        "reference_tp2": 0.5450779795646667,
+        "rr_tp1": 6.43979898980882,
+        "rr_tp2": 19.53654927495042,
+        "stop_pct": 0.020781397213780146,
         "proxy_source": "Yahoo Finance FX indicative",
         "name": "NZD/USD",
-        "signal_candle_price": 0.5472854375839233,
+        "signal_candle_price": 0.5473154187202454,
         "entry_quote": {
           "price": 0.5473,
-          "utc": "2026-11-26T20:45:45+00:00",
+          "utc": "2026-11-26T20:59:45+00:00",
           "source": "Yahoo Finance FX indicative",
           "delay_unknown": true,
-          "age_seconds": 6.900199,
+          "age_seconds": 112.222732,
           "delayed": false
         },
-        "setup_ready_at_candle": false,
+        "setup_ready_at_candle": true,
         "original_targets": [
-          0.5450779795646667,
-          null
+          0.5465675592422485,
+          0.5450779795646667
         ],
-        "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足"
+        "entry_issue": "止损距离过小"
       },
       "source_attempts": {},
       "timeframe_sources": {
@@ -1425,129 +1522,93 @@
   ],
   "watch_candidates": [
     {
+      "name": "Germany 40 - Cash",
+      "proxy_source": "Yahoo Finance EXS1.DE etf proxy",
+      "mode": "Trend",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-26T16:00:00Z",
+      "reference_price": 208.25,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 206.9499969482422,
+      "trigger_utc": "2026-11-26T12:00:00Z",
+      "atr": 2.1098605717440333,
+      "distance_atr": -0.6161559058299365,
+      "distance_limit": 0.75,
+      "structure_ready": false,
+      "countertrend": false,
+      "risk_atr": 0.46589063192279845,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标；非CMC代理仅观察",
+      "reference_entry": null,
+      "reference_stop": 209.23296427503882,
+      "minor_obstacle": null,
+      "intermediate_levels": [],
+      "reference_tp1": 207.5,
+      "reference_tp2": 206.4499969482422,
+      "rr_tp1": 0.0,
+      "rr_tp2": 0.0,
+      "stop_pct": 0.4720116566813083,
+      "signal_candle_price": 208.25,
+      "entry_quote": null,
+      "setup_ready_at_candle": false,
+      "entry_issue": "最新报价未核实"
+    },
+    {
       "name": "Bitcoin (USD)",
       "proxy_source": "Coinbase BTC-USD spot",
       "mode": "Trend",
       "timeframe": "15m",
       "direction": "Buy",
-      "score": 10.0,
+      "score": 8.0,
       "reason": "趋势回调确认、方向及动量评分",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T20:45:00Z",
-      "reference_price": 60715.13,
+      "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+      "reference_price": 60687.3,
       "proxy_only": true,
       "setup_ready": false,
-      "trigger_price": 60669.85,
-      "trigger_utc": "2026-11-26T20:30:00Z",
-      "atr": 172.1872337368152,
-      "distance_atr": 0.2718552298223985,
-      "distance_limit": 0.75,
-      "structure_ready": true,
-      "countertrend": false,
-      "risk_atr": 1.0007488150046608,
-      "risk_note": "距离参考触发点 0.26 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 60716.66,
-      "reference_stop": 60544.343829878955,
-      "minor_obstacle": 60779.08,
-      "intermediate_levels": [
-        60779.08,
-        60986.31,
-        61603.49,
-        65379.35,
-        65626.98
-      ],
-      "reference_tp1": 60883.03,
-      "reference_tp2": 61324.99,
-      "rr_tp1": 0.9654926747914839,
-      "rr_tp2": 3.5303129101154926,
-      "stop_pct": 0.2838037700378254,
-      "signal_candle_price": 60715.13,
-      "entry_quote": {
-        "price": 60716.66,
-        "utc": "2026-11-26T20:45:46.704670166+00:00",
-        "source": "Coinbase BTC-USD spot",
-        "delay_unknown": true,
-        "age_seconds": 0.484125,
-        "delayed": false
-      },
-      "setup_ready_at_candle": false,
-      "original_targets": [
-        60883.03,
-        61324.99
-      ],
-      "entry_issue": "最新价格盈利空间不足"
-    },
-    {
-      "name": "Bitcoin (USD)",
-      "proxy_source": "Coinbase BTC-USD spot",
-      "mode": "Double Bottom/Top Reversal",
-      "timeframe": "15m",
-      "direction": "Buy",
-      "score": 9.0,
-      "reason": "第一顶底放量2.27倍；颈线 60912.72；突破放量=False",
-      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T20:45:00Z",
-      "reference_price": 60715.13,
-      "proxy_only": true,
-      "setup_ready": false,
-      "trigger_price": 60912.72,
-      "trigger_utc": "2026-11-26T12:45:00Z",
-      "atr": 172.1872337368152,
+      "trigger_price": 60752.44,
+      "trigger_utc": "2026-11-26T20:45:00Z",
+      "atr": 164.99885989847147,
       "distance_atr": 0.0,
-      "distance_limit": 1.0,
+      "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": false,
-      "risk_atr": 2.6344936281072076,
+      "risk_atr": 1.05442945531014,
       "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 60716.66,
-      "reference_stop": 60263.03382987896,
+      "reference_entry": 60734.35,
+      "reference_stop": 60560.37034203046,
       "minor_obstacle": 60779.08,
       "intermediate_levels": [
         60779.08,
         60986.31,
-        61603.49,
-        65379.35,
+        61602.52,
+        65383.29,
         65626.98
       ],
-      "reference_tp1": 60883.03,
-      "reference_tp2": 61324.99,
-      "rr_tp1": 0.36675573623894103,
-      "rr_tp2": 1.34103815006455,
-      "stop_pct": 0.7471197693039209,
-      "double_pattern": {
-        "name": "Bitcoin (USD)",
-        "timeframe": "15m",
-        "direction": "Buy",
-        "first_price": 60386.5,
-        "second_price": 60314.69,
-        "first_utc": "2026-11-26T11:00:00Z",
-        "second_utc": "2026-11-26T19:00:00Z",
-        "difference_pct": 0.11891730767638077,
-        "neckline": 60912.72,
-        "first_volume_ratio": 2.271318059209168,
-        "second_volume_ratio": 0.9644174456701443,
-        "first_volume_utc": "2026-11-26T11:15:00Z",
-        "breakout_volume_confirmed": false,
-        "second_shrinking": true,
-        "score": 9.0,
-        "stage": "结构确认",
-        "proxy_source": "Coinbase BTC-USD spot"
-      },
-      "signal_candle_price": 60715.13,
+      "reference_tp1": 60883.02,
+      "reference_tp2": 61324.38,
+      "rr_tp1": 0.854525188375917,
+      "rr_tp2": 3.3913734909359468,
+      "stop_pct": 0.2864600641474543,
+      "signal_candle_price": 60687.3,
       "entry_quote": {
-        "price": 60716.66,
-        "utc": "2026-11-26T20:45:46.704670166+00:00",
+        "price": 60734.35,
+        "utc": "2026-11-26T21:01:32.377800659+00:00",
         "source": "Coinbase BTC-USD spot",
         "delay_unknown": true,
-        "age_seconds": 0.484125,
+        "age_seconds": 0.918143,
         "delayed": false
       },
       "setup_ready_at_candle": false,
       "original_targets": [
-        60883.03,
-        61324.99
+        60883.02,
+        61324.38
       ],
-      "entry_issue": "最新价格未保持突破确认；最新价格盈利空间不足"
+      "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足"
     },
     {
       "name": "Bitcoin (USD)",
@@ -1558,44 +1619,45 @@
       "score": 8.0,
       "reason": "趋势回调确认、方向及动量评分",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T20:00:00Z",
-      "reference_price": 60641.82,
+      "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+      "reference_price": 60687.3,
       "proxy_only": true,
       "setup_ready": false,
-      "trigger_price": 60446.48664863068,
-      "trigger_utc": "2026-11-26T19:00:00Z",
-      "atr": 461.28221509207043,
-      "distance_atr": 0.5857007760756602,
+      "trigger_price": 60641.82,
+      "trigger_utc": "2026-11-26T20:00:00Z",
+      "atr": 436.0527579283705,
+      "distance_atr": 0.21219909361334333,
       "distance_limit": 0.75,
       "structure_ready": true,
       "countertrend": false,
-      "risk_atr": 1.1714188122769245,
-      "risk_note": "距离参考触发点 0.42 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 60716.66,
-      "reference_stop": 60176.30533547238,
+      "risk_atr": 1.093573698843206,
+      "risk_note": "距离参考触发点 0.10 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+      "reference_entry": 60734.35,
+      "reference_stop": 60257.49417262149,
       "minor_obstacle": null,
       "intermediate_levels": [
-        65379.35,
+        61035.67,
+        65383.29,
         65626.98
       ],
-      "reference_tp1": 60883.03,
-      "reference_tp2": 61324.99,
-      "rr_tp1": 0.3078903744551479,
-      "rr_tp2": 1.1257976287329667,
-      "stop_pct": 0.8899611153308201,
-      "signal_candle_price": 60641.82,
+      "reference_tp1": 60883.02,
+      "reference_tp2": 61324.38,
+      "rr_tp1": 0.31177138133616616,
+      "rr_tp2": 1.2373341503314719,
+      "stop_pct": 0.7851501290102048,
+      "signal_candle_price": 60687.3,
       "entry_quote": {
-        "price": 60716.66,
-        "utc": "2026-11-26T20:45:46.704670166+00:00",
+        "price": 60734.35,
+        "utc": "2026-11-26T21:01:32.377800659+00:00",
         "source": "Coinbase BTC-USD spot",
         "delay_unknown": true,
-        "age_seconds": 0.484125,
+        "age_seconds": 0.918143,
         "delayed": false
       },
       "setup_ready_at_candle": false,
       "original_targets": [
-        60883.03,
-        61324.99
+        60883.02,
+        61324.38
       ],
       "entry_issue": "最新价格盈利空间不足"
     },
@@ -1608,100 +1670,125 @@
       "score": 8.0,
       "reason": "趋势回调确认、方向及动量评分",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T20:45:00Z",
-      "reference_price": 1703.18,
+      "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+      "reference_price": 1702.25,
       "proxy_only": true,
       "setup_ready": false,
-      "trigger_price": 1702.87,
-      "trigger_utc": "2026-11-26T20:30:00Z",
-      "atr": 5.77444771225752,
-      "distance_atr": 0.12641901639362577,
+      "trigger_price": 1704.34,
+      "trigger_utc": "2026-11-26T20:45:00Z",
+      "atr": 5.55770144709627,
+      "distance_atr": 0.0,
       "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": false,
-      "risk_atr": 1.2143731596689369,
-      "risk_note": "距离参考触发点 0.05 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 1703.6,
-      "reference_stop": 1696.5876656863227,
-      "minor_obstacle": 1703.86,
+      "risk_atr": 0.9441511898539704,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+      "reference_entry": 1703.89,
+      "reference_stop": 1698.642689565871,
+      "minor_obstacle": 1704.6,
       "intermediate_levels": [
-        1703.86,
+        1704.6,
         1709.96,
         1722.47,
         1732.67,
         1845.01,
         2243.2
       ],
-      "reference_tp1": 1706.03,
-      "reference_tp2": 1713.34,
-      "rr_tp1": 0.3465322517867499,
-      "rr_tp2": 1.388981124445621,
-      "stop_pct": 0.41161859084745417,
-      "signal_candle_price": 1703.18,
+      "reference_tp1": 1706.57,
+      "reference_tp2": 1713.7,
+      "rr_tp1": 0.5107378405837828,
+      "rr_tp2": 1.8695291851220848,
+      "stop_pct": 0.3079606332644171,
+      "signal_candle_price": 1702.25,
       "entry_quote": {
-        "price": 1703.6,
-        "utc": "2026-11-26T20:45:48.172497123+00:00",
+        "price": 1703.89,
+        "utc": "2026-11-26T21:01:32.552969720+00:00",
         "source": "Coinbase ETH-USD spot",
         "delay_unknown": true,
-        "age_seconds": 1.2691189999999999,
+        "age_seconds": 3.391198,
         "delayed": false
       },
       "setup_ready_at_candle": false,
       "original_targets": [
-        1706.03,
-        1713.34
+        1706.57,
+        1713.7
       ],
-      "entry_issue": "最新价格盈利空间不足"
+      "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足",
+      "conflict": true
     },
     {
       "name": "Ethereum (USD)",
       "proxy_source": "Coinbase ETH-USD spot",
-      "mode": "Trend",
-      "timeframe": "1h",
-      "direction": "Buy",
+      "mode": "Double Bottom/Top Reversal",
+      "timeframe": "15m",
+      "direction": "Sell",
       "score": 8.0,
-      "reason": "趋势回调确认、方向及动量评分",
+      "reason": "第一顶底放量3.55倍；颈线 1665.51；突破放量=False",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T20:00:00Z",
-      "reference_price": 1702.48,
+      "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+      "reference_price": 1702.25,
       "proxy_only": true,
       "setup_ready": false,
-      "trigger_price": 1702.01,
-      "trigger_utc": "2026-11-26T19:00:00Z",
-      "atr": 14.306039926167333,
-      "distance_atr": 0.11114186792472401,
-      "distance_limit": 0.75,
-      "structure_ready": true,
-      "countertrend": false,
-      "risk_atr": 1.282102669397759,
-      "risk_note": "距离参考触发点 0.03 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 1703.6,
-      "reference_stop": 1685.2581880221499,
+      "trigger_price": 1665.51,
+      "trigger_utc": "2026-11-26T15:15:00Z",
+      "atr": 5.55770144709627,
+      "distance_atr": 0.0,
+      "distance_limit": 1.0,
+      "structure_ready": false,
+      "countertrend": true,
+      "risk_atr": 1.3921781347523385,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
+      "reference_entry": 1703.89,
+      "reference_stop": 1711.627310434129,
       "minor_obstacle": null,
       "intermediate_levels": [
-        1722.47,
-        2243.2
+        1691.0,
+        1688.01,
+        1685.19,
+        1678.28,
+        1646.8,
+        1630.89
       ],
-      "reference_tp1": 1706.03,
-      "reference_tp2": 1713.34,
-      "rr_tp1": 0.13248418438345028,
-      "rr_tp2": 0.531027142343528,
-      "stop_pct": 1.076650151317801,
-      "signal_candle_price": 1702.48,
+      "reference_tp1": 1693.44,
+      "reference_tp2": 1680.71,
+      "rr_tp1": 1.3505985172710222,
+      "rr_tp2": 2.995873074673899,
+      "stop_pct": 0.4540968275022952,
+      "double_pattern": {
+        "name": "Ethereum (USD)",
+        "timeframe": "15m",
+        "direction": "Sell",
+        "first_price": 1709.96,
+        "second_price": 1706.7,
+        "first_utc": "2026-11-26T12:15:00Z",
+        "second_utc": "2026-11-26T20:00:00Z",
+        "difference_pct": 0.1906477344499281,
+        "neckline": 1665.51,
+        "first_volume_ratio": 3.547846252589792,
+        "second_volume_ratio": 0.3464446722429966,
+        "first_volume_utc": "2026-11-26T12:15:00Z",
+        "breakout_volume_confirmed": false,
+        "second_shrinking": true,
+        "score": 8.0,
+        "stage": "结构确认",
+        "proxy_source": "Coinbase ETH-USD spot"
+      },
+      "signal_candle_price": 1702.25,
       "entry_quote": {
-        "price": 1703.6,
-        "utc": "2026-11-26T20:45:48.172497123+00:00",
+        "price": 1703.89,
+        "utc": "2026-11-26T21:01:32.552969720+00:00",
         "source": "Coinbase ETH-USD spot",
         "delay_unknown": true,
-        "age_seconds": 1.2691189999999999,
+        "age_seconds": 3.391198,
         "delayed": false
       },
       "setup_ready_at_candle": false,
       "original_targets": [
-        1706.03,
-        1713.34
+        1693.44,
+        1680.71
       ],
-      "entry_issue": "最新价格盈利空间不足"
+      "entry_issue": "最新价格未保持突破确认；最新价格盈利空间不足",
+      "conflict": true
     },
     {
       "name": "Hong Kong 50 - Cash",
@@ -1743,6 +1830,58 @@
       "name": "NZD/USD",
       "proxy_source": "Yahoo Finance FX indicative",
       "mode": "Trend",
+      "timeframe": "15m",
+      "direction": "Sell",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-26T21:00:00Z",
+      "reference_price": 0.5473154187202454,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 0.5473453402519226,
+      "trigger_utc": "2026-11-26T20:45:00Z",
+      "atr": 0.00012805066235458776,
+      "distance_atr": 0.35408057318005964,
+      "distance_limit": 0.75,
+      "structure_ready": true,
+      "countertrend": false,
+      "risk_atr": 0.8882155301631192,
+      "risk_note": "距离参考触发点 0.23 ATR；近端阻力/支撑挡住2R=False；历史结构目标",
+      "reference_entry": 0.5473,
+      "reference_stop": 0.547413736586951,
+      "minor_obstacle": 0.5472255945205688,
+      "intermediate_levels": [
+        0.5472255945205688,
+        0.5471057891845703,
+        0.5467468500137329,
+        0.5454347133636475
+      ],
+      "reference_tp1": 0.5465675592422485,
+      "reference_tp2": 0.5450779795646667,
+      "rr_tp1": 6.43979898980882,
+      "rr_tp2": 19.53654927495042,
+      "stop_pct": 0.020781397213780146,
+      "signal_candle_price": 0.5473154187202454,
+      "entry_quote": {
+        "price": 0.5473,
+        "utc": "2026-11-26T20:59:45+00:00",
+        "source": "Yahoo Finance FX indicative",
+        "delay_unknown": true,
+        "age_seconds": 112.222732,
+        "delayed": false
+      },
+      "setup_ready_at_candle": true,
+      "original_targets": [
+        0.5465675592422485,
+        0.5450779795646667
+      ],
+      "entry_issue": "止损距离过小"
+    },
+    {
+      "name": "NZD/USD",
+      "proxy_source": "Yahoo Finance FX indicative",
+      "mode": "Trend",
       "timeframe": "4h",
       "direction": "Sell",
       "score": 8.0,
@@ -1775,10 +1914,10 @@
       "signal_candle_price": 0.5472854375839233,
       "entry_quote": {
         "price": 0.5473,
-        "utc": "2026-11-26T20:45:45+00:00",
+        "utc": "2026-11-26T20:59:45+00:00",
         "source": "Yahoo Finance FX indicative",
         "delay_unknown": true,
-        "age_seconds": 6.900199,
+        "age_seconds": 112.222732,
         "delayed": false
       },
       "setup_ready_at_candle": false,
@@ -1812,10 +1951,10 @@
       "distance_to_invalidation_pct": 0.6766953199105372,
       "distance_quote": {
         "price": 0.5473,
-        "utc": "2026-11-26T20:45:45+00:00",
+        "utc": "2026-11-26T20:59:45+00:00",
         "source": "Yahoo Finance FX indicative",
         "delay_unknown": true,
-        "age_seconds": 6.900199,
+        "age_seconds": 112.222732,
         "delayed": false
       }
     }
@@ -1823,26 +1962,45 @@
   "ended_boll": [],
   "double_alerts": [
     {
-      "name": "Bitcoin (USD)",
+      "name": "Ethereum (USD)",
       "timeframe": "15m",
-      "direction": "Buy",
-      "first_price": 60386.5,
-      "second_price": 60314.69,
-      "first_utc": "2026-11-26T11:00:00Z",
-      "second_utc": "2026-11-26T19:00:00Z",
-      "difference_pct": 0.11891730767638077,
-      "neckline": 60912.72,
-      "first_volume_ratio": 2.271318059209168,
-      "second_volume_ratio": 0.9644174456701443,
-      "first_volume_utc": "2026-11-26T11:15:00Z",
+      "direction": "Sell",
+      "first_price": 1709.96,
+      "second_price": 1706.7,
+      "first_utc": "2026-11-26T12:15:00Z",
+      "second_utc": "2026-11-26T20:00:00Z",
+      "difference_pct": 0.1906477344499281,
+      "neckline": 1665.51,
+      "first_volume_ratio": 3.547846252589792,
+      "second_volume_ratio": 0.3464446722429966,
+      "first_volume_utc": "2026-11-26T12:15:00Z",
       "breakout_volume_confirmed": false,
       "second_shrinking": true,
-      "score": 9.0,
+      "score": 8.0,
       "stage": "结构确认",
-      "proxy_source": "Coinbase BTC-USD spot"
+      "proxy_source": "Coinbase ETH-USD spot"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    {
+      "name": "Ethereum (USD)",
+      "timeframe": "15m",
+      "preferred": "Sell",
+      "reason": "多空冲突；等待进一步确认",
+      "buy_stage": 0,
+      "sell_stage": 2,
+      "sides": {
+        "Sell": [
+          {
+            "score": 8.0,
+            "neckline": 1665.51,
+            "stage": "结构确认"
+          }
+        ],
+        "Buy": []
+      }
+    }
+  ],
   "risk_context": {
     "VIX": {
       "close": 26.799999237060547,
@@ -1996,9 +2154,7 @@
       "USD/JPY|Sell|15m|2026-11-23T09:00:00Z",
       "USD/JPY|Sell|15m|2026-11-24T06:00:00Z"
     ],
-    "issue_keys": [
-      "缺少4h:US NDAQ 100 - Cash"
-    ],
+    "issue_keys": [],
     "active_boll": {
       "NZD/USD|Buy|4h|2026-11-23T20:00:00Z": {
         "name": "NZD/USD",
@@ -2020,10 +2176,10 @@
         "distance_to_invalidation_pct": 0.6766953199105372,
         "distance_quote": {
           "price": 0.5473,
-          "utc": "2026-11-26T20:45:45+00:00",
+          "utc": "2026-11-26T20:59:45+00:00",
           "source": "Yahoo Finance FX indicative",
           "delay_unknown": true,
-          "age_seconds": 6.900199,
+          "age_seconds": 112.222732,
           "delayed": false
         }
       }
@@ -2068,7 +2224,7 @@
       "Ethereum (USD)|15m|Buy|Coinbase ETH-USD spot|2026-11-26T01:00:00Z": "结构确认|False",
       "Bitcoin (USD)|15m|Buy|Coinbase BTC-USD spot|2026-11-26T01:00:00Z": "结构确认|False",
       "Bitcoin (USD)|15m|Sell|Coinbase BTC-USD spot|2026-11-26T02:30:00Z": "疑似第二顶底|False",
-      "Ethereum (USD)|15m|Sell|Coinbase ETH-USD spot|2026-11-26T12:15:00Z": "疑似第二顶底|False",
+      "Ethereum (USD)|15m|Sell|Coinbase ETH-USD spot|2026-11-26T12:15:00Z": "结构确认|False",
       "Bitcoin (USD)|15m|Buy|Coinbase BTC-USD spot|2026-11-26T11:00:00Z": "结构确认|False"
     },
     "invalid_boll_keys": [
