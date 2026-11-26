@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-26T03:31:08.606394Z",
+  "scan_utc": "2026-11-26T03:45:53.264132Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.9.5",
@@ -11,88 +11,296 @@
       "proxy_source": "Yahoo Finance US equity",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-25T21:15:00Z",
+        "1h": "2026-11-25T22:00:00Z",
+        "1d": "2026-11-25T14:30:00Z",
+        "4h": "2026-11-25T18:30:00Z"
       },
-      "metrics": {},
-      "watch": null,
+      "last_complete_candle_utc": "2026-11-25T22:00:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 149.3000030517578,
+          "ema20": 147.60097142357867,
+          "ema50": 149.00565333392757,
+          "rsi14": 57.3112335630948,
+          "atr14": 1.5228120420808546,
+          "support20": 141.37229919433594,
+          "resistance20": 150.3699951171875,
+          "bars": 131
+        },
+        "1h": {
+          "close": 149.3000030517578,
+          "ema20": 150.04307501630748,
+          "ema50": 153.18639534459635,
+          "rsi14": 48.24294377622129,
+          "atr14": 4.186186141963707,
+          "support20": 141.1699981689453,
+          "resistance20": 170.7592010498047,
+          "bars": 456
+        },
+        "1d": {
+          "close": 155.3800048828125,
+          "ema20": 171.78803393552053,
+          "ema50": 193.19132072086074,
+          "rsi14": 39.46487349154406,
+          "atr14": 13.319314670817473,
+          "support20": 124.5,
+          "resistance20": 219.99000549316406,
+          "bars": 128
+        },
+        "4h": {
+          "close": 147.46499633789062,
+          "ema20": 170.3681303029437,
+          "ema50": 191.91454801685848,
+          "rsi14": 36.02074417422821,
+          "atr14": 11.954948318366649,
+          "support20": 134.82000732421875,
+          "resistance20": 219.99000549316406,
+          "bars": 65
+        }
+      },
+      "watch": {
+        "mode": "Trend",
+        "timeframe": "4h",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势回调确认、方向及动量评分",
+        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+        "reference_candle_close_utc": "2026-11-25T18:30:00Z",
+        "reference_price": 147.46499633789062,
+        "proxy_only": true,
+        "setup_ready": false,
+        "trigger_price": 150.5,
+        "trigger_utc": "2026-11-24T18:30:00Z",
+        "atr": 11.954948318366649,
+        "distance_atr": 0.2538700780033179,
+        "distance_limit": 0.75,
+        "structure_ready": false,
+        "countertrend": false,
+        "risk_atr": 2.310464873794886,
+        "risk_note": "距离参考触发点 0.25 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+        "reference_entry": null,
+        "reference_stop": 175.08648449551,
+        "minor_obstacle": null,
+        "intermediate_levels": [],
+        "reference_tp1": 134.82000732421875,
+        "reference_tp2": null,
+        "rr_tp1": 0.0,
+        "rr_tp2": 0.0,
+        "stop_pct": 18.73087772933551,
+        "proxy_source": "Yahoo Finance US equity",
+        "name": "NVDA",
+        "signal_candle_price": 147.46499633789062,
+        "entry_quote": null,
+        "setup_ready_at_candle": false,
+        "entry_issue": "最新报价未核实"
+      },
       "source_attempts": {},
-      "timeframe_sources": {},
-      "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
       },
-      "screen_reason": "无8分候选或数据不足"
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "可用",
+        "1d": "可用"
+      },
+      "screen_reason": "有候选"
     },
     {
       "name": "MU",
       "proxy_source": "Yahoo Finance US equity",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-25T21:15:00Z",
+        "1h": "2026-11-25T22:00:00Z",
+        "1d": "2026-11-25T14:30:00Z",
+        "4h": "2026-11-25T18:30:00Z"
       },
-      "metrics": {},
-      "watch": null,
+      "last_complete_candle_utc": "2026-11-25T22:00:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 601.25,
+          "ema20": 591.1824348159796,
+          "ema50": 605.1378894807245,
+          "rsi14": 56.48638982149829,
+          "atr14": 8.49159728527614,
+          "support20": 548.130126953125,
+          "resistance20": 604.4500122070312,
+          "bars": 131
+        },
+        "1h": {
+          "close": 601.25,
+          "ema20": 618.0696878022657,
+          "ema50": 657.0031685774038,
+          "rsi14": 42.052814693001274,
+          "atr14": 20.553502911256828,
+          "support20": 548.130126953125,
+          "resistance20": 720.6900024414062,
+          "bars": 456
+        },
+        "1d": {
+          "close": 629.7899780273438,
+          "ema20": 752.1941251862994,
+          "ema50": 844.2607271864275,
+          "rsi14": 37.37029677936228,
+          "atr14": 67.79578064310148,
+          "support20": 585.25,
+          "resistance20": 990.0,
+          "bars": 128
+        },
+        "4h": {
+          "close": 582.7069702148438,
+          "ema20": 737.2253665339472,
+          "ema50": 835.1612719804622,
+          "rsi14": 33.17494059245658,
+          "atr14": 65.70949649914317,
+          "support20": 598.02001953125,
+          "resistance20": 979.7999877929688,
+          "bars": 65
+        }
+      },
+      "watch": {
+        "mode": "Trend",
+        "timeframe": "4h",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势回调确认、方向及动量评分",
+        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+        "reference_candle_close_utc": "2026-11-25T18:30:00Z",
+        "reference_price": 582.7069702148438,
+        "proxy_only": true,
+        "setup_ready": false,
+        "trigger_price": 622.219970703125,
+        "trigger_utc": "2026-11-24T18:30:00Z",
+        "atr": 65.70949649914317,
+        "distance_atr": 0.6013286144841559,
+        "distance_limit": 0.75,
+        "structure_ready": false,
+        "countertrend": false,
+        "risk_atr": 2.9981340480590664,
+        "risk_note": "距离参考触发点 0.60 ATR；近端阻力/支撑挡住2R=False；真实技术目标未核实",
+        "reference_entry": null,
+        "reference_stop": 779.7128489497429,
+        "minor_obstacle": null,
+        "intermediate_levels": [],
+        "reference_tp1": null,
+        "reference_tp2": null,
+        "rr_tp1": 0.0,
+        "rr_tp2": 0.0,
+        "stop_pct": 33.808739006891095,
+        "proxy_source": "Yahoo Finance US equity",
+        "name": "MU",
+        "signal_candle_price": 582.7069702148438,
+        "entry_quote": null,
+        "setup_ready_at_candle": false,
+        "entry_issue": "最新报价未核实"
+      },
       "source_attempts": {},
-      "timeframe_sources": {},
-      "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
       },
-      "screen_reason": "无8分候选或数据不足"
+      "session_status": {
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "可用",
+        "1d": "可用"
+      },
+      "screen_reason": "有候选"
     },
     {
       "name": "MSTR",
       "proxy_source": "Yahoo Finance US equity",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-25T21:15:00Z",
+        "1h": "2026-11-25T22:00:00Z",
+        "1d": "2026-11-25T14:30:00Z",
+        "4h": "2026-11-25T18:30:00Z"
       },
-      "metrics": {},
+      "last_complete_candle_utc": "2026-11-25T22:00:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 79.95999908447266,
+          "ema20": 78.03492246044965,
+          "ema50": 78.1581369762672,
+          "rsi14": 61.53659078053025,
+          "atr14": 1.2017502646669382,
+          "support20": 70.62000274658203,
+          "resistance20": 81.0199966430664,
+          "bars": 131
+        },
+        "1h": {
+          "close": 79.95999908447266,
+          "ema20": 79.71086226778719,
+          "ema50": 86.95197028620444,
+          "rsi14": 47.23387200617874,
+          "atr14": 2.5350333892183654,
+          "support20": 70.37000274658203,
+          "resistance20": 89.20999908447266,
+          "bars": 456
+        },
+        "1d": {
+          "close": 77.55000305175781,
+          "ema20": 108.78496282263437,
+          "ema50": 123.6247703526108,
+          "rsi14": 24.636503763505416,
+          "atr14": 8.896683328037431,
+          "support20": 77.69000244140625,
+          "resistance20": 146.07000732421875,
+          "bars": 128
+        },
+        "4h": {
+          "close": 77.2750015258789,
+          "ema20": 106.77995545312949,
+          "ema50": 123.52245808878848,
+          "rsi14": 25.7159591028271,
+          "atr14": 8.698270502051804,
+          "support20": 77.88999938964844,
+          "resistance20": 146.0449981689453,
+          "bars": 65
+        }
+      },
       "watch": null,
       "source_attempts": {},
-      "timeframe_sources": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "可用",
+        "1d": "可用"
       },
       "screen_reason": "无8分候选或数据不足"
     },
@@ -101,28 +309,74 @@
       "proxy_source": "Yahoo Finance US equity",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-25T21:15:00Z",
+        "1h": "2026-11-25T22:00:00Z",
+        "1d": "2026-11-25T14:30:00Z",
+        "4h": "2026-11-25T18:30:00Z"
       },
-      "metrics": {},
+      "last_complete_candle_utc": "2026-11-25T22:00:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 380.1400146484375,
+          "ema20": 377.53501771036423,
+          "ema50": 376.70767570693994,
+          "rsi14": 57.84539995691115,
+          "atr14": 2.8904126329335607,
+          "support20": 360.75,
+          "resistance20": 383.7298889160156,
+          "bars": 131
+        },
+        "1h": {
+          "close": 380.1400146484375,
+          "ema20": 377.60847214175124,
+          "ema50": 377.8759724673587,
+          "rsi14": 52.51954960290091,
+          "atr14": 6.806666522019949,
+          "support20": 357.6400146484375,
+          "resistance20": 393.8299865722656,
+          "bars": 456
+        },
+        "1d": {
+          "close": 384.67999267578125,
+          "ema20": 379.6054991965426,
+          "ema50": 376.564908967152,
+          "rsi14": 51.838591109943394,
+          "atr14": 19.005172058118827,
+          "support20": 338.1499938964844,
+          "resistance20": 414.2300109863281,
+          "bars": 128
+        },
+        "4h": {
+          "close": 377.2699890136719,
+          "ema20": 380.0489491805783,
+          "ema50": 375.9496086088246,
+          "rsi14": 49.49411506839799,
+          "atr14": 18.91913191513333,
+          "support20": 338.1499938964844,
+          "resistance20": 414.2300109863281,
+          "bars": 65
+        }
+      },
       "watch": null,
       "source_attempts": {},
-      "timeframe_sources": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "可用",
+        "1d": "可用"
       },
       "screen_reason": "无8分候选或数据不足"
     },
@@ -131,28 +385,74 @@
       "proxy_source": "Yahoo Finance US equity",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-25T21:15:00Z",
+        "1h": "2026-11-25T22:00:00Z",
+        "1d": "2026-11-20T14:30:00Z",
+        "4h": "2026-11-25T18:30:00Z"
       },
-      "metrics": {},
+      "last_complete_candle_utc": "2026-11-25T22:00:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 73.61000061035156,
+          "ema20": 72.29022035028441,
+          "ema50": 74.6793862960412,
+          "rsi14": 56.03506612786325,
+          "atr14": 1.2263496545878652,
+          "support20": 67.0199966430664,
+          "resistance20": 73.7699966430664,
+          "bars": 131
+        },
+        "1h": {
+          "close": 73.61000061035156,
+          "ema20": 76.9057752943504,
+          "ema50": 86.20059143037807,
+          "rsi14": 38.34249644441942,
+          "atr14": 3.1370269883041746,
+          "support20": 67.0199966430664,
+          "resistance20": 95.61000061035156,
+          "bars": 456
+        },
+        "1d": {
+          "close": 94.3949966430664,
+          "ema20": 124.49683681282215,
+          "ema50": 154.61592760559196,
+          "rsi14": 29.346905132305636,
+          "atr14": 12.4219068759147,
+          "support20": 93.67375183105469,
+          "resistance20": 176.0557861328125,
+          "bars": 125
+        },
+        "4h": {
+          "close": 71.38999938964844,
+          "ema20": 109.87397195296849,
+          "ema50": 143.34172775082138,
+          "rsi14": 26.06899308670576,
+          "atr14": 12.688847779503268,
+          "support20": 74.87000274658203,
+          "resistance20": 173.80250549316406,
+          "bars": 65
+        }
+      },
       "watch": null,
       "source_attempts": {},
-      "timeframe_sources": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance US equity",
+        "1h": "Yahoo Finance US equity",
+        "1d": "Yahoo Finance US equity",
+        "4h": "Yahoo Finance US equity"
+      },
       "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+        "15m": "数据延迟或过期（休市状态未核实）",
+        "1h": "数据延迟或过期（休市状态未核实）",
+        "4h": "可用",
+        "1d": "数据延迟或过期（休市状态未核实）"
       },
       "screen_reason": "无8分候选或数据不足"
     },
@@ -167,21 +467,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-25T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 25240.6,
-          "ema20": 25180.053195998782,
-          "ema50": 25095.46468271842,
-          "rsi14": 66.47088234654598,
-          "atr14": 40.11830391522602,
-          "support20": 25085.0,
+          "close": 25254.0,
+          "ema20": 25187.095748760803,
+          "ema50": 25101.68175399293,
+          "rsi14": 68.02231413536572,
+          "atr14": 38.50985363556692,
+          "support20": 25091.0,
           "resistance20": 25283.6,
           "bars": 499
         },
@@ -219,13 +519,13 @@
       "watch": null,
       "source_attempts": {
         "15m FDAX=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
         },
         "15m FDXM=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -237,13 +537,13 @@
           "volume_available": false
         },
         "1h FDAX=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
         },
         "1h FDXM=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -255,13 +555,13 @@
           "volume_available": false
         },
         "1d FDAX=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
         },
         "1d FDXM=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -295,118 +595,138 @@
         "15m": true,
         "1h": true,
         "1d": true,
-        "4h": false
+        "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
-        "1d": "2026-11-26T00:00:00Z"
+        "1d": "2026-11-25T05:00:00Z",
+        "4h": "2026-11-25T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
-      "errors": {
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
-      },
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
+      "errors": {},
       "metrics": {
         "15m": {
-          "close": 26260.5,
-          "ema20": 26162.199936067784,
-          "ema50": 25972.424358184155,
-          "rsi14": 63.93835899192485,
-          "atr14": 84.49753724860754,
-          "support20": 25937.0,
-          "resistance20": 26325.8,
-          "bars": 499
+          "close": 26314.75,
+          "ema20": 26219.616994956752,
+          "ema50": 26032.445903656007,
+          "rsi14": 64.38914278580015,
+          "atr14": 80.83901232585424,
+          "support20": 25982.75,
+          "resistance20": 26372.75,
+          "bars": 363
         },
         "1h": {
-          "close": 26254.1,
-          "ema20": 25908.28688709355,
-          "ema50": 26013.8802692994,
-          "rsi14": 61.3580298273035,
-          "atr14": 220.87033225442124,
-          "support20": 24974.6,
-          "resistance20": 26309.0,
-          "bars": 499
+          "close": 26302.25,
+          "ema20": 25957.793146038683,
+          "ema50": 26063.93013436241,
+          "rsi14": 61.31179120539763,
+          "atr14": 221.17908007313076,
+          "support20": 25027.5,
+          "resistance20": 26356.0,
+          "bars": 1493
         },
         "1d": {
-          "close": 26069.6,
-          "ema20": 27180.848051833647,
-          "ema50": 28221.829453728813,
-          "rsi14": 38.66663971365909,
-          "atr14": 904.9438995401983,
-          "support20": 24931.0,
-          "resistance20": 28862.6,
-          "bars": 499
+          "close": 26275.75,
+          "ema20": 27595.485606208273,
+          "ema50": 28621.597251975913,
+          "rsi14": 38.855263453270545,
+          "atr14": 998.4807866004625,
+          "support20": 24976.5,
+          "resistance20": 30178.0,
+          "bars": 128
+        },
+        "4h": {
+          "close": 26017.75,
+          "ema20": 26225.717227795278,
+          "ema50": 26844.233372546638,
+          "rsi14": 45.02043816168369,
+          "atr14": 488.3695225522196,
+          "support20": 25027.5,
+          "resistance20": 27429.75,
+          "bars": 325
         }
       },
-      "watch": null,
+      "watch": {
+        "mode": "Trend",
+        "timeframe": "4h",
+        "direction": "Sell",
+        "score": 8.0,
+        "reason": "趋势回调确认、方向及动量评分",
+        "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+        "reference_candle_close_utc": "2026-11-25T20:00:00Z",
+        "reference_price": 26017.75,
+        "proxy_only": true,
+        "setup_ready": false,
+        "trigger_price": 25027.5,
+        "trigger_utc": "2026-11-25T16:00:00Z",
+        "atr": 488.3695225522196,
+        "distance_atr": 0.0,
+        "distance_limit": 0.75,
+        "structure_ready": false,
+        "countertrend": true,
+        "risk_atr": 0.4725128127564306,
+        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
+        "reference_entry": 26317.25,
+        "reference_stop": 26548.010856765664,
+        "minor_obstacle": null,
+        "intermediate_levels": [],
+        "reference_tp1": 25241.5,
+        "reference_tp2": null,
+        "rr_tp1": 4.661752495972117,
+        "rr_tp2": 0.0,
+        "stop_pct": 0.876842590945727,
+        "proxy_source": "Yahoo Finance NQ=F futures proxy",
+        "name": "US NDAQ 100 - Cash",
+        "signal_candle_price": 26017.75,
+        "entry_quote": {
+          "price": 26317.25,
+          "utc": "2026-11-26T03:35:52+00:00",
+          "source": "Yahoo Finance NQ=F futures proxy",
+          "delay_unknown": true,
+          "age_seconds": 603.651768,
+          "delayed": true
+        },
+        "setup_ready_at_candle": false,
+        "original_targets": [
+          25241.5,
+          null
+        ],
+        "entry_issue": "报价时间距今10分钟，仅观察；最新价格未保持回踩确认；止损距离过小"
+      },
       "source_attempts": {
         "15m NQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "15m MNQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "15m NAS100_USD": {
           "error": null,
           "status": "可用",
-          "bars": 499,
-          "volume_available": false
+          "bars": 363,
+          "volume_available": true
         },
         "1h NQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "1h MNQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "1h NAS100_USD": {
           "error": null,
           "status": "可用",
-          "bars": 499,
-          "volume_available": false
+          "bars": 1493,
+          "volume_available": true
         },
         "1d NQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "1d MNQ=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-          "status": "获取失败或无数据",
-          "bars": 0,
-          "volume_available": false
-        },
-        "1d NAS100_USD": {
           "error": null,
           "status": "可用",
-          "bars": 499,
-          "volume_available": false
+          "bars": 128,
+          "volume_available": true
         }
       },
       "timeframe_sources": {
-        "15m": "OANDA NAS100_USD cfd proxy",
-        "1h": "OANDA NAS100_USD cfd proxy",
-        "1d": "OANDA NAS100_USD cfd proxy"
+        "15m": "Yahoo Finance NQ=F futures proxy",
+        "1h": "Yahoo Finance NQ=F futures proxy",
+        "1d": "Yahoo Finance NQ=F futures proxy",
+        "4h": "Yahoo Finance NQ=F futures proxy"
       },
       "session_status": {
         "15m": "可用",
         "1h": "可用",
-        "4h": "获取失败或无数据",
+        "4h": "可用",
         "1d": "可用"
       },
-      "screen_reason": "无8分候选或数据不足"
+      "screen_reason": "有候选"
     },
     {
       "name": "Bitcoin (USD)",
@@ -419,52 +739,52 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-26T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 60635.13,
-          "ema20": 60536.358792125575,
-          "ema50": 60051.35988905115,
-          "rsi14": 56.85255158545757,
-          "atr14": 286.13963493595026,
+          "close": 60633.47,
+          "ema20": 60545.60747858954,
+          "ema50": 60074.187718714646,
+          "rsi14": 56.79564532654305,
+          "atr14": 273.5418033025714,
           "support20": 59861.32,
           "resistance20": 61526.89,
           "bars": 600
         },
         "1h": {
           "close": 60622.92,
-          "ema20": 59773.27035680249,
-          "ema50": 59807.4596575906,
-          "rsi14": 63.38969260083164,
-          "atr14": 655.2322297130382,
-          "support20": 57208.75,
-          "resistance20": 61524.42,
+          "ema20": 59773.36466665128,
+          "ema50": 59807.560964665856,
+          "rsi14": 63.39774451710993,
+          "atr14": 658.1489949457881,
+          "support20": 57208.17,
+          "resistance20": 61526.89,
           "bars": 600
         },
         "1d": {
           "close": 60383.51,
-          "ema20": 65758.2329796387,
-          "ema50": 71824.86933307334,
-          "rsi14": 27.656917907890787,
-          "atr14": 3171.9354102203747,
-          "support20": 55111.0,
-          "resistance20": 80838.32,
+          "ema20": 65876.52415458602,
+          "ema50": 71925.35787551472,
+          "rsi14": 27.45022298149081,
+          "atr14": 3075.4015634740113,
+          "support20": 55106.0,
+          "resistance20": 80843.85,
           "bars": 600
         },
         "4h": {
           "close": 60383.51,
-          "ema20": 59947.84340562034,
-          "ema50": 61482.92060749981,
-          "rsi14": 51.14017942491608,
-          "atr14": 1291.570927482275,
-          "support20": 57208.75,
-          "resistance20": 64520.28,
+          "ema20": 59947.99638759691,
+          "ema50": 61482.98620364371,
+          "rsi14": 51.1398548064163,
+          "atr14": 1295.1841291983508,
+          "support20": 57208.17,
+          "resistance20": 64533.96,
           "bars": 149
         }
       },
@@ -495,22 +815,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-26T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1694.1,
-          "ema20": 1694.6975200514553,
-          "ema50": 1683.0200318736488,
-          "rsi14": 52.965909285631184,
-          "atr14": 8.14633983109537,
+          "close": 1694.58,
+          "ema20": 1694.6851494392945,
+          "ema50": 1683.4734830999125,
+          "rsi14": 53.54695685015255,
+          "atr14": 7.77626649257686,
           "support20": 1678.28,
-          "resistance20": 1728.32,
+          "resistance20": 1727.7,
           "bars": 600
         },
         "1h": {
@@ -525,11 +845,11 @@
         },
         "1d": {
           "close": 1690.38,
-          "ema20": 1865.849733885269,
-          "ema50": 2093.6450516176687,
-          "rsi14": 29.35503433207238,
-          "atr14": 108.80124486578012,
-          "support20": 1535.37,
+          "ema20": 1865.8713639757339,
+          "ema50": 2093.648518443339,
+          "rsi14": 29.381433467015825,
+          "atr14": 108.59416732040208,
+          "support20": 1535.49,
           "resistance20": 2434.5,
           "bars": 600
         },
@@ -571,21 +891,21 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-25T16:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 22382.4,
-          "ema20": 22218.341014430793,
-          "ema50": 22098.396252449158,
-          "rsi14": 67.87614079257952,
-          "atr14": 80.61036353969924,
-          "support20": 21739.9,
+          "close": 22358.4,
+          "ema20": 22231.679965437383,
+          "ema50": 22108.59247786791,
+          "rsi14": 65.30950990348137,
+          "atr14": 77.9239090011493,
+          "support20": 21743.9,
           "resistance20": 22546.9,
           "bars": 499
         },
@@ -614,7 +934,7 @@
       "watch": null,
       "source_attempts": {
         "15m HSI=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -626,7 +946,7 @@
           "volume_available": false
         },
         "1h HSI=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -638,7 +958,7 @@
           "volume_available": false
         },
         "1d HSI=F": {
-          "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
+          "error": "query1.finance.yahoo.com: HTTP 404; query2.finance.yahoo.com: HTTP 404",
           "status": "获取失败或无数据",
           "bars": 0,
           "volume_available": false
@@ -669,28 +989,74 @@
       "proxy_source": "Yahoo Finance FX indicative",
       "currency": null,
       "timeframes": {
-        "15m": false,
-        "1h": false,
-        "1d": false,
-        "4h": false
+        "15m": true,
+        "1h": true,
+        "1d": true,
+        "4h": true
       },
-      "candle_close_utc": {},
-      "last_complete_candle_utc": null,
-      "errors": {
-        "15m": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1h": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "1d": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429",
-        "4h": "insufficient contiguous 1h candles for complete UTC-aligned 4h bar"
+      "candle_close_utc": {
+        "15m": "2026-11-26T03:45:00Z",
+        "1h": "2026-11-26T03:00:00Z",
+        "1d": "2026-11-26T00:00:00Z",
+        "4h": "2026-11-26T00:00:00Z"
       },
-      "metrics": {},
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
+      "errors": {},
+      "metrics": {
+        "15m": {
+          "close": 0.5484861731529236,
+          "ema20": 0.5487170680292007,
+          "ema50": 0.5483648804909017,
+          "rsi14": 45.18346522932072,
+          "atr14": 0.00027673177408792105,
+          "support20": 0.5484260320663452,
+          "resistance20": 0.5492996573448181,
+          "bars": 393
+        },
+        "1h": {
+          "close": 0.5488474369049072,
+          "ema20": 0.547995413597804,
+          "ema50": 0.5474469432881609,
+          "rsi14": 59.25340867909604,
+          "atr14": 0.0007206914712132161,
+          "support20": 0.5450779795646667,
+          "resistance20": 0.5495109558105469,
+          "bars": 1571
+        },
+        "1d": {
+          "close": 0.5477411150932312,
+          "ema20": 0.5543680703381729,
+          "ema50": 0.5620373923021578,
+          "rsi14": 34.01293220232384,
+          "atr14": 0.004791359194895994,
+          "support20": 0.5434605479240417,
+          "resistance20": 0.5685598254203796,
+          "bars": 132
+        },
+        "4h": {
+          "close": 0.5486366152763367,
+          "ema20": 0.5473583322576425,
+          "ema50": 0.5495415055977134,
+          "rsi14": 53.30996290829394,
+          "atr14": 0.001696801853553351,
+          "support20": 0.5435964465141296,
+          "resistance20": 0.5507517457008362,
+          "bars": 382
+        }
+      },
       "watch": null,
       "source_attempts": {},
-      "timeframe_sources": {},
+      "timeframe_sources": {
+        "15m": "Yahoo Finance FX indicative",
+        "1h": "Yahoo Finance FX indicative",
+        "1d": "Yahoo Finance FX indicative",
+        "4h": "Yahoo Finance FX indicative"
+      },
       "session_status": {
-        "15m": "获取失败或无数据",
-        "1h": "获取失败或无数据",
-        "4h": "获取失败或无数据",
-        "1d": "获取失败或无数据"
+        "15m": "可用",
+        "1h": "可用",
+        "4h": "可用",
+        "1d": "可用"
       },
       "screen_reason": "无8分候选或数据不足"
     },
@@ -705,20 +1071,20 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-25T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 3576.625,
-          "ema20": 3574.580062827763,
-          "ema50": 3554.896918629363,
-          "rsi14": 53.10455572328268,
-          "atr14": 15.922450411827658,
+          "close": 3580.785,
+          "ema20": 3575.1710092251187,
+          "ema50": 3555.9121374988545,
+          "rsi14": 54.62656600139264,
+          "atr14": 15.230132525268543,
           "support20": 3551.34,
           "resistance20": 3607.245,
           "bars": 499
@@ -756,50 +1122,59 @@
       },
       "watch": {
         "mode": "Trend",
-        "timeframe": "4h",
-        "direction": "Sell",
+        "timeframe": "15m",
+        "direction": "Buy",
         "score": 8.0,
         "reason": "趋势回调确认、方向及动量评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-25T20:00:00Z",
-        "reference_price": 3546.295,
+        "reference_candle_close_utc": "2026-11-26T03:45:00Z",
+        "reference_price": 3580.785,
         "proxy_only": true,
         "setup_ready": false,
-        "trigger_price": 3426.805,
-        "trigger_utc": "2026-11-25T16:00:00Z",
-        "atr": 55.833148304701076,
-        "distance_atr": 0.0,
+        "trigger_price": 3576.625,
+        "trigger_utc": "2026-11-26T03:30:00Z",
+        "atr": 15.230132525268543,
+        "distance_atr": 0.3742580696880255,
         "distance_limit": 0.75,
-        "structure_ready": false,
-        "countertrend": true,
-        "risk_atr": 0.25405954924838403,
-        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标；非CMC代理仅观察",
-        "reference_entry": 3577.8549999999996,
-        "reference_stop": 3592.03994449141,
+        "structure_ready": true,
+        "countertrend": false,
+        "risk_atr": 0.7816110423090723,
+        "risk_note": "距离参考触发点 0.27 ATR；近端阻力/支撑挡住2R=True；历史结构目标；非CMC代理仅观察",
+        "reference_entry": 3582.325,
+        "reference_stop": 3570.4209602424194,
         "minor_obstacle": null,
-        "intermediate_levels": [],
-        "reference_tp1": 3502.99,
-        "reference_tp2": null,
-        "rr_tp1": 5.277778848224122,
-        "rr_tp2": 0.0,
-        "stop_pct": 0.3964650465547244,
+        "intermediate_levels": [
+          3595.29,
+          3607.245,
+          3631.01,
+          3637.07,
+          3646.8,
+          3891.075,
+          4134.135,
+          4146.92
+        ],
+        "reference_tp1": 3586.145,
+        "reference_tp2": 3678.485,
+        "rr_tp1": 0.3208994658781782,
+        "rr_tp2": 8.07793001016869,
+        "stop_pct": 0.33229926814514177,
         "proxy_source": "OANDA XAU_USD cfd proxy",
         "name": "Gold - Cash",
-        "signal_candle_price": 3546.295,
+        "signal_candle_price": 3580.785,
         "entry_quote": {
-          "price": 3577.8549999999996,
-          "bid": 3577.72,
-          "ask": 3577.99,
-          "utc": "2026-11-26T03:31:18.114746310+00:00",
+          "price": 3582.325,
+          "bid": 3582.04,
+          "ask": 3582.61,
+          "utc": "2026-11-26T03:46:03.842378205+00:00",
           "source": "OANDA XAU_USD cfd proxy",
           "delay_unknown": true
         },
         "setup_ready_at_candle": false,
         "original_targets": [
-          3502.99,
-          null
+          3586.145,
+          3678.485
         ],
-        "entry_issue": "最新价格未保持回踩确认；止损距离过小"
+        "entry_issue": "最新价格盈利空间不足"
       },
       "source_attempts": {
         "OANDA pricing": {
@@ -843,20 +1218,20 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-25T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 41.6905,
-          "ema20": 41.431240863783216,
-          "ema50": 40.924642904985625,
-          "rsi14": 58.44670632882538,
-          "atr14": 0.3378477715125381,
+          "close": 41.7645,
+          "ema20": 41.4629798291372,
+          "ema50": 40.95757847712731,
+          "rsi14": 59.66820902274641,
+          "atr14": 0.3261443592616424,
           "support20": 40.8465,
           "resistance20": 42.1925,
           "bars": 499
@@ -910,25 +1285,25 @@
         "distance_limit": 0.75,
         "structure_ready": false,
         "countertrend": true,
-        "risk_atr": 0.14877741148146847,
+        "risk_atr": 0.03483684617111346,
         "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=False；逆向反弹或回调尚未结束；真实技术目标未核实；非CMC代理仅观察",
-        "reference_entry": 41.661500000000004,
+        "reference_entry": 41.7975,
         "reference_stop": 41.83908142507338,
         "minor_obstacle": null,
         "intermediate_levels": [],
         "reference_tp1": 40.8625,
         "reference_tp2": null,
-        "rr_tp1": 4.499344453789897,
+        "rr_tp1": 22.48600182292794,
         "rr_tp2": 0.0,
-        "stop_pct": 0.42624827496220097,
+        "stop_pct": 0.09948304341977797,
         "proxy_source": "OANDA XAG_USD cfd proxy",
         "name": "Silver - Cash",
         "signal_candle_price": 40.718,
         "entry_quote": {
-          "price": 41.661500000000004,
-          "bid": 41.647,
-          "ask": 41.676,
-          "utc": "2026-11-26T03:31:20.306352056+00:00",
+          "price": 41.7975,
+          "bid": 41.78,
+          "ask": 41.815,
+          "utc": "2026-11-26T03:46:03.589029876+00:00",
           "source": "OANDA XAG_USD cfd proxy",
           "delay_unknown": true
         },
@@ -981,20 +1356,20 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-26T03:30:00Z",
+        "15m": "2026-11-26T03:45:00Z",
         "1h": "2026-11-26T03:00:00Z",
         "1d": "2026-11-26T00:00:00Z",
         "4h": "2026-11-25T20:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-26T03:30:00Z",
+      "last_complete_candle_utc": "2026-11-26T03:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 85.488,
-          "ema20": 85.14516354412618,
-          "ema50": 84.69275030951434,
-          "rsi14": 62.468027920628366,
-          "atr14": 0.2557789307922296,
+          "close": 85.457,
+          "ema20": 85.1748622542094,
+          "ema50": 84.7227208853401,
+          "rsi14": 61.3516625558431,
+          "atr14": 0.24836615002135612,
           "support20": 84.932,
           "resistance20": 85.609,
           "bars": 499
@@ -1034,24 +1409,24 @@
         "mode": "Trend",
         "timeframe": "15m",
         "direction": "Buy",
-        "score": 10.0,
+        "score": 8.0,
         "reason": "趋势回调确认、方向及动量评分",
         "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-        "reference_candle_close_utc": "2026-11-26T03:30:00Z",
-        "reference_price": 85.488,
+        "reference_candle_close_utc": "2026-11-26T03:45:00Z",
+        "reference_price": 85.457,
         "proxy_only": true,
         "setup_ready": false,
-        "trigger_price": 85.286,
-        "trigger_utc": "2026-11-26T03:15:00Z",
-        "atr": 0.2557789307922296,
-        "distance_atr": 0.6920038310105003,
+        "trigger_price": 85.544,
+        "trigger_utc": "2026-11-26T03:30:00Z",
+        "atr": 0.24836615002135612,
+        "distance_atr": 0.0,
         "distance_limit": 0.75,
-        "structure_ready": true,
+        "structure_ready": false,
         "countertrend": false,
-        "risk_atr": 1.7231039236600088,
-        "risk_note": "距离参考触发点 0.79 ATR；近端阻力/支撑挡住2R=False；历史结构目标；非CMC代理仅观察",
-        "reference_entry": 85.463,
-        "reference_stop": 85.02226632076234,
+        "risk_atr": 1.7011571221362989,
+        "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=False；历史结构目标；非CMC代理仅观察",
+        "reference_entry": 85.482,
+        "reference_stop": 85.0594901549936,
         "minor_obstacle": 85.609,
         "intermediate_levels": [
           85.609,
@@ -1059,17 +1434,17 @@
         ],
         "reference_tp1": 87.555,
         "reference_tp2": 89.24,
-        "rr_tp1": 4.746630671880112,
-        "rr_tp2": 8.569801170024416,
-        "stop_pct": 0.5157011563339137,
+        "rr_tp1": 4.906394547962769,
+        "rr_tp2": 8.894467299201157,
+        "stop_pct": 0.4942676177515763,
         "proxy_source": "OANDA WTICO_USD cfd proxy",
         "name": "Crude Oil West Texas - Cash",
-        "signal_candle_price": 85.488,
+        "signal_candle_price": 85.457,
         "entry_quote": {
-          "price": 85.463,
-          "bid": 85.443,
-          "ask": 85.483,
-          "utc": "2026-11-26T03:31:20.814951595+00:00",
+          "price": 85.482,
+          "bid": 85.462,
+          "ask": 85.502,
+          "utc": "2026-11-26T03:46:04.607598453+00:00",
           "source": "OANDA WTICO_USD cfd proxy",
           "delay_unknown": true
         },
@@ -1077,7 +1452,8 @@
         "original_targets": [
           87.555,
           89.24
-        ]
+        ],
+        "entry_issue": "最新价格未保持回踩确认"
       },
       "source_attempts": {
         "OANDA pricing": {
@@ -1113,53 +1489,179 @@
   ],
   "watch_candidates": [
     {
-      "name": "Crude Oil West Texas - Cash",
-      "proxy_source": "OANDA WTICO_USD cfd proxy",
+      "name": "NVDA",
+      "proxy_source": "Yahoo Finance US equity",
+      "mode": "Trend",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-25T18:30:00Z",
+      "reference_price": 147.46499633789062,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 150.5,
+      "trigger_utc": "2026-11-24T18:30:00Z",
+      "atr": 11.954948318366649,
+      "distance_atr": 0.2538700780033179,
+      "distance_limit": 0.75,
+      "structure_ready": false,
+      "countertrend": false,
+      "risk_atr": 2.310464873794886,
+      "risk_note": "距离参考触发点 0.25 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+      "reference_entry": null,
+      "reference_stop": 175.08648449551,
+      "minor_obstacle": null,
+      "intermediate_levels": [],
+      "reference_tp1": 134.82000732421875,
+      "reference_tp2": null,
+      "rr_tp1": 0.0,
+      "rr_tp2": 0.0,
+      "stop_pct": 18.73087772933551,
+      "signal_candle_price": 147.46499633789062,
+      "entry_quote": null,
+      "setup_ready_at_candle": false,
+      "entry_issue": "最新报价未核实"
+    },
+    {
+      "name": "MU",
+      "proxy_source": "Yahoo Finance US equity",
+      "mode": "Trend",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-25T18:30:00Z",
+      "reference_price": 582.7069702148438,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 622.219970703125,
+      "trigger_utc": "2026-11-24T18:30:00Z",
+      "atr": 65.70949649914317,
+      "distance_atr": 0.6013286144841559,
+      "distance_limit": 0.75,
+      "structure_ready": false,
+      "countertrend": false,
+      "risk_atr": 2.9981340480590664,
+      "risk_note": "距离参考触发点 0.60 ATR；近端阻力/支撑挡住2R=False；真实技术目标未核实",
+      "reference_entry": null,
+      "reference_stop": 779.7128489497429,
+      "minor_obstacle": null,
+      "intermediate_levels": [],
+      "reference_tp1": null,
+      "reference_tp2": null,
+      "rr_tp1": 0.0,
+      "rr_tp2": 0.0,
+      "stop_pct": 33.808739006891095,
+      "signal_candle_price": 582.7069702148438,
+      "entry_quote": null,
+      "setup_ready_at_candle": false,
+      "entry_issue": "最新报价未核实"
+    },
+    {
+      "name": "US NDAQ 100 - Cash",
+      "proxy_source": "Yahoo Finance NQ=F futures proxy",
+      "mode": "Trend",
+      "timeframe": "4h",
+      "direction": "Sell",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-25T20:00:00Z",
+      "reference_price": 26017.75,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 25027.5,
+      "trigger_utc": "2026-11-25T16:00:00Z",
+      "atr": 488.3695225522196,
+      "distance_atr": 0.0,
+      "distance_limit": 0.75,
+      "structure_ready": false,
+      "countertrend": true,
+      "risk_atr": 0.4725128127564306,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
+      "reference_entry": 26317.25,
+      "reference_stop": 26548.010856765664,
+      "minor_obstacle": null,
+      "intermediate_levels": [],
+      "reference_tp1": 25241.5,
+      "reference_tp2": null,
+      "rr_tp1": 4.661752495972117,
+      "rr_tp2": 0.0,
+      "stop_pct": 0.876842590945727,
+      "signal_candle_price": 26017.75,
+      "entry_quote": {
+        "price": 26317.25,
+        "utc": "2026-11-26T03:35:52+00:00",
+        "source": "Yahoo Finance NQ=F futures proxy",
+        "delay_unknown": true,
+        "age_seconds": 603.651768,
+        "delayed": true
+      },
+      "setup_ready_at_candle": false,
+      "original_targets": [
+        25241.5,
+        null
+      ],
+      "entry_issue": "报价时间距今10分钟，仅观察；最新价格未保持回踩确认；止损距离过小"
+    },
+    {
+      "name": "Gold - Cash",
+      "proxy_source": "OANDA XAU_USD cfd proxy",
       "mode": "Trend",
       "timeframe": "15m",
       "direction": "Buy",
-      "score": 10.0,
+      "score": 8.0,
       "reason": "趋势回调确认、方向及动量评分",
       "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
-      "reference_candle_close_utc": "2026-11-26T03:30:00Z",
-      "reference_price": 85.488,
+      "reference_candle_close_utc": "2026-11-26T03:45:00Z",
+      "reference_price": 3580.785,
       "proxy_only": true,
       "setup_ready": false,
-      "trigger_price": 85.286,
-      "trigger_utc": "2026-11-26T03:15:00Z",
-      "atr": 0.2557789307922296,
-      "distance_atr": 0.6920038310105003,
+      "trigger_price": 3576.625,
+      "trigger_utc": "2026-11-26T03:30:00Z",
+      "atr": 15.230132525268543,
+      "distance_atr": 0.3742580696880255,
       "distance_limit": 0.75,
       "structure_ready": true,
       "countertrend": false,
-      "risk_atr": 1.7231039236600088,
-      "risk_note": "距离参考触发点 0.79 ATR；近端阻力/支撑挡住2R=False；历史结构目标；非CMC代理仅观察",
-      "reference_entry": 85.463,
-      "reference_stop": 85.02226632076234,
-      "minor_obstacle": 85.609,
+      "risk_atr": 0.7816110423090723,
+      "risk_note": "距离参考触发点 0.27 ATR；近端阻力/支撑挡住2R=True；历史结构目标；非CMC代理仅观察",
+      "reference_entry": 3582.325,
+      "reference_stop": 3570.4209602424194,
+      "minor_obstacle": null,
       "intermediate_levels": [
-        85.609,
-        89.745
+        3595.29,
+        3607.245,
+        3631.01,
+        3637.07,
+        3646.8,
+        3891.075,
+        4134.135,
+        4146.92
       ],
-      "reference_tp1": 87.555,
-      "reference_tp2": 89.24,
-      "rr_tp1": 4.746630671880112,
-      "rr_tp2": 8.569801170024416,
-      "stop_pct": 0.5157011563339137,
-      "signal_candle_price": 85.488,
+      "reference_tp1": 3586.145,
+      "reference_tp2": 3678.485,
+      "rr_tp1": 0.3208994658781782,
+      "rr_tp2": 8.07793001016869,
+      "stop_pct": 0.33229926814514177,
+      "signal_candle_price": 3580.785,
       "entry_quote": {
-        "price": 85.463,
-        "bid": 85.443,
-        "ask": 85.483,
-        "utc": "2026-11-26T03:31:20.814951595+00:00",
-        "source": "OANDA WTICO_USD cfd proxy",
+        "price": 3582.325,
+        "bid": 3582.04,
+        "ask": 3582.61,
+        "utc": "2026-11-26T03:46:03.842378205+00:00",
+        "source": "OANDA XAU_USD cfd proxy",
         "delay_unknown": true
       },
       "setup_ready_at_candle": false,
       "original_targets": [
-        87.555,
-        89.24
-      ]
+        3586.145,
+        3678.485
+      ],
+      "entry_issue": "最新价格盈利空间不足"
     },
     {
       "name": "Gold - Cash",
@@ -1181,23 +1683,23 @@
       "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": true,
-      "risk_atr": 0.25405954924838403,
+      "risk_atr": 0.17399958244146324,
       "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标；非CMC代理仅观察",
-      "reference_entry": 3577.8549999999996,
+      "reference_entry": 3582.325,
       "reference_stop": 3592.03994449141,
       "minor_obstacle": null,
       "intermediate_levels": [],
       "reference_tp1": 3502.99,
       "reference_tp2": null,
-      "rr_tp1": 5.277778848224122,
+      "rr_tp1": 8.166284436328601,
       "rr_tp2": 0.0,
-      "stop_pct": 0.3964650465547244,
+      "stop_pct": 0.27119104189067933,
       "signal_candle_price": 3546.295,
       "entry_quote": {
-        "price": 3577.8549999999996,
-        "bid": 3577.72,
-        "ask": 3577.99,
-        "utc": "2026-11-26T03:31:18.114746310+00:00",
+        "price": 3582.325,
+        "bid": 3582.04,
+        "ask": 3582.61,
+        "utc": "2026-11-26T03:46:03.842378205+00:00",
         "source": "OANDA XAU_USD cfd proxy",
         "delay_unknown": true
       },
@@ -1228,23 +1730,23 @@
       "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": true,
-      "risk_atr": 0.14877741148146847,
+      "risk_atr": 0.03483684617111346,
       "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=False；逆向反弹或回调尚未结束；真实技术目标未核实；非CMC代理仅观察",
-      "reference_entry": 41.661500000000004,
+      "reference_entry": 41.7975,
       "reference_stop": 41.83908142507338,
       "minor_obstacle": null,
       "intermediate_levels": [],
       "reference_tp1": 40.8625,
       "reference_tp2": null,
-      "rr_tp1": 4.499344453789897,
+      "rr_tp1": 22.48600182292794,
       "rr_tp2": 0.0,
-      "stop_pct": 0.42624827496220097,
+      "stop_pct": 0.09948304341977797,
       "signal_candle_price": 40.718,
       "entry_quote": {
-        "price": 41.661500000000004,
-        "bid": 41.647,
-        "ask": 41.676,
-        "utc": "2026-11-26T03:31:20.306352056+00:00",
+        "price": 41.7975,
+        "bid": 41.78,
+        "ask": 41.815,
+        "utc": "2026-11-26T03:46:03.589029876+00:00",
         "source": "OANDA XAG_USD cfd proxy",
         "delay_unknown": true
       },
@@ -1254,6 +1756,56 @@
         null
       ],
       "entry_issue": "最新价格未保持回踩确认；止损距离过小"
+    },
+    {
+      "name": "Crude Oil West Texas - Cash",
+      "proxy_source": "OANDA WTICO_USD cfd proxy",
+      "mode": "Trend",
+      "timeframe": "15m",
+      "direction": "Buy",
+      "score": 8.0,
+      "reason": "趋势回调确认、方向及动量评分",
+      "confirmation": "核对CMC报价、点差、交易时段及事件；结构目标须验证",
+      "reference_candle_close_utc": "2026-11-26T03:45:00Z",
+      "reference_price": 85.457,
+      "proxy_only": true,
+      "setup_ready": false,
+      "trigger_price": 85.544,
+      "trigger_utc": "2026-11-26T03:30:00Z",
+      "atr": 0.24836615002135612,
+      "distance_atr": 0.0,
+      "distance_limit": 0.75,
+      "structure_ready": false,
+      "countertrend": false,
+      "risk_atr": 1.7011571221362989,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=False；历史结构目标；非CMC代理仅观察",
+      "reference_entry": 85.482,
+      "reference_stop": 85.0594901549936,
+      "minor_obstacle": 85.609,
+      "intermediate_levels": [
+        85.609,
+        89.745
+      ],
+      "reference_tp1": 87.555,
+      "reference_tp2": 89.24,
+      "rr_tp1": 4.906394547962769,
+      "rr_tp2": 8.894467299201157,
+      "stop_pct": 0.4942676177515763,
+      "signal_candle_price": 85.457,
+      "entry_quote": {
+        "price": 85.482,
+        "bid": 85.462,
+        "ask": 85.502,
+        "utc": "2026-11-26T03:46:04.607598453+00:00",
+        "source": "OANDA WTICO_USD cfd proxy",
+        "delay_unknown": true
+      },
+      "setup_ready_at_candle": false,
+      "original_targets": [
+        87.555,
+        89.24
+      ],
+      "entry_issue": "最新价格未保持回踩确认"
     }
   ],
   "research_setups": [],
@@ -1271,23 +1823,57 @@
       "reason": "第一根整根出轨；等待下一根收盘反转",
       "proxy_source": "Yahoo Finance FX indicative",
       "status": "反转已确认",
-      "data_unverified": true,
+      "data_unverified": false,
       "tp1": 0.5487618560974414,
       "tp2": 0.5527061788191057,
       "confirmed_utc": "2026-11-24T00:00:00Z",
       "tp1_hit": true,
-      "distance_to_invalidation_pct": null,
-      "distance_quote": null
+      "distance_to_invalidation_pct": 0.8939933429116407,
+      "distance_quote": {
+        "price": 0.5485,
+        "utc": "2026-11-26T03:45:44+00:00",
+        "source": "Yahoo Finance FX indicative",
+        "delay_unknown": true,
+        "age_seconds": 18.939036,
+        "delayed": false
+      }
     }
   },
   "ended_boll": [],
   "double_alerts": [],
   "conflicts": [],
   "risk_context": {
-    "VIX": null,
-    "error": "query1.finance.yahoo.com: HTTP 429; query2.finance.yahoo.com: HTTP 429"
+    "VIX": {
+      "close": 28.290000915527344,
+      "ema20": 29.037088542362625,
+      "ema50": 29.547297301237133,
+      "rsi14": 40.503188154879716,
+      "atr14": 0.7753096706859305,
+      "support20": 27.489999771118164,
+      "resistance20": 33.970001220703125,
+      "bars": 261
+    },
+    "error": null
   },
   "invalid_boll_keys": [
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
+    "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
+    "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
     "Gold - Cash|Buy|1d|2026-11-21T05:00:00Z",
     "Silver - Cash|Buy|1d|2026-11-21T05:00:00Z",
     "Silver - Cash|Buy|1d|2026-11-25T05:00:00Z",
@@ -1401,10 +1987,7 @@
       "USD/JPY|Sell|15m|2026-11-23T09:00:00Z",
       "USD/JPY|Sell|15m|2026-11-24T06:00:00Z"
     ],
-    "issue_keys": [
-      "缺少15m/1h/4h/1d:MSTR,MU,NVDA,NZD/USD,SNDK,TSLA",
-      "缺少4h:US NDAQ 100 - Cash"
-    ],
+    "issue_keys": [],
     "active_boll": {
       "NZD/USD|Buy|4h|2026-11-23T20:00:00Z": {
         "name": "NZD/USD",
@@ -1418,13 +2001,20 @@
         "reason": "第一根整根出轨；等待下一根收盘反转",
         "proxy_source": "Yahoo Finance FX indicative",
         "status": "反转已确认",
-        "data_unverified": true,
+        "data_unverified": false,
         "tp1": 0.5487618560974414,
         "tp2": 0.5527061788191057,
         "confirmed_utc": "2026-11-24T00:00:00Z",
         "tp1_hit": true,
-        "distance_to_invalidation_pct": null,
-        "distance_quote": null
+        "distance_to_invalidation_pct": 0.8939933429116407,
+        "distance_quote": {
+          "price": 0.5485,
+          "utc": "2026-11-26T03:45:44+00:00",
+          "source": "Yahoo Finance FX indicative",
+          "delay_unknown": true,
+          "age_seconds": 18.939036,
+          "delayed": false
+        }
       }
     },
     "pattern_states": {
