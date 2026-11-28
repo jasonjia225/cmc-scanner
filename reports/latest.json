@@ -1,5 +1,5 @@
 {
-  "scan_utc": "2026-11-28T00:31:01.388944Z",
+  "scan_utc": "2026-11-28T00:45:46.024584Z",
   "timezone": "UTC",
   "type": "public_proxy_research_only",
   "version": "V5.9.5",
@@ -754,22 +754,22 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-28T00:30:00Z",
+        "15m": "2026-11-28T00:45:00Z",
         "1h": "2026-11-28T00:00:00Z",
         "1d": "2026-11-28T00:00:00Z",
         "4h": "2026-11-28T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-28T00:30:00Z",
+      "last_complete_candle_utc": "2026-11-28T00:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 59919.74,
-          "ema20": 59821.61369333551,
-          "ema50": 60114.468447076615,
-          "rsi14": 52.45376462626604,
-          "atr14": 152.1620229912429,
-          "support20": 59511.32,
-          "resistance20": 59984.1,
+          "close": 59921.06,
+          "ema20": 59831.157254975704,
+          "ema50": 60107.10287198035,
+          "rsi14": 52.510969570103875,
+          "atr14": 144.7707280562373,
+          "support20": 59511.92,
+          "resistance20": 59979.15,
           "bars": 600
         },
         "1h": {
@@ -821,9 +821,9 @@
         "distance_limit": 0.75,
         "structure_ready": false,
         "countertrend": true,
-        "risk_atr": 0.44923606048795545,
+        "risk_atr": 0.45482073378167975,
         "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
-        "reference_entry": 59913.82,
+        "reference_entry": 59911.19,
         "reference_stop": 60125.379526751516,
         "minor_obstacle": null,
         "intermediate_levels": [
@@ -831,18 +831,18 @@
         ],
         "reference_tp1": 59842.43,
         "reference_tp2": 59366.13,
-        "rr_tp1": 0.33744639674794374,
-        "rr_tp2": 2.5888222024777083,
-        "stop_pct": 0.35310638973030994,
+        "rr_tp1": 0.3210240997440183,
+        "rr_tp2": 2.5447556109143545,
+        "stop_pct": 0.3575117215189913,
         "proxy_source": "Coinbase BTC-USD spot",
         "name": "Bitcoin (USD)",
         "signal_candle_price": 59858.49,
         "entry_quote": {
-          "price": 59913.82,
-          "utc": "2026-11-28T00:31:10.440732971+00:00",
+          "price": 59911.19,
+          "utc": "2026-11-28T00:45:51.005221235+00:00",
           "source": "Coinbase BTC-USD spot",
           "delay_unknown": true,
-          "age_seconds": 0.713637,
+          "age_seconds": 0.916139,
           "delayed": false
         },
         "setup_ready_at_candle": false,
@@ -878,30 +878,30 @@
         "4h": true
       },
       "candle_close_utc": {
-        "15m": "2026-11-28T00:30:00Z",
+        "15m": "2026-11-28T00:45:00Z",
         "1h": "2026-11-28T00:00:00Z",
         "1d": "2026-11-28T00:00:00Z",
         "4h": "2026-11-28T00:00:00Z"
       },
-      "last_complete_candle_utc": "2026-11-28T00:30:00Z",
+      "last_complete_candle_utc": "2026-11-28T00:45:00Z",
       "errors": {},
       "metrics": {
         "15m": {
-          "close": 1663.26,
-          "ema20": 1662.9803231116548,
-          "ema50": 1675.4215415189717,
-          "rsi14": 45.972094654909256,
-          "atr14": 5.4896361319543265,
+          "close": 1663.39,
+          "ema20": 1663.019339958164,
+          "ema50": 1674.9497163613016,
+          "rsi14": 46.20418097049984,
+          "atr14": 5.245376408243315,
           "support20": 1652.05,
           "resistance20": 1674.27,
           "bars": 600
         },
         "1h": {
           "close": 1660.84,
-          "ema20": 1683.3613195672126,
-          "ema50": 1690.625308855736,
-          "rsi14": 35.723543309152234,
-          "atr14": 15.383733832276027,
+          "ema20": 1683.361319567197,
+          "ema50": 1690.6253001922391,
+          "rsi14": 35.723543308774396,
+          "atr14": 15.383733880041213,
           "support20": 1632.0,
           "resistance20": 1753.1,
           "bars": 600
@@ -918,10 +918,10 @@
         },
         "4h": {
           "close": 1660.84,
-          "ema20": 1689.895191191828,
-          "ema50": 1715.4775986943328,
-          "rsi14": 42.30989383362026,
-          "atr14": 38.42865670513618,
+          "ema20": 1689.89505289241,
+          "ema50": 1715.4758404910376,
+          "rsi14": 42.309437277243475,
+          "atr14": 38.43339933843272,
           "support20": 1606.35,
           "resistance20": 1753.1,
           "bars": 150
@@ -940,33 +940,33 @@
         "setup_ready": false,
         "trigger_price": 1669.5,
         "trigger_utc": "2026-11-27T20:00:00Z",
-        "atr": 38.42865670513618,
-        "distance_atr": 0.17460927795332518,
+        "atr": 38.43339933843272,
+        "distance_atr": 0.17380716030809643,
         "distance_limit": 0.75,
         "structure_ready": true,
         "countertrend": false,
-        "risk_atr": 0.9133443638390211,
+        "risk_atr": 0.9124881068342119,
         "risk_note": "距离参考触发点 0.23 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-        "reference_entry": 1662.79,
-        "reference_stop": 1697.8885970115407,
+        "reference_entry": 1662.82,
+        "reference_stop": 1697.8900198015297,
         "minor_obstacle": 1644.62,
         "intermediate_levels": [
           1644.62
         ],
         "reference_tp1": 1606.35,
         "reference_tp2": 1535.37,
-        "rr_tp1": 1.6080414832946763,
-        "rr_tp2": 3.6303445393587452,
-        "stop_pct": 2.1108256010404642,
+        "rr_tp1": 1.6102072459490557,
+        "rr_tp2": 3.6341581989765737,
+        "stop_pct": 2.1090689191571985,
         "proxy_source": "Coinbase ETH-USD spot",
         "name": "Ethereum (USD)",
         "signal_candle_price": 1660.84,
         "entry_quote": {
-          "price": 1662.79,
-          "utc": "2026-11-28T00:31:12.798857120+00:00",
+          "price": 1662.82,
+          "utc": "2026-11-28T00:45:52.975998952+00:00",
           "source": "Coinbase ETH-USD spot",
           "delay_unknown": true,
-          "age_seconds": 1.667027,
+          "age_seconds": 1.156279,
           "delayed": false
         },
         "setup_ready_at_candle": false,
@@ -1225,18 +1225,18 @@
         "signal_candle_price": 0.5463585257530212,
         "entry_quote": {
           "price": 0.5464,
-          "utc": "2026-11-28T00:27:43+00:00",
+          "utc": "2026-11-28T00:29:43+00:00",
           "source": "Yahoo Finance FX indicative",
           "delay_unknown": true,
-          "age_seconds": 213.790036,
-          "delayed": false
+          "age_seconds": 972.885982,
+          "delayed": true
         },
         "setup_ready_at_candle": false,
         "original_targets": [
           0.5450779795646667,
           0.5435964465141296
         ],
-        "entry_issue": "最新价格盈利空间不足"
+        "entry_issue": "报价时间距今16分钟，仅观察；最新价格盈利空间不足"
       },
       "source_attempts": {},
       "timeframe_sources": {
@@ -1510,31 +1510,31 @@
       "setup_ready": false,
       "trigger_price": 1669.5,
       "trigger_utc": "2026-11-27T20:00:00Z",
-      "atr": 38.42865670513618,
-      "distance_atr": 0.17460927795332518,
+      "atr": 38.43339933843272,
+      "distance_atr": 0.17380716030809643,
       "distance_limit": 0.75,
       "structure_ready": true,
       "countertrend": false,
-      "risk_atr": 0.9133443638390211,
+      "risk_atr": 0.9124881068342119,
       "risk_note": "距离参考触发点 0.23 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 1662.79,
-      "reference_stop": 1697.8885970115407,
+      "reference_entry": 1662.82,
+      "reference_stop": 1697.8900198015297,
       "minor_obstacle": 1644.62,
       "intermediate_levels": [
         1644.62
       ],
       "reference_tp1": 1606.35,
       "reference_tp2": 1535.37,
-      "rr_tp1": 1.6080414832946763,
-      "rr_tp2": 3.6303445393587452,
-      "stop_pct": 2.1108256010404642,
+      "rr_tp1": 1.6102072459490557,
+      "rr_tp2": 3.6341581989765737,
+      "stop_pct": 2.1090689191571985,
       "signal_candle_price": 1660.84,
       "entry_quote": {
-        "price": 1662.79,
-        "utc": "2026-11-28T00:31:12.798857120+00:00",
+        "price": 1662.82,
+        "utc": "2026-11-28T00:45:52.975998952+00:00",
         "source": "Coinbase ETH-USD spot",
         "delay_unknown": true,
-        "age_seconds": 1.667027,
+        "age_seconds": 1.156279,
         "delayed": false
       },
       "setup_ready_at_candle": false,
@@ -1578,18 +1578,18 @@
       "signal_candle_price": 0.5463585257530212,
       "entry_quote": {
         "price": 0.5464,
-        "utc": "2026-11-28T00:27:43+00:00",
+        "utc": "2026-11-28T00:29:43+00:00",
         "source": "Yahoo Finance FX indicative",
         "delay_unknown": true,
-        "age_seconds": 213.790036,
-        "delayed": false
+        "age_seconds": 972.885982,
+        "delayed": true
       },
       "setup_ready_at_candle": false,
       "original_targets": [
         0.5450779795646667,
         0.5435964465141296
       ],
-      "entry_issue": "最新价格盈利空间不足"
+      "entry_issue": "报价时间距今16分钟，仅观察；最新价格盈利空间不足"
     },
     {
       "name": "Germany 40 - Cash",
@@ -1647,9 +1647,9 @@
       "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": true,
-      "risk_atr": 0.44923606048795545,
+      "risk_atr": 0.45482073378167975,
       "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
-      "reference_entry": 59913.82,
+      "reference_entry": 59911.19,
       "reference_stop": 60125.379526751516,
       "minor_obstacle": null,
       "intermediate_levels": [
@@ -1657,16 +1657,16 @@
       ],
       "reference_tp1": 59842.43,
       "reference_tp2": 59366.13,
-      "rr_tp1": 0.33744639674794374,
-      "rr_tp2": 2.5888222024777083,
-      "stop_pct": 0.35310638973030994,
+      "rr_tp1": 0.3210240997440183,
+      "rr_tp2": 2.5447556109143545,
+      "stop_pct": 0.3575117215189913,
       "signal_candle_price": 59858.49,
       "entry_quote": {
-        "price": 59913.82,
-        "utc": "2026-11-28T00:31:10.440732971+00:00",
+        "price": 59911.19,
+        "utc": "2026-11-28T00:45:51.005221235+00:00",
         "source": "Coinbase BTC-USD spot",
         "delay_unknown": true,
-        "age_seconds": 0.713637,
+        "age_seconds": 0.916139,
         "delayed": false
       },
       "setup_ready_at_candle": false,
@@ -1696,9 +1696,9 @@
       "distance_limit": 0.75,
       "structure_ready": false,
       "countertrend": false,
-      "risk_atr": 0.7891319870630581,
+      "risk_atr": 0.7914411599542867,
       "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
-      "reference_entry": 59913.82,
+      "reference_entry": 59911.19,
       "reference_stop": 60812.590782325235,
       "minor_obstacle": 59842.43,
       "intermediate_levels": [
@@ -1706,16 +1706,16 @@
       ],
       "reference_tp1": 58636.18,
       "reference_tp2": 57208.17,
-      "rr_tp1": 1.4215415377595848,
-      "rr_tp2": 3.0103893597877525,
-      "stop_pct": 1.5001059560636176,
+      "rr_tp1": 1.414476251852163,
+      "rr_tp2": 2.9986883226652603,
+      "stop_pct": 1.5045616391950023,
       "signal_candle_price": 59858.49,
       "entry_quote": {
-        "price": 59913.82,
-        "utc": "2026-11-28T00:31:10.440732971+00:00",
+        "price": 59911.19,
+        "utc": "2026-11-28T00:45:51.005221235+00:00",
         "source": "Coinbase BTC-USD spot",
         "delay_unknown": true,
-        "age_seconds": 0.713637,
+        "age_seconds": 0.916139,
         "delayed": false
       },
       "setup_ready_at_candle": false,
@@ -1740,31 +1740,31 @@
       "setup_ready": false,
       "trigger_price": 1652.05,
       "trigger_utc": "2026-11-27T23:00:00Z",
-      "atr": 15.383733832276027,
+      "atr": 15.383733880041213,
       "distance_atr": 0.0,
       "distance_limit": 0.75,
       "structure_ready": false,
-      "countertrend": true,
-      "risk_atr": 1.046242760383322,
-      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；逆向反弹或回调尚未结束；历史结构目标",
-      "reference_entry": 1662.79,
-      "reference_stop": 1678.8851201496827,
+      "countertrend": false,
+      "risk_atr": 1.0442926463291955,
+      "risk_note": "距离参考触发点 0.00 ATR；近端阻力/支撑挡住2R=True；历史结构目标",
+      "reference_entry": 1662.82,
+      "reference_stop": 1678.8851201640123,
       "minor_obstacle": 1661.73,
       "intermediate_levels": [
         1661.73
       ],
       "reference_tp1": 1646.8,
       "reference_tp2": 1632.0,
-      "rr_tp1": 0.9934688185794728,
-      "rr_tp2": 1.913002184118944,
-      "stop_pct": 0.9679586808726761,
+      "rr_tp1": 0.9971914206957858,
+      "rr_tp2": 1.9184419217131141,
+      "stop_pct": 0.9661370541617459,
       "signal_candle_price": 1660.84,
       "entry_quote": {
-        "price": 1662.79,
-        "utc": "2026-11-28T00:31:12.798857120+00:00",
+        "price": 1662.82,
+        "utc": "2026-11-28T00:45:52.975998952+00:00",
         "source": "Coinbase ETH-USD spot",
         "delay_unknown": true,
-        "age_seconds": 1.667027,
+        "age_seconds": 1.156279,
         "delayed": false
       },
       "setup_ready_at_candle": false,
@@ -1811,18 +1811,18 @@
       "signal_candle_price": 0.5463585257530212,
       "entry_quote": {
         "price": 0.5464,
-        "utc": "2026-11-28T00:27:43+00:00",
+        "utc": "2026-11-28T00:29:43+00:00",
         "source": "Yahoo Finance FX indicative",
         "delay_unknown": true,
-        "age_seconds": 213.790036,
-        "delayed": false
+        "age_seconds": 972.885982,
+        "delayed": true
       },
       "setup_ready_at_candle": false,
       "original_targets": [
         0.5450779795646667,
         0.5447216033935547
       ],
-      "entry_issue": "最新价格未保持回踩确认；最新价格盈利空间不足"
+      "entry_issue": "报价时间距今16分钟，仅观察；最新价格未保持回踩确认；最新价格盈利空间不足"
     }
   ],
   "research_setups": [],
@@ -1845,14 +1845,14 @@
       "tp2": 0.5527061788191057,
       "confirmed_utc": "2026-11-24T00:00:00Z",
       "tp1_hit": true,
-      "distance_to_invalidation_pct": 0.5130954403130231,
+      "distance_to_invalidation_pct": null,
       "distance_quote": {
         "price": 0.5464,
-        "utc": "2026-11-28T00:27:43+00:00",
+        "utc": "2026-11-28T00:29:43+00:00",
         "source": "Yahoo Finance FX indicative",
         "delay_unknown": true,
-        "age_seconds": 213.790036,
-        "delayed": false
+        "age_seconds": 972.885982,
+        "delayed": true
       }
     }
   },
@@ -2061,14 +2061,14 @@
         "tp2": 0.5527061788191057,
         "confirmed_utc": "2026-11-24T00:00:00Z",
         "tp1_hit": true,
-        "distance_to_invalidation_pct": 0.5130954403130231,
+        "distance_to_invalidation_pct": null,
         "distance_quote": {
           "price": 0.5464,
-          "utc": "2026-11-28T00:27:43+00:00",
+          "utc": "2026-11-28T00:29:43+00:00",
           "source": "Yahoo Finance FX indicative",
           "delay_unknown": true,
-          "age_seconds": 213.790036,
-          "delayed": false
+          "age_seconds": 972.885982,
+          "delayed": true
         }
       }
     },
